@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim:*)",
+      "WebSearch",
+      "WebFetch(domain:neovim.io)",
+      "WebFetch(domain:lugh.ch)",
+      "WebFetch(domain:davelage.com)",
+      "WebFetch(domain:0xunicorn.com)",
+      "WebFetch(domain:xnacly.me)",
+      "WebFetch(domain:github.com)",
+      "Bash(luac:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

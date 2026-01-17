@@ -1,0 +1,73 @@
+local wezterm = require 'wezterm'
+local config = wezterm.config_builder()
+
+-- フォント設定
+config.font = wezterm.font "BitstromWera Nerd Font"
+config.font_size = 14
+
+-- 初期ウィンドウサイズ
+config.initial_cols = 90
+config.initial_rows = 30
+
+-- 背景の透明度とぼかし
+config.window_background_opacity = 0.85
+config.macos_window_background_blur = 20
+
+-- タブバーを下側に配置
+config.tab_bar_at_bottom = true
+
+-- リーダーキーの設定 (tmuxのプレフィックスキーに相当)
+config.leader = { key = 't', mods = 'CTRL', timeout_milliseconds = 1000 }
+
+-- キーバインドの設定
+config.keys = {
+    -- ペイン分割
+    {
+        key = '%',
+        mods = 'LEADER|SHIFT',
+        action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+    },
+    {
+        key = '"',
+        mods = 'LEADER|SHIFT',
+        action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
+    },
+
+    -- ペイン移動 (vim風)
+    {
+        key = 'h',
+        mods = 'LEADER',
+        action = wezterm.action.ActivatePaneDirection 'Left',
+    },
+    {
+        key = 'j',
+        mods = 'LEADER',
+        action = wezterm.action.ActivatePaneDirection 'Down',
+    },
+    {
+        key = 'k',
+        mods = 'LEADER',
+        action = wezterm.action.ActivatePaneDirection 'Up',
+    },
+    {
+        key = 'l',
+        mods = 'LEADER',
+        action = wezterm.action.ActivatePaneDirection 'Right',
+    },
+
+    -- ペインを閉じる
+    {
+        key = 'x',
+        mods = 'LEADER',
+        action = wezterm.action.CloseCurrentPane { confirm = true },
+    },
+
+    -- ペインのズーム切り替え
+    {
+        key = 'z',
+        mods = 'LEADER',
+        action = wezterm.action.TogglePaneZoomState,
+    },
+}
+
+return config

@@ -31,7 +31,7 @@ vim.opt.updatetime = 300
 vim.opt.timeoutlen = 500
 
 -- エディタ動作
-vim.opt.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamed,unnamedplus"
 vim.opt.mouse = "a"
 vim.opt.undofile = true
 vim.opt.backup = false

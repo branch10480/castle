@@ -57,3 +57,29 @@ keymap({ "n", "v" }, "<leader>d", [["_d]], { desc = "レジスタを汚さずに
 keymap("n", "<leader>w", ":w<CR>", { desc = "ファイルを保存" })
 keymap("n", "<leader>q", ":q<CR>", { desc = "ウィンドウを閉じる" })
 keymap("n", "<leader>x", ":wq<CR>", { desc = "保存して閉じる" })
+
+-- 外部アプリケーション連携
+-- Marked 2で現在のファイルを開く
+local function open_in_marked()
+	local filepath = vim.fn.expand("%")
+	if filepath == "" then
+		vim.notify("Marked 2で開くファイルがありません", vim.log.levels.WARN)
+		return
+	end
+
+	if vim.bo.modified then
+		vim.notify("ファイルに未保存の変更があります", vim.log.levels.WARN)
+	end
+
+	local fullpath = vim.fn.expand("%:p")
+	local cmd = string.format('open -a "Marked 2" "%s"', fullpath)
+	local result = vim.fn.system(cmd)
+
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Marked 2を開けませんでした: " .. result, vim.log.levels.ERROR)
+	else
+		vim.notify("Marked 2で開きました: " .. vim.fn.fnamemodify(fullpath, ":t"), vim.log.levels.INFO)
+	end
+end
+
+keymap("n", "<leader>m", open_in_marked, { desc = "Marked 2で開く" })

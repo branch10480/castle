@@ -6,8 +6,8 @@ config.font = wezterm.font "BitstromWera Nerd Font"
 config.font_size = 14
 
 -- 初期ウィンドウサイズ
-config.initial_cols = 90
-config.initial_rows = 30
+config.initial_cols = 150
+config.initial_rows = 40
 
 -- 背景の透明度とぼかし
 config.window_background_opacity = 0.85

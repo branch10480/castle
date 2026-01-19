@@ -26,6 +26,3 @@ export HOMESHICK_DIR=/opt/homebrew/opt/homeshick
 source "/opt/homebrew/opt/homeshick/homeshick.sh"
 fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
-# Serena/Claude Code トークン最適化
-export ENABLE_TOOL_SEARCH=true
-

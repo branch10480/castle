@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 -- フォント設定
-config.font = wezterm.font "BitstromWera Nerd Font"
+config.font = wezterm.font "BitstromWera Nerd Font Mono"
 config.font_size = 14
 
 -- 初期ウィンドウサイズ

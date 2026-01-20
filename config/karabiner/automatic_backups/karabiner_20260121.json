@@ -95,15 +95,6 @@
                         "vendor_id": 1149
                     },
                     "ignore": true
-                },
-                {
-                    "identifiers": { "is_keyboard": true },
-                    "simple_modifications": [
-                        {
-                            "from": { "key_code": "caps_lock" },
-                            "to": [{ "key_code": "left_command" }]
-                        }
-                    ]
                 }
             ],
             "name": "Default profile",

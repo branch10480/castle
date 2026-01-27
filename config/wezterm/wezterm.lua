@@ -68,6 +68,15 @@ config.keys = {
         mods = 'LEADER',
         action = wezterm.action.TogglePaneZoomState,
     },
+    {
+        key = '¥',
+        action = wezterm.action.SendKey({ key = "\\" })
+    },
+    {
+        key = '¥',
+        mods = 'ALT',
+        action = wezterm.action.SendKey({ key = "¥" })
+    },
 }
 
 return config

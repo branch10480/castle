@@ -19,6 +19,9 @@ config.tab_bar_at_bottom = true
 -- リーダーキーの設定 (tmuxのプレフィックスキーに相当)
 config.leader = { key = 't', mods = 'CTRL', timeout_milliseconds = 1000 }
 
+-- 終了時の確認
+config.window_close_confirmation='NeverPrompt'
+
 -- キーバインドの設定
 config.keys = {
     -- ペイン分割

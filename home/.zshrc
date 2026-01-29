@@ -49,3 +49,23 @@ fzf-src () {
 }
 zle -N fzf-src
 bindkey '^]' fzf-src
+
+# wtp + fzf
+fzf-src-wtp () {
+  local wt_name wt_path list
+
+  list="$(wtp list -q 2>/dev/null)"
+  [[ -z "$list" ]] && { zle clear-screen; zle -M "wtp list: no entries"; return 0; }
+
+  wt_name="$(print -r -- "$list" | fzf --query "$LBUFFER" --prompt="wtp> " --height=40% --reverse)"
+  [[ -z "$wt_name" ]] && { zle clear-screen; return 0; }
+
+  wt_path="$(wtp cd "$wt_name" 2>/dev/null)"
+  [[ -z "$wt_path" ]] && { zle clear-screen; zle -M "wtp cp failed: $wt_name"; return 0; }
+
+  BUFFER="cd ${wt_path}"
+  zle accept-line
+  zle clear-screen
+}
+zle -N fzf-src-wtp
+bindkey '^w' fzf-src-wtp

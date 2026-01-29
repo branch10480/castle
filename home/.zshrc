@@ -34,3 +34,18 @@ alias t='tig'
 # Zoxide
 eval "$(zoxide init zsh --cmd j)"
 
+# ghq + fzf
+fzf-src () {
+  local repo
+  repo=$(ghq list | fzf --query "$LBUFFER" --prompt="ghq> " --height=40% --reverse)
+
+  if [[ -n "$repo" ]]; then
+    repo=$(ghq list --full-path --exact "$repo")
+    BUFFER="cd ${repo}"
+    zle accept-line
+  fi
+
+  zle clear-screen
+}
+zle -N fzf-src
+bindkey '^]' fzf-src

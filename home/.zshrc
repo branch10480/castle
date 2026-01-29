@@ -26,3 +26,5 @@ export HOMESHICK_DIR=/opt/homebrew/opt/homeshick
 source "/opt/homebrew/opt/homeshick/homeshick.sh"
 fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
+# Zoxide
+eval "$(zoxide init zsh --cmd j)"

@@ -1,0 +1,5 @@
+# 未ステージの差分（working tree vs index）を Kaleidoscope で開く
+bind status  K  @sh -c 'cd "$(git rev-parse --show-toplevel)" && git difftool -y -t Kaleidoscope -- "%(file)"'
+
+# ステージ済みの差分（index vs HEAD）を Kaleidoscope で開く
+bind status  S  @sh -c 'cd "$(git rev-parse --show-toplevel)" && git difftool -y -t Kaleidoscope --staged -- "%(file)"'

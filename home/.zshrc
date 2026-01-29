@@ -29,6 +29,7 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 # Alias
 alias cc='claude'
 alias ccc='claude -- continue'
+alias t='tig'
 
 # Zoxide
 eval "$(zoxide init zsh --cmd j)"

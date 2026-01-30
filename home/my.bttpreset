@@ -52,7 +52,7 @@
     "BTTTpFourFingerSwipeSensitivity" : 0.40000000000000002,
     "BSTMoveTreshold" : 2,
     "BTTHideFomControlStripWhenOpen" : false,
-    "BTTNumberOfStarts" : 6,
+    "BTTNumberOfStarts" : 7,
     "BTTForceNormalClickPressure3F" : 150,
     "showSiriRemoteTab" : true,
     "SIRIScrollSpeed" : 1,
@@ -82,7 +82,7 @@
     "BTTForceForceClickPressure5F" : 600,
     "BTTForceForceClickPressure" : 700,
     "BSTMemorySaver" : true,
-    "BTTLastClamshellState" : true,
+    "BTTLastClamshellState" : false,
     "BTTStageManagerLeaveGapEvenIfHiding" : false,
     "BTTTouchBarAnimateGroups" : true,
     "BTTShowBTTWhenControlStripHidden" : true,
@@ -158,19 +158,19 @@
     "BTTNotchBarNotchMenubarModeHideRightScrollable" : true,
     "BSTSnapAreaDefaultPictoDistanceFromLeft" : 0.10000000149011612
   },
-  "BTTPresetUUID" : "18F8B848-B9A8-46D6-8A91-ECF2ED7A1341",
+  "BTTPresetUUID" : "2501B785-CC06-4F85-AE9A-15FBBFFCB8F0",
   "BTTPresetContent" : [
     {
-      "BTTAppBundleIdentifier" : "BT.L",
-      "BTTAppName" : "Recently Used",
+      "BTTAppBundleIdentifier" : "com.apple.finder",
+      "BTTAppName" : "Finder",
       "BTTAppAutoInvertIcon" : 1,
       "BTTTriggers" : [
 
       ]
     },
     {
-      "BTTAppBundleIdentifier" : "com.apple.finder",
-      "BTTAppName" : "Finder",
+      "BTTAppBundleIdentifier" : "BT.L",
+      "BTTAppName" : "Recently Used",
       "BTTAppAutoInvertIcon" : 1,
       "BTTTriggers" : [
 
@@ -185,107 +185,27 @@
       },
       "BTTTriggers" : [
         {
-          "BTTLastUpdatedAt" : 1769649308.018007,
-          "BTTTriggerType" : 113,
-          "BTTTriggerTypeDescriptionReadOnly" : "TipTap左（1本指修正）",
+          "BTTLastUpdatedAt" : 1769762162.280741,
+          "BTTTriggerType" : 137,
+          "BTTTriggerTypeDescriptionReadOnly" : "TipTap右（3本指修正）",
           "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-          "BTTUUID" : "F8CD0212-9C6D-444E-B054-EF28849F5CE7",
-          "BTTOrder" : 2,
+          "BTTUUID" : "71C2C990-389A-4EC0-95F2-8C7C23176CF9",
+          "BTTOrder" : 8,
           "BTTActionsToExecute" : [
             {
-              "BTTLastUpdatedAt" : 1769646934.1844869,
-              "BTTTriggerParentUUID" : "F8CD0212-9C6D-444E-B054-EF28849F5CE7",
+              "BTTLastUpdatedAt" : 1769762167.448117,
+              "BTTTriggerParentUUID" : "71C2C990-389A-4EC0-95F2-8C7C23176CF9",
               "BTTIsPureAction" : true,
               "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-              "BTTUUID" : "A91823E1-C561-4195-93BC-2E4847C142FD",
-              "BTTLayoutIndependentActionChar" : "w",
-              "BTTShortcutToSend" : "55,13",
-              "BTTOrder" : 5
+              "BTTUUID" : "9888B27A-CBD9-4DD9-AA85-8990C4AF22EA",
+              "BTTLayoutIndependentActionChar" : "]",
+              "BTTShortcutToSend" : "56,55,42",
+              "BTTOrder" : 11
             }
           ]
         },
         {
-          "BTTLastUpdatedAt" : 1769649308.0180149,
-          "BTTTriggerType" : 110,
-          "BTTTriggerTypeDescriptionReadOnly" : "4本指でタップ",
-          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-          "BTTUUID" : "6AECFD12-0C2B-4C71-86C6-9FFEF3FF1440",
-          "BTTOrder" : 0,
-          "BTTActionsToExecute" : [
-            {
-              "BTTLastUpdatedAt" : 1769476394.5471311,
-              "BTTTriggerParentUUID" : "6AECFD12-0C2B-4C71-86C6-9FFEF3FF1440",
-              "BTTIsPureAction" : true,
-              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-              "BTTUUID" : "8C94AA51-289C-484E-A447-439A87D7DA46",
-              "BTTPredefinedActionType" : 1,
-              "BTTPredefinedActionName" : "中クリック (At Current Mouse Position)",
-              "BTTOrder" : 3
-            }
-          ]
-        },
-        {
-          "BTTLastUpdatedAt" : 1769649308.0180202,
-          "BTTTriggerType" : 114,
-          "BTTTriggerTypeDescriptionReadOnly" : "TipTap右（1本指修正）",
-          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-          "BTTUUID" : "B3D26A4C-AE0E-4E37-A758-4D701BD24EC0",
-          "BTTOrder" : 3,
-          "BTTActionsToExecute" : [
-            {
-              "BTTLastUpdatedAt" : 1769649069.173945,
-              "BTTTriggerParentUUID" : "B3D26A4C-AE0E-4E37-A758-4D701BD24EC0",
-              "BTTIsPureAction" : true,
-              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-              "BTTUUID" : "BCC0D383-B4BF-4407-82C8-D215B812AAC6",
-              "BTTLayoutIndependentActionChar" : "t",
-              "BTTShortcutToSend" : "56,55,17",
-              "BTTOrder" : 6
-            }
-          ]
-        },
-        {
-          "BTTLastUpdatedAt" : 1769649308.0180368,
-          "BTTTriggerType" : 111,
-          "BTTTriggerTypeDescriptionReadOnly" : "5本指でタップ",
-          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-          "BTTUUID" : "F8BDA2C4-7765-4AB2-A23F-544888B44A31",
-          "BTTOrder" : 1,
-          "BTTActionsToExecute" : [
-            {
-              "BTTLastUpdatedAt" : 1769480569.8615432,
-              "BTTTriggerParentUUID" : "F8BDA2C4-7765-4AB2-A23F-544888B44A31",
-              "BTTIsPureAction" : true,
-              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-              "BTTUUID" : "5D40BC13-7C6A-4FA6-B190-D54DEE1474E1",
-              "BTTLayoutIndependentActionChar" : "r",
-              "BTTShortcutToSend" : "55,15",
-              "BTTOrder" : 4
-            }
-          ]
-        },
-        {
-          "BTTLastUpdatedAt" : 1769649308.0180311,
-          "BTTTriggerType" : 133,
-          "BTTTriggerTypeDescriptionReadOnly" : "TipTap右（2本指修正）",
-          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-          "BTTUUID" : "D8E69AA8-F8B0-45FD-B1A1-A426BFFE4F6C",
-          "BTTOrder" : 5,
-          "BTTActionsToExecute" : [
-            {
-              "BTTLastUpdatedAt" : 1769649131.099045,
-              "BTTTriggerParentUUID" : "D8E69AA8-F8B0-45FD-B1A1-A426BFFE4F6C",
-              "BTTIsPureAction" : true,
-              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
-              "BTTUUID" : "91B8321B-660C-49E9-93DC-B1DD3A187701",
-              "BTTLayoutIndependentActionChar" : "t",
-              "BTTShortcutToSend" : "55,17",
-              "BTTOrder" : 8
-            }
-          ]
-        },
-        {
-          "BTTLastUpdatedAt" : 1769649314.4114609,
+          "BTTLastUpdatedAt" : 1769762157.001085,
           "BTTTriggerType" : 112,
           "BTTTriggerTypeDescriptionReadOnly" : "3本指でクリック",
           "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
@@ -293,7 +213,7 @@
           "BTTOrder" : 6,
           "BTTActionsToExecute" : [
             {
-              "BTTLastUpdatedAt" : 1769649317.2334981,
+              "BTTLastUpdatedAt" : 1769659535.8394079,
               "BTTTriggerParentUUID" : "829E8ADB-E285-47BB-8CF0-C54CE8F4B16B",
               "BTTIsPureAction" : true,
               "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
@@ -305,7 +225,107 @@
           ]
         },
         {
-          "BTTLastUpdatedAt" : 1769649103.7154489,
+          "BTTLastUpdatedAt" : 1769762157.001076,
+          "BTTTriggerType" : 133,
+          "BTTTriggerTypeDescriptionReadOnly" : "TipTap右（2本指修正）",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "D8E69AA8-F8B0-45FD-B1A1-A426BFFE4F6C",
+          "BTTOrder" : 5,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769659535.8394041,
+              "BTTTriggerParentUUID" : "D8E69AA8-F8B0-45FD-B1A1-A426BFFE4F6C",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "91B8321B-660C-49E9-93DC-B1DD3A187701",
+              "BTTLayoutIndependentActionChar" : "t",
+              "BTTShortcutToSend" : "55,17",
+              "BTTOrder" : 8
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.0010891,
+          "BTTTriggerType" : 136,
+          "BTTTriggerTypeDescriptionReadOnly" : "TipTap左（3本指修正）",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "0D15A97C-42A5-405D-ADC3-1E0CE643AAFF",
+          "BTTOrder" : 7,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769762155.012526,
+              "BTTTriggerParentUUID" : "0D15A97C-42A5-405D-ADC3-1E0CE643AAFF",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "C049361B-00F9-4CA0-BBD7-8AAA25BF5D8B",
+              "BTTLayoutIndependentActionChar" : "[",
+              "BTTShortcutToSend" : "56,55,30",
+              "BTTOrder" : 10
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.001092,
+          "BTTTriggerType" : 111,
+          "BTTTriggerTypeDescriptionReadOnly" : "5本指でタップ",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "F8BDA2C4-7765-4AB2-A23F-544888B44A31",
+          "BTTOrder" : 1,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769659535.83937,
+              "BTTTriggerParentUUID" : "F8BDA2C4-7765-4AB2-A23F-544888B44A31",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "5D40BC13-7C6A-4FA6-B190-D54DEE1474E1",
+              "BTTLayoutIndependentActionChar" : "r",
+              "BTTShortcutToSend" : "55,15",
+              "BTTOrder" : 4
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.0010951,
+          "BTTTriggerType" : 110,
+          "BTTTriggerTypeDescriptionReadOnly" : "4本指でタップ",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "6AECFD12-0C2B-4C71-86C6-9FFEF3FF1440",
+          "BTTOrder" : 0,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769659535.83939,
+              "BTTTriggerParentUUID" : "6AECFD12-0C2B-4C71-86C6-9FFEF3FF1440",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "8C94AA51-289C-484E-A447-439A87D7DA46",
+              "BTTPredefinedActionType" : 1,
+              "BTTPredefinedActionName" : "中クリック (At Current Mouse Position)",
+              "BTTOrder" : 3
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.0010991,
+          "BTTTriggerType" : 113,
+          "BTTTriggerTypeDescriptionReadOnly" : "TipTap左（1本指修正）",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "F8CD0212-9C6D-444E-B054-EF28849F5CE7",
+          "BTTOrder" : 2,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769659535.8393478,
+              "BTTTriggerParentUUID" : "F8CD0212-9C6D-444E-B054-EF28849F5CE7",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "A91823E1-C561-4195-93BC-2E4847C142FD",
+              "BTTLayoutIndependentActionChar" : "w",
+              "BTTShortcutToSend" : "55,13",
+              "BTTOrder" : 5
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.0011048,
           "BTTTriggerType" : 170,
           "BTTTriggerTypeDescriptionReadOnly" : "3本指でフォースクリック",
           "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
@@ -313,7 +333,7 @@
           "BTTOrder" : 4,
           "BTTActionsToExecute" : [
             {
-              "BTTLastUpdatedAt" : 1769646992.6022739,
+              "BTTLastUpdatedAt" : 1769659535.8393569,
               "BTTTriggerParentUUID" : "3052DABC-CACC-49A8-928F-310184404649",
               "BTTIsPureAction" : true,
               "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
@@ -321,6 +341,26 @@
               "BTTLayoutIndependentActionChar" : "m",
               "BTTShortcutToSend" : "55,46",
               "BTTOrder" : 7
+            }
+          ]
+        },
+        {
+          "BTTLastUpdatedAt" : 1769762157.001102,
+          "BTTTriggerType" : 114,
+          "BTTTriggerTypeDescriptionReadOnly" : "TipTap右（1本指修正）",
+          "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+          "BTTUUID" : "B3D26A4C-AE0E-4E37-A758-4D701BD24EC0",
+          "BTTOrder" : 3,
+          "BTTActionsToExecute" : [
+            {
+              "BTTLastUpdatedAt" : 1769659535.839395,
+              "BTTTriggerParentUUID" : "B3D26A4C-AE0E-4E37-A758-4D701BD24EC0",
+              "BTTIsPureAction" : true,
+              "BTTTriggerClass" : "BTTTriggerTypeTouchpadAll",
+              "BTTUUID" : "BCC0D383-B4BF-4407-82C8-D215B812AAC6",
+              "BTTLayoutIndependentActionChar" : "t",
+              "BTTShortcutToSend" : "56,55,17",
+              "BTTOrder" : 6
             }
           ]
         }

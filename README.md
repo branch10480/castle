@@ -19,7 +19,7 @@ homeshick link castle
 
 ### シェル (zsh)
 
-- **powerline-shell** - カスタムプロンプト
+- **starship** - カスタムプロンプト
 - **anyenv** - 言語バージョン管理（pyenv, nodenv等）
 - **zoxide** - スマートディレクトリジャンプ (`j` コマンド)
 - **fzf + ghq** - リポジトリ選択 (`Ctrl+]`)

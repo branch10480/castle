@@ -43,7 +43,7 @@ castle/
 
 zsh使用。主要ツール:
 - anyenv（各種言語バージョン管理）
-- powerline-shell（プロンプト）
+- starship（プロンプト）
 - zoxide（ディレクトリジャンプ、`j`コマンド）
 - fzf + ghq（リポジトリ選択、`Ctrl+]`）
 

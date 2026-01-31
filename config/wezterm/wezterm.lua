@@ -9,6 +9,9 @@ config.font_size = 14
 config.initial_cols = 150
 config.initial_rows = 40
 
+-- カラースキーム（神奈川）
+config.color_scheme = "Kanagawa (Gogh)"
+
 -- 背景の透明度とぼかし
 config.window_background_opacity = 0.85
 config.macos_window_background_blur = 20

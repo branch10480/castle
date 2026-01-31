@@ -1,6 +1,9 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
+-- 設定変更時自動リロード
+config.automatically_reload_config = true
+
 -- フォント設定
 config.font = wezterm.font "BitstromWera Nerd Font Mono"
 config.font_size = 14
@@ -22,8 +25,8 @@ config.enable_tab_bar = false
 -- タイトルバーを非表示（リサイズのみ可能）
 config.window_decorations = "RESIZE"
 
--- リーダーキーの設定 (tmuxのプレフィックスキーに相当)
-config.leader = { key = 't', mods = 'CTRL', timeout_milliseconds = 1000 }
+-- リーダーキーの設定
+config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- 終了時の確認
 config.window_close_confirmation='NeverPrompt'

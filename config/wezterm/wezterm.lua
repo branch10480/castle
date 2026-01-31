@@ -13,8 +13,8 @@ config.initial_rows = 40
 config.window_background_opacity = 0.85
 config.macos_window_background_blur = 20
 
--- タブバーを下側に配置
-config.tab_bar_at_bottom = true
+-- タブバーを非表示
+config.enable_tab_bar = false
 
 -- タイトルバーを非表示（リサイズのみ可能）
 config.window_decorations = "RESIZE"

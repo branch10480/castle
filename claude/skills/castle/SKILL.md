@@ -1,14 +1,14 @@
 ---
-name: dotfiles
-description: homeshickで管理しているdotfilesをcommitしてpushする
+name: castle
+description: castleリポジトリ（dotfiles）の変更をcommitしてpushする
 disable-model-invocation: false
 argument-hint: [コミットメッセージ]
 allowed-tools: Bash
 ---
 
-# dotfiles更新
+# castle更新
 
-homeshickで管理しているdotfilesリポジトリに変更をコミットしてプッシュしてください。
+homeshickで管理しているcastleリポジトリ（dotfiles）に変更をコミットしてプッシュしてください。
 
 ## 手順
 

@@ -28,7 +28,7 @@ castle/
 
 ## 主要コマンド・スキル
 
-- `/dotfiles [メッセージ]` - 変更をcommit & push
+- `/castle [メッセージ]` - castleリポジトリの変更をcommit & push
 - `/push` - 汎用的なgit add, commit, push
 - `/zama-parking` - イオンモール座間 駐車場空き状況確認
 
@@ -57,5 +57,5 @@ cd ~/.homesick/repos/castle
 homeshick link castle
 
 # 変更をプッシュ（Claude Codeから）
-/dotfiles "コミットメッセージ"
+/castle "コミットメッセージ"
 ```

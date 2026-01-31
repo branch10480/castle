@@ -13,17 +13,16 @@ dotfiles/
 ├── home/           # ~ にシンボリックリンクされるファイル
 │   ├── .config -> ../config
 │   ├── .hammerspoon -> ../hammerspoon
-│   ├── .zshrc
-│   └── claude_agents -> ../claude_agents
+│   └── .zshrc
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── wezterm/    # WezTermターミナル設定
 │   ├── karabiner/  # Karabiner-Elements設定
 │   └── git/        # Gitグローバル設定
-├── claude/         # Claude Code用スキル・コマンド
+├── claude/         # Claude Code用設定（~/.claude/にリンク）
+│   ├── agents/     # カスタムエージェント定義
 │   ├── commands/   # ユーザー呼び出し可能なコマンド
 │   └── skills/     # 自動呼び出しスキル
-├── claude_agents/  # Claude Code用カスタムエージェント定義
 └── hammerspoon/    # Hammerspoonマクロ
 ```
 

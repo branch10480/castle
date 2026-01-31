@@ -51,5 +51,4 @@ homeshick link dotfiles
 
 ### Claude Code
 
-- カスタムスキル・コマンド (`claude/`)
-- カスタムエージェント定義 (`claude_agents/`)
+- カスタムエージェント・スキル・コマンド (`claude/`)

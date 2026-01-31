@@ -1,3 +1,4 @@
 config/anyenv/**
+config/gh/
 **/.DS_Store
 **/.serena

@@ -16,6 +16,9 @@ config.macos_window_background_blur = 20
 -- タブバーを下側に配置
 config.tab_bar_at_bottom = true
 
+-- タイトルバーを非表示（リサイズのみ可能）
+config.window_decorations = "RESIZE"
+
 -- リーダーキーの設定 (tmuxのプレフィックスキーに相当)
 config.leader = { key = 't', mods = 'CTRL', timeout_milliseconds = 1000 }
 

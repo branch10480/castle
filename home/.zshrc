@@ -31,6 +31,13 @@ alias cc='claude'
 alias ccc='claude -- continue'
 alias t='tig status'
 
+# fzf + nvim
+v() {
+  local file
+  file=$(fzf --height=40% --reverse)
+  [[ -n "$file" ]] && nvim "$file"
+}
+
 # Zoxide
 eval "$(zoxide init zsh --cmd j)"
 

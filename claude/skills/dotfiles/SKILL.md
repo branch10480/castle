@@ -12,7 +12,7 @@ homeshickで管理しているdotfilesリポジトリに変更をコミットし
 
 ## 手順
 
-1. リポジトリに移動: `~/.homesick/repos/dotfiles`
+1. リポジトリに移動: `~/.homesick/repos/castle`
 2. `git status` で変更を確認
 3. `git diff` で差分を確認
 4. 変更があれば:

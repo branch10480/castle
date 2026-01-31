@@ -12,7 +12,7 @@ brew install homeshick
 homeshick clone git@github.com:branch10480/castle.git
 
 # シンボリックリンクの作成
-homeshick link dotfiles
+homeshick link castle
 ```
 
 ## 含まれる設定

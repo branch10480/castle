@@ -9,7 +9,7 @@ homeshickで管理されているdotfilesリポジトリ。macOS環境向けの�
 ## リポジトリ構造
 
 ```
-dotfiles/
+castle/
 ├── home/           # ~ にシンボリックリンクされるファイル
 │   ├── .config -> ../config
 │   ├── .hammerspoon -> ../hammerspoon
@@ -50,11 +50,11 @@ zsh使用。主要ツール:
 ## homeshick操作
 
 ```bash
-# dotfilesディレクトリに移動
-cd ~/.homesick/repos/dotfiles
+# castleディレクトリに移動
+cd ~/.homesick/repos/castle
 
 # シンボリックリンク作成
-homeshick link dotfiles
+homeshick link castle
 
 # 変更をプッシュ（Claude Codeから）
 /dotfiles "コミットメッセージ"

@@ -37,6 +37,7 @@ homeshick link castle
 - パッケージマネージャ: lazy.nvim
 - ファイラー: oil.nvim
 - ファジーファインダー: telescope.nvim
+- インデント自動検出: guess-indent.nvim
 - LSP対応
 
 ### キーボード

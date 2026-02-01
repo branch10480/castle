@@ -59,6 +59,12 @@ config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 -- 終了時の確認
 config.window_close_confirmation='NeverPrompt'
 
+-- 非アクティブペインの色を変えない
+config.inactive_pane_hsb = {
+    saturation = 1.0,
+    brightness = 1.0,
+}
+
 -- キーバインドの設定
 config.keys = {
     -- ペイン分割

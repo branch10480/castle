@@ -1,3 +1,31 @@
+-- WezTerm Configuration
+-- =====================
+--
+-- リーダーキー: Ctrl+a (タイムアウト: 1秒)
+--
+-- ## キーバインド一覧
+--
+-- ### ペイン操作
+--   Leader + %     : 横分割
+--   Leader + "     : 縦分割
+--   Leader + h/j/k/l : ペイン移動 (vim風)
+--   Leader + x     : ペインを閉じる
+--   Leader + z     : ペインのズーム切り替え
+--
+-- ### Workspace操作
+--   Leader + s     : ワークスペース一覧を表示・選択
+--   Leader + n     : 新規ワークスペース作成（名前入力）
+--   Leader + $     : 現在のワークスペースをリネーム
+--   Leader + (     : 前のワークスペースに切り替え
+--   Leader + )     : 次のワークスペースに切り替え
+--
+-- ### Workspaceの使い方
+--   1. Leader + n で新規ワークスペース作成（例: project-a）
+--   2. 同様に別のワークスペースを作成（例: project-b）
+--   3. Leader + s で一覧から選択、または ( / ) で前後移動
+--   各ワークスペースは独立したタブ・ペイン構成を保持
+--
+
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
@@ -10,7 +38,7 @@ config.font_size = 14
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150
-config.initial_rows = 40
+config.initial_rows = 50
 
 -- カラースキーム（神奈川）
 config.color_scheme = "Kanagawa (Gogh)"
@@ -88,6 +116,58 @@ config.keys = {
         key = '¥',
         mods = 'ALT',
         action = wezterm.action.SendKey({ key = "¥" })
+    },
+
+    -- Workspace操作
+    -- ワークスペース一覧を表示して選択
+    {
+        key = 's',
+        mods = 'LEADER',
+        action = wezterm.action.ShowLauncherArgs { flags = 'WORKSPACES' },
+    },
+    -- 新規ワークスペース作成（名前を入力）
+    {
+        key = 'n',
+        mods = 'LEADER',
+        action = wezterm.action.PromptInputLine {
+            description = 'Enter new workspace name:',
+            action = wezterm.action_callback(function(window, pane, line)
+                if line then
+                    window:perform_action(
+                        wezterm.action.SwitchToWorkspace { name = line },
+                        pane
+                    )
+                end
+            end),
+        },
+    },
+    -- 現在のワークスペースをリネーム
+    {
+        key = '$',
+        mods = 'LEADER|SHIFT',
+        action = wezterm.action.PromptInputLine {
+            description = 'Rename workspace:',
+            action = wezterm.action_callback(function(window, pane, line)
+                if line then
+                    wezterm.mux.rename_workspace(
+                        wezterm.mux.get_active_workspace(),
+                        line
+                    )
+                end
+            end),
+        },
+    },
+    -- 前のワークスペースに切り替え
+    {
+        key = '(',
+        mods = 'LEADER|SHIFT',
+        action = wezterm.action.SwitchWorkspaceRelative(-1),
+    },
+    -- 次のワークスペースに切り替え
+    {
+        key = ')',
+        mods = 'LEADER|SHIFT',
+        action = wezterm.action.SwitchWorkspaceRelative(1),
     },
 }
 

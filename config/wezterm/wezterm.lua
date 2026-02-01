@@ -11,6 +11,7 @@
 --   Leader + h/j/k/l : ペイン移動 (vim風)
 --   Leader + x     : ペインを閉じる
 --   Leader + z     : ペインのズーム切り替え
+--   Leader + r     : リサイズモード (h/j/k/l で調整、Esc/Enter で終了)
 --
 -- ### Workspace操作
 --   Leader + s     : ワークスペース一覧を表示・選択
@@ -114,6 +115,16 @@ config.keys = {
         mods = 'LEADER',
         action = wezterm.action.TogglePaneZoomState,
     },
+
+    -- リサイズモードに入る
+    {
+        key = 'r',
+        mods = 'LEADER',
+        action = wezterm.action.ActivateKeyTable {
+            name = 'resize_pane',
+            one_shot = false,
+        },
+    },
     {
         key = '¥',
         action = wezterm.action.SendKey({ key = "\\" })
@@ -174,6 +185,18 @@ config.keys = {
         key = ')',
         mods = 'LEADER|SHIFT',
         action = wezterm.action.SwitchWorkspaceRelative(1),
+    },
+}
+
+-- リサイズモード用キーテーブル
+config.key_tables = {
+    resize_pane = {
+        { key = 'h', action = wezterm.action.AdjustPaneSize { 'Left', 3 } },
+        { key = 'j', action = wezterm.action.AdjustPaneSize { 'Down', 3 } },
+        { key = 'k', action = wezterm.action.AdjustPaneSize { 'Up', 3 } },
+        { key = 'l', action = wezterm.action.AdjustPaneSize { 'Right', 3 } },
+        { key = 'Escape', action = 'PopKeyTable' },
+        { key = 'Enter', action = 'PopKeyTable' },
     },
 }
 

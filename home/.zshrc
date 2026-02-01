@@ -14,6 +14,7 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
 alias cc='claude'
+alias ccd='claude --dangerously-skip-permissions'
 alias ccc='claude -- continue'
 alias t='tig status'
 

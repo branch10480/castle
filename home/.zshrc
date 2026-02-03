@@ -17,6 +17,7 @@ alias cc='claude'
 alias ccd='claude --dangerously-skip-permissions'
 alias ccc='claude -- continue'
 alias t='tig status'
+alias co='codex'
 
 # fzf + nvim
 v() {

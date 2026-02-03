@@ -27,6 +27,7 @@ return {
 			-- 自動インストールするサーバー
 			ensure_installed = {
 				"lua_ls",
+				"markdown_oxide",
 			},
 			-- mason経由でインストールしたサーバーを自動でvim.lsp.enable()
 			automatic_enable = true,

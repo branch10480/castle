@@ -70,13 +70,13 @@ config.inactive_pane_hsb = {
 config.keys = {
     -- ペイン分割
     {
-        key = '%',
-        mods = 'LEADER|SHIFT',
+        key = ';',
+        mods = 'LEADER',
         action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
     },
     {
-        key = '"',
-        mods = 'LEADER|SHIFT',
+        key = '\'',
+        mods = 'LEADER',
         action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
     },
 

@@ -45,7 +45,7 @@ config.initial_rows = 50
 config.color_scheme = "Kanagawa (Gogh)"
 
 -- 背景の透明度とぼかし
-config.window_background_opacity = 0.85
+config.window_background_opacity = 0.8
 config.macos_window_background_blur = 25
 
 -- タブバーを非表示
@@ -70,12 +70,12 @@ config.inactive_pane_hsb = {
 config.keys = {
     -- ペイン分割
     {
-        key = ';',
+        key = ':',
         mods = 'LEADER',
         action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
     },
     {
-        key = '\'',
+        key = '"',
         mods = 'LEADER',
         action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
     },

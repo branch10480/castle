@@ -79,7 +79,6 @@ config.keys = {
         mods = 'LEADER',
         action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
     },
-
     -- ペイン移動 (vim風)
     {
         key = 'h',
@@ -104,7 +103,7 @@ config.keys = {
 
     -- ペインを閉じる
     {
-        key = 'x',
+        key = 'p',
         mods = 'LEADER',
         action = wezterm.action.CloseCurrentPane { confirm = true },
     },

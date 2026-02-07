@@ -1,4 +1,5 @@
 config/anyenv/**
 config/gh/
+config/karabiner/automatic_backups/
 **/.DS_Store
 **/.serena

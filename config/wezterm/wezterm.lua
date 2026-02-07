@@ -6,8 +6,8 @@
 -- ## キーバインド一覧
 --
 -- ### ペイン操作
---   Leader + %     : 横分割
---   Leader + "     : 縦分割
+--   Leader + ;     : 横分割
+--   Leader + '     : 縦分割
 --   Leader + h/j/k/l : ペイン移動 (vim風)
 --   Leader + x     : ペインを閉じる
 --   Leader + z     : ペインのズーム切り替え
@@ -70,12 +70,12 @@ config.inactive_pane_hsb = {
 config.keys = {
     -- ペイン分割
     {
-        key = ':',
+        key = ';',
         mods = 'LEADER',
         action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
     },
     {
-        key = '"',
+        key = "'",
         mods = 'LEADER',
         action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
     },

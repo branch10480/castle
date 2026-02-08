@@ -40,6 +40,7 @@ homeshick link castle
 - インデント自動検出: guess-indent.nvim
 - UI改善: noice.nvim（コマンドライン・メッセージ・通知）
 - 自動ペア補完: nvim-autopairs
+- 構文解析: nvim-treesitter（ハイライト・インデント・折りたたみ）
 - LSP対応
 
 ### キーボード

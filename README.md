@@ -38,6 +38,7 @@ homeshick link castle
 - ファイラー: oil.nvim
 - ファジーファインダー: telescope.nvim
 - インデント自動検出: guess-indent.nvim
+- UI改善: noice.nvim（コマンドライン・メッセージ・通知）
 - LSP対応
 
 ### キーボード

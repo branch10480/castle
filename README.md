@@ -39,6 +39,7 @@ homeshick link castle
 - ファジーファインダー: telescope.nvim
 - インデント自動検出: guess-indent.nvim
 - UI改善: noice.nvim（コマンドライン・メッセージ・通知）
+- 自動ペア補完: nvim-autopairs
 - LSP対応
 
 ### キーボード

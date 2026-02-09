@@ -41,6 +41,7 @@ homeshick link castle
 - UI改善: noice.nvim（コマンドライン・メッセージ・通知）
 - 自動ペア補完: nvim-autopairs
 - 構文解析: nvim-treesitter（ハイライト・インデント・折りたたみ）
+- スタートダッシュボード: dashboard-nvim
 - LSP対応
 
 ### キーボード

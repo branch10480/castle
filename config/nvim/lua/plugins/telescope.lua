@@ -10,6 +10,7 @@ return {
 			build = "make",
 		},
 	},
+	cmd = "Telescope",
 	keys = {
 		{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "ファイル検索" },
 		{ "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Grep検索" },

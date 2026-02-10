@@ -72,6 +72,7 @@ return {
 
 			-- 補完ソースの優先順位
 			sources = cmp.config.sources({
+				{ name = "lazydev", group_index = 0 },
 				{ name = "nvim_lsp" },
 			}, {
 				{ name = "buffer" },
@@ -115,6 +116,7 @@ return {
 
 					-- ソース名を表示
 					vim_item.menu = ({
+						lazydev = "[LazyDev]",
 						nvim_lsp = "[LSP]",
 						luasnip = "[Snippet]",
 						buffer = "[Buffer]",

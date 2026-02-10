@@ -54,6 +54,38 @@ homeshick link castle
 
 - **tig** - `K` で未ステージ差分をKaleidoscopeで表示
 
-### Claude Code
+### Codex
 
-- カスタムエージェント・スキル・コマンド (`claude/`)
+- Codex用スキル本体は `codex/skills/` で管理
+- リンク先は `~/.codex/skills/`（`home/.codex/skills/` をhomeshickで反映）
+
+#### 同期コマンド
+
+```bash
+# homeshick用リンクを同期
+scripts/sync-codex-skills.sh
+
+# 現在の端末(~/.codex/skills)にも即時反映
+scripts/sync-codex-skills.sh --local-codex
+
+# homeshick配下へ初回適用（既存はスキップ）
+homeshick -s -b link castle
+
+# 既存リンクも含めて更新適用
+homeshick -f -b link castle
+```
+
+#### Codexスキル作成（新規）
+
+1. ディレクトリを作成する（例: `mkdir -p codex/skills/<skill-name>`）
+2. `SKILL.md` を作成する（最低限 `name` と `description` をfrontmatterに含める）
+3. `scripts/sync-codex-skills.sh` を実行する
+4. 必要なら `scripts/sync-codex-skills.sh --local-codex` を実行する
+5. 必要なら `homeshick -f -b link castle` を実行する
+
+#### Codexスキル更新（既存）
+
+1. `codex/skills/<skill-name>/SKILL.md` を編集する
+2. `scripts/sync-codex-skills.sh` を実行する
+3. 必要なら `scripts/sync-codex-skills.sh --local-codex` を実行する
+4. 必要なら `homeshick -f -b link castle` を実行する

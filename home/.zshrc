@@ -14,12 +14,11 @@ source "/opt/homebrew/opt/homeshick/homeshick.sh"
 fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
-alias cc='claude'
-alias ccd='claude --dangerously-skip-permissions'
+alias c='claude'
+alias cc='claude --dangerously-skip-permissions'
 alias ccc='claude -- continue'
 alias t='tig status'
-alias co='codex'
-alias cod='codex -s danger-full-access'
+alias co='codex -s danger-full-access'
 
 # fzf + nvim
 v() {

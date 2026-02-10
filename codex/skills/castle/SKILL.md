@@ -1,11 +1,9 @@
 ---
 name: castle
 description: homeshick管理のcastleリポジトリへ移動し、全変更をadd・commit・pushする。コミットメッセージは差分を見て英語で自動生成する。
-disable-model-invocation: false
-allowed-tools: Bash
 ---
 
-# castle更新
+# Castle Update
 
 homeshickで管理しているcastleリポジトリ（dotfiles）に移動し、変更をコミットしてプッシュする。
 

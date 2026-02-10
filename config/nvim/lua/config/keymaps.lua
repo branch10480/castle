@@ -6,6 +6,10 @@ vim.g.maplocalleader = " "
 
 local keymap = vim.keymap.set
 
+-- Leaderキー単体の既定動作（右移動）を無効化
+-- これで `<leader>` 入力待ち時にカーソル移動しない
+keymap({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
+
 -- ノーマルモード
 
 -- ウィンドウ移動

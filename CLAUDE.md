@@ -13,6 +13,7 @@ castle/
 ├── home/           # ~ にシンボリックリンクされるファイル
 │   ├── .config -> ../config
 │   ├── .hammerspoon -> ../hammerspoon
+│   ├── .codex/skills/<skill-name> -> ../../../codex/skills/<skill-name>
 │   └── .zshrc
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
@@ -22,15 +23,22 @@ castle/
 ├── claude/         # Claude Code用設定（~/.claude/にリンク）
 │   ├── agents/     # カスタムエージェント定義
 │   ├── commands/   # ユーザー呼び出し可能なコマンド
-│   └── skills/     # 自動呼び出しスキル
+│   └── skills/     # Claude用スキル本体
+├── codex/          # Codex用設定
+│   └── skills/     # Codex用スキル本体
+├── scripts/        # 運用スクリプト（Codexスキル同期など）
 └── hammerspoon/    # Hammerspoonマクロ
 ```
 
 ## 主要コマンド・スキル
 
-- `/castle [メッセージ]` - castleリポジトリの変更をcommit & push
+- `/castle` - castleリポジトリの変更をcommit & push（メッセージは差分から英語で自動生成）
 - `/push` - 汎用的なgit add, commit, push
 - `/zama-parking` - イオンモール座間 駐車場空き状況確認
+
+## スキル管理
+
+- Claude用スキルは `claude/skills/<skill-name>/SKILL.md` で管理する
 
 ## Neovim設定
 
@@ -57,5 +65,5 @@ cd ~/.homesick/repos/castle
 homeshick link castle
 
 # 変更をプッシュ（Claude Codeから）
-/castle "コミットメッセージ"
+/castle
 ```

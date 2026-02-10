@@ -18,7 +18,7 @@ alias c='claude'
 alias cc='claude --dangerously-skip-permissions'
 alias ccc='claude -- continue'
 alias t='tig status'
-alias co='codex -s danger-full-access'
+alias co='codex -s danger-full-access --full-auto'
 alias ll='ls -al'
 
 # fzf + nvim

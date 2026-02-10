@@ -6,10 +6,7 @@ shopt -s nullglob
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/sync-codex-skills.sh [--local-codex]
-
-Options:
-  --local-codex  Also sync links into $CODEX_HOME/skills (default: ~/.codex/skills)
+  scripts/sync-codex-skills.sh
 USAGE
 }
 
@@ -38,15 +35,6 @@ is_managed_link() {
   [[ -L "$link_path" ]] || return 1
   [[ "$(readlink "$link_path")" == "$expected_target" ]]
 }
-
-# オプション指定時のみ、現在の端末(~/.codex/skills)にも同期する
-sync_local_codex=0
-
-# --local-codex のみ受け付ける
-if [[ "${1:-}" == "--local-codex" ]]; then
-  sync_local_codex=1
-  shift
-fi
 
 # 想定外の引数があればヘルプを出して終了
 if [[ $# -ne 0 ]]; then
@@ -101,38 +89,6 @@ for codex_link in "$home_codex_dir"/*; do
     ((removed_count++))
   fi
 done
-
-if [[ "$sync_local_codex" -eq 1 ]]; then
-  # 現在の端末のCodex設定ディレクトリ（通常は ~/.codex）
-  codex_home="${CODEX_HOME:-$HOME/.codex}"
-  local_codex_dir="$codex_home/skills"
-  mkdir -p "$local_codex_dir"
-
-  # ローカル端末側にも同じリンクを作成/更新
-  for skill_dir in "$codex_source_dir"/*; do
-    [[ -d "$skill_dir" ]] || continue
-    skill_name="$(basename "$skill_dir")"
-    if [[ ! -f "$skill_dir/SKILL.md" ]]; then
-      ((skipped_count++))
-      continue
-    fi
-    # ~/.codex 側は、実体への絶対パスリンクにする
-    if safe_link "$skill_dir" "$local_codex_dir/$skill_name"; then
-      ((updated_count++))
-    else
-      ((error_count++))
-    fi
-  done
-
-  # ローカル側の削除済みスキルリンクを掃除
-  for codex_link in "$local_codex_dir"/*; do
-    skill_name="$(basename "$codex_link")"
-    if is_managed_link "$codex_link" "$codex_source_dir/$skill_name" && [[ ! -d "$codex_source_dir/$skill_name" ]]; then
-      rm "$codex_link"
-      ((removed_count++))
-    fi
-  done
-fi
 
 # 同期完了メッセージ
 echo "Codex skill links synced. updated=$updated_count removed=$removed_count skipped=$skipped_count errors=$error_count"

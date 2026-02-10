@@ -36,6 +36,8 @@ vim.opt.mouse = "a"
 vim.opt.undofile = true
 vim.opt.backup = false
 vim.opt.swapfile = false
+vim.opt.exrc = true
+vim.opt.secure = true
 
 -- 分割ウィンドウ
 vim.opt.splitbelow = true

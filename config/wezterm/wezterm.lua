@@ -58,7 +58,7 @@ config.window_decorations = "RESIZE"
 config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 
 -- 終了時の確認
-config.window_close_confirmation='NeverPrompt'
+-- config.window_close_confirmation='NeverPrompt'
 
 -- 非アクティブペインの色を変えない
 config.inactive_pane_hsb = {

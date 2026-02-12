@@ -67,3 +67,6 @@ fzf-src-wtp () {
 }
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
+
+# emacs key bind
+bindkey -e

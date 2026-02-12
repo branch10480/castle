@@ -22,7 +22,7 @@ return {
           icon_hl = '@variable',
           desc = 'Files',
           group = 'Label',
-          action = 'Telescope find_files',
+          action = 'lua require("lazy").load({ plugins = { "snacks.nvim" } }); require("snacks").picker.files()',
           key = 'f',
         },
 --         {

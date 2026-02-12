@@ -18,7 +18,7 @@ alias c='claude'
 alias cc='claude --dangerously-skip-permissions'
 alias ccc='claude -- continue'
 alias t='tig status'
-alias co='codex -s danger-full-access --full-auto'
+alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'
 alias o='open'
 

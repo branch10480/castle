@@ -21,6 +21,7 @@ alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'
 alias o='open'
+alias n='nvim'
 
 # fzf + nvim
 v() {

@@ -38,6 +38,14 @@ return {
 --           key = 'd',
 --         },
       },
+        project = {
+          enable = true,
+          action = function(path)
+            require("lazy").load({ plugins = { "snacks.nvim" } })
+            vim.cmd("cd " .. vim.fn.fnameescape(path))
+            require("snacks").picker.files({ cwd = path, hidden = true })
+          end,
+        },
       },
     })
   end,

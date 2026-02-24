@@ -22,6 +22,7 @@ alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'
 alias o='open'
 alias n='nvim'
+alias oc='opencode'
 
 # fzf + nvim
 v() {

@@ -8,5 +8,8 @@ config/opencode/skills/jira-issue-update/
 config/opencode/skills/project-item-link-issue/
 config/opencode/skills/wiki-to-jira-create/
 config/opencode/skills/wiki-to-jira-update/
+# python cache
+**/__pycache__/
+*.pyc
 **/.DS_Store
 **/.serena

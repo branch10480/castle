@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Commit Push All"
+  short_description: "Stage all changes, commit with inferred message, push."
+  default_prompt: "Stage all changes, create an English commit message from the full diff, commit, and push to origin on the current branch."

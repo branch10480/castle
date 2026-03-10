@@ -1,9 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "system",
   "share": "disabled",
   "permission": {
     "git push": "ask",
+  },
+  "skills": {
+    "paths": [
+      "/Users/toimaeda/.config/opencode/skills",
+    ],
   },
   "mcp": {
     "serena": {
@@ -23,6 +27,64 @@
       "environment": {
         // "MY_ENV_VAR": "my_env_var_value",
       },
+    },
+    "jira": {
+      "type": "local",
+      "command": [
+        "npx",
+        "--registry",
+        "https://npm.linecorp.com",
+        "@linecorp/flava-mcp-connector@latest",
+        "https://jira-noahs.kks.mcp.prd.flava.workers-infra.com/mcp",
+      ],
+      "enabled": true,
+      "timeout": 60000,
+    },
+    "confluence": {
+      "type": "local",
+      "command": [
+        "npx",
+        "--registry",
+        "https://npm.linecorp.com",
+        "@linecorp/flava-mcp-connector@latest",
+        "https://confluence-noahs.kks.mcp.prd.flava.workers-infra.com/mcp",
+      ],
+      "enabled": true,
+      "timeout": 60000,
+    },
+    "google-drive": {
+      "type": "local",
+      "command": [
+        "npx",
+        "--registry",
+        "https://npm.linecorp.com",
+        "@linecorp/flava-mcp-connector@latest",
+        "https://google-drive-noahs.kks.mcp.prd.flava.workers-infra.com/mcp",
+      ],
+      "enabled": false,
+      "timeout": 60000,
+    },
+    "slack": {
+      "type": "local",
+      "command": [
+        "npx",
+        "--registry",
+        "https://npm.linecorp.com",
+        "@linecorp/flava-mcp-connector@latest",
+        "https://slack-noahs.kks.mcp.prd.flava.workers-infra.com/mcp",
+      ],
+      "enabled": false,
+      "timeout": 60000,
+    },
+    "drawio": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@drawio/mcp",
+      ],
+      "enabled": false,
+      "timeout": 60000,
     },
   },
 }

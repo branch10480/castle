@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draft PR w/ Summary"
+  short_description: "PRテンプレ概要を埋めてDraft PRを作成する"
+  default_prompt: "Use -pr-draft-with-summary to create a draft PR with a filled summary."

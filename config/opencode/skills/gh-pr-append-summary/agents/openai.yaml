@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH PR Append Summary"
+  short_description: "Append summary bullets to PR body"
+  default_prompt: "Append summary bullets to a GitHub PR body without deleting existing text."

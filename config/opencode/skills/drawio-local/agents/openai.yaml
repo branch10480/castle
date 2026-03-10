@@ -1,0 +1,6 @@
+interface:
+  display_name: "Draw.io Local"
+  short_description: "Local draw.io outputs, theme selection, no uploads"
+  default_prompt: "Use $drawio-local to create a local .drawio file with a user-selected visual theme."
+policy:
+  allow_implicit_invocation: true

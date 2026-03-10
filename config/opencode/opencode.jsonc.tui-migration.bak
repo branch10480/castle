@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "theme": "system",
+  "share": "disabled",
+  "permission": {
+    "git push": "ask",
+  },
+  "mcp": {
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--enable-web-dashboard",
+        "False",
+      ],
+      "enabled": true,
+      "environment": {
+        // "MY_ENV_VAR": "my_env_var_value",
+      },
+    },
+  },
+}

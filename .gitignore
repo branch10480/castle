@@ -1,11 +1,13 @@
 config/anyenv/**
 config/gh/
+config/raycast/extensions/
 config/karabiner/automatic_backups/
 # opencode skills (wiki/jira)
 config/opencode/skills/jira-get/
 config/opencode/skills/jira-issue-create/
 config/opencode/skills/jira-issue-update/
 config/opencode/skills/project-item-link-issue/
+config/opencode/skills/ap5/
 config/opencode/skills/wiki-to-jira-create/
 config/opencode/skills/wiki-to-jira-update/
 # python cache

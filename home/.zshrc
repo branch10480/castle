@@ -35,6 +35,9 @@ v() {
 # Zoxide
 eval "$(zoxide init zsh --cmd j)"
 
+# emacs key bind
+bindkey -e
+
 # ghq + fzf
 fzf-src () {
   local repo
@@ -70,6 +73,3 @@ fzf-src-wtp () {
 }
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
-
-# emacs key bind
-bindkey -e

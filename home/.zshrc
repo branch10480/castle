@@ -25,6 +25,7 @@ alias n='nvim'
 alias oc='opencode'
 alias gd='git difftool'
 alias ccstatusline='bunx -y ccstatusline@latest'
+alias cl='clear'
 
 # fzf + nvim
 v() {

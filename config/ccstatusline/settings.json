@@ -38,7 +38,7 @@
         "type": "session-usage",
         "color": "",
         "metadata": {
-          "display": "progress"
+          "display": "progress-short"
         }
       },
       {
@@ -52,7 +52,8 @@
         "metadata": {
           "compact": "true",
           "display": "time"
-        }
+        },
+        "rawValue": true
       },
       {
         "id": "d989d980-7b57-4199-a2cb-d16d7864a473",
@@ -65,8 +66,7 @@
         "type": "weekly-usage",
         "color": "",
         "metadata": {
-          "display": "progress",
-          "invert": "false"
+          "display": "progress-short"
         }
       },
       {
@@ -79,7 +79,8 @@
         "color": "brightRed",
         "metadata": {
           "compact": "true"
-        }
+        },
+        "rawValue": true
       }
     ]
   ],

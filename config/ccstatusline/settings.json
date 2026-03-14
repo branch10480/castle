@@ -5,10 +5,31 @@
       {
         "id": "67181fa4-bbaf-4a93-a829-1a57f20d8fcd",
         "type": "context-bar",
+        "color": "magenta",
+        "rawValue": false,
         "metadata": {
           "display": "progress-short"
-        },
-        "color": "magenta"
+        }
+      },
+      {
+        "id": "2f870981-83d9-4a01-8aa6-c0933b44dd39",
+        "type": "separator"
+      },
+      {
+        "id": "a724c8a5-80a3-4cba-b867-64db4c00b6b9",
+        "type": "model",
+        "color": "white",
+        "rawValue": true
+      },
+      {
+        "id": "3e78c5a9-09b5-4cb3-9999-593d97e5b891",
+        "type": "separator"
+      },
+      {
+        "id": "083bbd30-1e42-4f3b-8d03-c29f1c4ccbc2",
+        "type": "thinking-effort",
+        "color": "magenta",
+        "rawValue": true
       }
     ],
     [
@@ -36,11 +57,6 @@
       {
         "id": "d989d980-7b57-4199-a2cb-d16d7864a473",
         "type": "flex-separator"
-      },
-      {
-        "id": "e091fc26-404a-4772-bc77-0d1aad43770b",
-        "type": "context-percentage",
-        "color": "brightWhite"
       }
     ],
     [

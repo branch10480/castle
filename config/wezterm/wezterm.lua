@@ -34,7 +34,7 @@ local config = wezterm.config_builder()
 config.automatically_reload_config = true
 
 -- フォント設定
-config.font = wezterm.font "BitstromWera Nerd Font Mono"
+config.font = wezterm.font "BlexMono Nerd Font"
 config.font_size = 14
 
 -- 初期ウィンドウサイズ

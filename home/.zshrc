@@ -24,7 +24,7 @@ alias o='open'
 alias n='nvim'
 alias oc='opencode'
 alias gd='git difftool'
-alias ccstatusline='bunx -y ccstatusline@latest'
+alias ccstatusline='BUN_CONFIG_REGISTRY=https://registry.npmjs.org bunx -y ccstatusline@latest'
 alias cl='clear'
 
 # fzf + nvim

@@ -36,6 +36,7 @@ config.automatically_reload_config = true
 -- フォント設定
 config.font = wezterm.font "BlexMono Nerd Font"
 config.font_size = 14
+config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150

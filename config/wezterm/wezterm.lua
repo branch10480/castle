@@ -35,7 +35,7 @@ config.automatically_reload_config = true
 
 -- フォント設定
 config.font = wezterm.font "BlexMono Nerd Font"
-config.font_size = 14
+config.font_size = 15
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150

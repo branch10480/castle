@@ -59,57 +59,46 @@ def cost_color(cost):
     else:
         return '\033[38;2;255;100;60m'   # red
 
+def _refresh_cache_background():
+    """Spawn a detached background process to update the ccusage cache."""
+    today = date.today().strftime('%Y%m%d')
+    month_start = date.today().strftime('%Y%m01')
+    # One-liner Python script that fetches ccusage and writes cache
+    script = (
+        'import json,subprocess,sys;'
+        f'td=subprocess.run(["ccusage","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
+        f'mo=subprocess.run(["ccusage","monthly","--json","--since","{month_start}"],capture_output=True,timeout=10);'
+        'dd=json.loads(td.stdout);md=json.loads(mo.stdout);'
+        'dc=dd.get("daily",[{{}}])[0].get("totalCost",0) if dd.get("daily") else 0;'
+        'mc=md.get("monthly",[{{}}])[0].get("totalCost",0) if md.get("monthly") else 0;'
+        f'open("{CACHE_FILE}","w").write(json.dumps({{"daily":dc,"monthly":mc}}))'
+    )
+    try:
+        subprocess.Popen(
+            [sys.executable, '-c', script],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True)
+    except OSError:
+        pass
+
 def get_ccusage_costs():
-    """Get daily/monthly costs from ccusage with file-based cache."""
-    # Check cache
+    """Get daily/monthly costs from ccusage cache. Refreshes cache in background if stale."""
+    cached = None
+    is_fresh = False
     try:
         if os.path.exists(CACHE_FILE):
             mtime = os.path.getmtime(CACHE_FILE)
-            if time.time() - mtime < CACHE_TTL:
-                with open(CACHE_FILE) as f:
-                    return json.load(f)
+            is_fresh = time.time() - mtime < CACHE_TTL
+            with open(CACHE_FILE) as f:
+                cached = json.load(f)
     except (OSError, json.JSONDecodeError):
         pass
 
-    # Run ccusage daily and monthly in parallel
-    today = date.today().strftime('%Y%m%d')
-    month_start = date.today().strftime('%Y%m01')
-    try:
-        p_daily = subprocess.Popen(
-            ['ccusage', 'daily', '--json', '--since', today, '--until', today],
-            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-        p_monthly = subprocess.Popen(
-            ['ccusage', 'monthly', '--json', '--since', month_start],
-            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    # Kick off background refresh if cache is stale or missing
+    if not is_fresh:
+        _refresh_cache_background()
 
-        daily_out, _ = p_daily.communicate(timeout=5)
-        monthly_out, _ = p_monthly.communicate(timeout=5)
-
-        daily_data = json.loads(daily_out)
-        monthly_data = json.loads(monthly_out)
-
-        daily_cost = daily_data.get('daily', [{}])[0].get('totalCost', 0) if daily_data.get('daily') else 0
-        monthly_cost = monthly_data.get('monthly', [{}])[0].get('totalCost', 0) if monthly_data.get('monthly') else 0
-
-        result = {'daily': daily_cost, 'monthly': monthly_cost}
-
-        # Write cache
-        try:
-            with open(CACHE_FILE, 'w') as f:
-                json.dump(result, f)
-        except OSError:
-            pass
-
-        return result
-    except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError, OSError):
-        # Timeout or ccusage not found - try stale cache
-        try:
-            if os.path.exists(CACHE_FILE):
-                with open(CACHE_FILE) as f:
-                    return json.load(f)
-        except (OSError, json.JSONDecodeError):
-            pass
-        return None
+    return cached
 
 # Line 1: usage bars
 model = data.get('model', {}).get('display_name', 'Claude')
@@ -131,6 +120,7 @@ if week is not None:
 
 parts.append(model)
 print(f' {DIM}│{R} '.join(parts))
+sys.stdout.flush()
 
 # Line 2: ccusage costs
 costs = get_ccusage_costs()

@@ -23,10 +23,12 @@ castle/
 ├── claude/         # Claude Code用設定（~/.claude/にリンク）
 │   ├── agents/     # カスタムエージェント定義
 │   ├── commands/   # ユーザー呼び出し可能なコマンド
-│   └── skills/     # Claude用スキル本体
+│   ├── skills/     # Claude用スキル本体
+│   ├── statusline.py            # ステータスラインスクリプト
+│   └── statusline-config.json   # ステータスライン設定テンプレート
 ├── codex/          # Codex用設定
 │   └── skills/     # Codex用スキル本体
-├── scripts/        # 運用スクリプト（Codexスキル同期など）
+├── scripts/        # 運用スクリプト（Codexスキル同期、ステータスラインセットアップなど）
 └── hammerspoon/    # Hammerspoonマクロ
 ```
 
@@ -63,6 +65,9 @@ cd ~/.homesick/repos/castle
 
 # シンボリックリンク作成
 homeshick link castle
+
+# ステータスライン設定を settings.json に適用（初回 or 設定変更時）
+scripts/setup-claude-statusline.sh
 
 # 変更をプッシュ（Claude Codeから）
 /castle

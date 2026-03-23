@@ -6,7 +6,6 @@ from datetime import date
 data = json.load(sys.stdin)
 
 BRAILLE = ' ⣀⣄⣤⣦⣶⣷⣿'
-RINGS = ['○', '◔', '◑', '◕', '●']
 R = '\033[0m'
 DIM = '\033[2m'
 CACHE_FILE = '/tmp/ccusage-statusline-cache.json'
@@ -45,20 +44,9 @@ def time_left(resets_at):
         return f'{d}d{h}h'
     return f'{h}h{m:02d}m'
 
-def ring(pct):
-    idx = min(int(pct / 25), 4)
-    return RINGS[idx]
-
 def fmt(label, pct, resets_at=None):
     p = round(pct)
     s = f'{DIM}{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%'
-    if resets_at is not None:
-        s += f' {DIM}⏳{time_left(resets_at)}{R}'
-    return s
-
-def fmt_ring(label, pct, resets_at=None):
-    p = round(pct)
-    s = f'{DIM}{label}{R} {gradient(pct)}{ring(pct)} {p}%{R}'
     if resets_at is not None:
         s += f' {DIM}⏳{time_left(resets_at)}{R}'
     return s
@@ -130,7 +118,7 @@ if five is not None:
 week_data = data.get('rate_limits', {}).get('seven_day', {})
 week = week_data.get('used_percentage')
 if week is not None:
-    parts.append(fmt_ring('7d', week, week_data.get('resets_at')))
+    parts.append(fmt('7d', week, week_data.get('resets_at')))
 
 parts.append(model)
 print(f' {DIM}│{R} '.join(parts))
@@ -142,6 +130,4 @@ if costs is not None:
     dc = costs['daily']
     mc = costs['monthly']
     line2 = f'{DIM}💰{R} {cost_color(dc)}${dc:.2f}{R} {DIM}today{R} {DIM}│{R} {cost_color(mc)}${mc:.2f}{R} {DIM}/mo{R}'
-    print(line2)
-else:
-    print(f'{DIM}💰 loading...{R}')
+    print(line2, end='')

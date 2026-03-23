@@ -34,9 +34,13 @@ local config = wezterm.config_builder()
 config.automatically_reload_config = true
 
 -- フォント設定
-config.font = wezterm.font "BlexMono Nerd Font"
+config.font = wezterm.font_with_fallback({
+  "IBM Plex Mono",
+  "Symbols Nerd Font Mono",
+})
 config.font_size = 14
 config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
+config.custom_block_glyphs = false
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150

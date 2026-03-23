@@ -9,7 +9,7 @@ BRAILLE = ' ⣀⣄⣤⣦⣶⣷⣿'
 R = '\033[0m'
 DIM = '\033[2m'
 CACHE_FILE = '/tmp/ccusage-statusline-cache.json'
-CACHE_TTL = 300  # 5 minutes
+CACHE_TTL = 60  # 1 minute
 
 def gradient(pct):
     if pct < 50:

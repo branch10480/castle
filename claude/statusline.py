@@ -63,20 +63,22 @@ def _refresh_cache_background():
     """Spawn a detached background process to update the ccusage cache."""
     today = date.today().strftime('%Y%m%d')
     month_start = date.today().strftime('%Y%m01')
+    ccusage_path = subprocess.run(['which', 'ccusage'], capture_output=True, text=True).stdout.strip() or '/opt/homebrew/bin/ccusage'
     # One-liner Python script that fetches ccusage and writes cache
     script = (
         'import json,subprocess,sys;'
-        f'td=subprocess.run(["ccusage","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
-        f'mo=subprocess.run(["ccusage","monthly","--json","--since","{month_start}"],capture_output=True,timeout=10);'
+        f'td=subprocess.run(["{ccusage_path}","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
+        f'mo=subprocess.run(["{ccusage_path}","monthly","--json","--since","{month_start}"],capture_output=True,timeout=10);'
         'dd=json.loads(td.stdout);md=json.loads(mo.stdout);'
-        'dc=dd.get("daily",[{{}}])[0].get("totalCost",0) if dd.get("daily") else 0;'
-        'mc=md.get("monthly",[{{}}])[0].get("totalCost",0) if md.get("monthly") else 0;'
+        'dc=dd.get("daily",[{}])[0].get("totalCost",0) if dd.get("daily") else 0;'
+        'mc=md.get("monthly",[{}])[0].get("totalCost",0) if md.get("monthly") else 0;'
         f'open("{CACHE_FILE}","w").write(json.dumps({{"daily":dc,"monthly":mc}}))'
     )
     try:
         subprocess.Popen(
             [sys.executable, '-c', script],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            env=os.environ.copy(),
             start_new_session=True)
     except OSError:
         pass

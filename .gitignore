@@ -15,4 +15,3 @@ config/opencode/skills/wiki-to-jira-update/
 *.pyc
 **/.DS_Store
 **/.serena
-claude/settings.json

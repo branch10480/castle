@@ -1,0 +1,15 @@
+# claude/ 配下は全て無視（opt-in 方式）
+*
+
+# .gitignore 自体は追跡
+!.gitignore
+
+# 明示的に追跡するディレクトリ・ファイル
+!agents/
+!agents/**
+!commands/
+!commands/**
+!skills/
+!skills/**
+!statusline.py
+!statusline-config.json

@@ -68,7 +68,7 @@ def _refresh_cache_background():
     script = (
         'import json,subprocess,sys;'
         f'td=subprocess.run(["{ccusage_path}","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
-        f'mo=subprocess.run(["{ccusage_path}","monthly","--json","--since","{month_start}"],capture_output=True,timeout=10);'
+        f'mo=subprocess.run(["{ccusage_path}","monthly","--json","--since","{month_start}","--until","{today}"],capture_output=True,timeout=10);'
         'dd=json.loads(td.stdout);md=json.loads(mo.stdout);'
         'dc=dd.get("daily",[{}])[0].get("totalCost",0) if dd.get("daily") else 0;'
         'mc=md.get("monthly",[{}])[0].get("totalCost",0) if md.get("monthly") else 0;'

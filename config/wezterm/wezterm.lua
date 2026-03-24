@@ -37,7 +37,7 @@ config.automatically_reload_config = true
 config.font = wezterm.font "BlexMono Nerd Font"
 config.font_size = 14
 config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
-config.custom_block_glyphs = false
+config.custom_block_glyphs = true
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150
@@ -47,7 +47,7 @@ config.initial_rows = 50
 config.color_scheme = "Kanagawa (Gogh)"
 
 -- 背景の透明度とぼかし
-config.window_background_opacity = 0.875
+config.window_background_opacity = 0.7
 config.macos_window_background_blur = 30
 
 -- タブバーを非表示

@@ -1,0 +1,77 @@
+#!/bin/zsh
+# tmux shim for WezTerm
+
+# WezTerm外で呼ばれた場合はエラーで終了
+if [[ -z "${WEZTERM_PANE:-}" ]]; then
+  echo "tmux-shim: WezTerm外では tmux は利用できません" >&2
+  exit 1
+fi
+
+# WezTermのペイン情報
+WEZTERM_PANE_ID="${WEZTERM_PANE}"
+
+# tmuxコマンドをWezTermのCLIコマンドへ変換
+case "$1" in
+  new-window)
+    shift
+    wezterm cli spawn -- "$@"
+    ;;
+  split-window)
+    shift
+    VERTICAL=0
+    ARGS=()
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -v) VERTICAL=1; shift ;;
+        -h) VERTICAL=0; shift ;;
+        --) shift; ARGS+=("$@"); break ;;
+        *) ARGS+=("$1"); shift ;;
+      esac
+    done
+    if [[ $VERTICAL -eq 1 ]]; then
+      wezterm cli split-pane --bottom -- "${ARGS[@]}"
+    else
+      wezterm cli split-pane --right -- "${ARGS[@]}"
+    fi
+    ;;
+  select-pane)
+    # ペイン選択は無視
+    ;;
+  send-keys)
+    shift
+    PANE=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -t) shift; PANE="$1"; shift ;;
+        *) break ;;
+      esac
+    done
+    # send-keysは現状WezTermのCLIでは直接サポートされていないためスキップ
+    ;;
+  list-panes)
+    wezterm cli list --format json 2>/dev/null | \
+      python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for i, p in enumerate(data):
+    print(f\"%{i}: [{p.get('pane_id',i)}] \")
+" 2>/dev/null || echo "%0: [0] "
+    ;;
+  display-message)
+    shift
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -p) shift ;;
+        -t) shift; shift ;;
+        *) echo "$1"; shift ;;
+      esac
+    done
+    ;;
+  set-option|set-window-option|bind-key|unbind-key)
+    # 設定コマンドは無視
+    ;;
+  *)
+    echo "tmux-shim: 未対応のコマンド: $1" >&2
+    exit 1
+    ;;
+esac

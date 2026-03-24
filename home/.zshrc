@@ -1,4 +1,9 @@
 export PATH="$HOME/.local/bin:$PATH"
+
+# WezTerm内でClaude Codeのチーム機能を使えるようにtmux環境変数を偽装
+if [[ -n "${WEZTERM_PANE:-}" ]]; then
+  export TMUX="wezterm-shim/${WEZTERM_PANE}/0"
+fi
 export EDITOR="nvim"
 
 eval "$(anyenv init -)"

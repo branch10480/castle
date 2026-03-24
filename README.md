@@ -15,6 +15,15 @@ homeshick clone git@github.com:branch10480/castle.git
 homeshick link castle
 ```
 
+### 手動シンボリックリンク
+
+homeshick は既存ディレクトリ内のファイルを自動リンクしないため、以下は手動で作成する：
+
+```bash
+# WezTerm用 tmux shim（Claude Codeのエージェントチーム機能に必要）
+ln -sf ~/.homesick/repos/castle/home/.local/bin/tmux ~/.local/bin/tmux
+```
+
 ## 含まれる設定
 
 ### シェル (zsh)

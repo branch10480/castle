@@ -1,5 +1,6 @@
 #!/bin/zsh
 # tmux shim for WezTerm
+# Translates tmux commands to wezterm cli commands for Claude Code Agent Teams
 
 # WezTerm外で呼ばれた場合はエラーで終了
 if [[ -z "${WEZTERM_PANE:-}" ]]; then
@@ -7,48 +8,88 @@ if [[ -z "${WEZTERM_PANE:-}" ]]; then
   exit 1
 fi
 
-# WezTermのペイン情報
-WEZTERM_PANE_ID="${WEZTERM_PANE}"
+CMD="$1"
+shift
 
-# tmuxコマンドをWezTermのCLIコマンドへ変換
-case "$1" in
+case "$CMD" in
   new-window)
-    shift
     wezterm cli spawn -- "$@"
     ;;
+
   split-window)
-    shift
     VERTICAL=0
+    TARGET=""
+    SIZE=""
+    PRINT=0
+    FORMAT=""
     ARGS=()
     while [[ $# -gt 0 ]]; do
       case "$1" in
         -v) VERTICAL=1; shift ;;
         -h) VERTICAL=0; shift ;;
+        -t) shift; TARGET="$1"; shift ;;
+        -l) shift; SIZE="$1"; shift ;;
+        -P) PRINT=1; shift ;;
+        -F) shift; FORMAT="$1"; shift ;;
         --) shift; ARGS+=("$@"); break ;;
         *) ARGS+=("$1"); shift ;;
       esac
     done
+
+    SPLIT_ARGS=()
     if [[ $VERTICAL -eq 1 ]]; then
-      wezterm cli split-pane --bottom -- "${ARGS[@]}"
+      SPLIT_ARGS+=(--bottom)
     else
-      wezterm cli split-pane --right -- "${ARGS[@]}"
+      SPLIT_ARGS+=(--right)
+    fi
+    if [[ -n "$SIZE" ]]; then
+      SPLIT_ARGS+=(--percent "${SIZE%\%}")
+    fi
+
+    PANE_ID=$(wezterm cli split-pane "${SPLIT_ARGS[@]}" -- "${ARGS[@]}" 2>/dev/null)
+
+    if [[ $PRINT -eq 1 ]]; then
+      echo "$PANE_ID"
     fi
     ;;
+
   select-pane)
-    # ペイン選択は無視
+    # WezTermではペインスタイル・タイトル設定は非対応、無視
     ;;
+
   send-keys)
-    shift
-    PANE=""
+    TARGET=""
+    KEYS=()
     while [[ $# -gt 0 ]]; do
       case "$1" in
-        -t) shift; PANE="$1"; shift ;;
-        *) break ;;
+        -t) shift; TARGET="$1"; shift ;;
+        *) KEYS+=("$1"); shift ;;
       esac
     done
-    # send-keysは現状WezTermのCLIでは直接サポートされていないためスキップ
+
+    # "Enter" を末尾から除去（wezterm cli send-text は改行を自動追加しない）
+    local CMD_TEXT="${KEYS[*]}"
+    CMD_TEXT="${CMD_TEXT% Enter}"
+
+    # コマンド終了後にペインを自動で閉じる
+    CMD_TEXT="${CMD_TEXT}; exit"
+
+    if [[ -n "$TARGET" ]]; then
+      echo "${CMD_TEXT}" | wezterm cli send-text --pane-id "$TARGET" --no-paste 2>/dev/null
+    else
+      echo "${CMD_TEXT}" | wezterm cli send-text --no-paste 2>/dev/null
+    fi
     ;;
+
   list-panes)
+    # -t と -F フラグを消費して、ペイン一覧を返す
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -t) shift; shift ;;
+        -F) shift; shift ;;
+        *) shift ;;
+      esac
+    done
     wezterm cli list --format json 2>/dev/null | \
       python3 -c "
 import json, sys
@@ -57,21 +98,45 @@ for i, p in enumerate(data):
     print(f\"%{i}: [{p.get('pane_id',i)}] \")
 " 2>/dev/null || echo "%0: [0] "
     ;;
+
   display-message)
-    shift
+    FORMAT_STR=""
+    TARGET=""
+    PRINT=0
     while [[ $# -gt 0 ]]; do
       case "$1" in
-        -p) shift ;;
-        -t) shift; shift ;;
-        *) echo "$1"; shift ;;
+        -p) PRINT=1; shift ;;
+        -t) shift; TARGET="$1"; shift ;;
+        *)
+          FORMAT_STR="$1"; shift ;;
       esac
     done
+
+    if [[ "$FORMAT_STR" == *"pane_id"* ]]; then
+      # 現在のペインIDを返す
+      echo "${WEZTERM_PANE}"
+    elif [[ "$FORMAT_STR" == *"session_name"* ]]; then
+      # セッション名:ウィンドウインデックス形式
+      echo "wezterm:0"
+    else
+      echo "$FORMAT_STR"
+    fi
     ;;
+
+  select-layout)
+    # WezTermではレイアウト自動調整は非対応、無視
+    ;;
+
+  resize-pane)
+    # WezTermではCLIからのペインリサイズは限定的、無視
+    ;;
+
   set-option|set-window-option|bind-key|unbind-key)
     # 設定コマンドは無視
     ;;
+
   *)
-    echo "tmux-shim: 未対応のコマンド: $1" >&2
+    echo "tmux-shim: 未対応のコマンド: $CMD" >&2
     exit 1
     ;;
 esac

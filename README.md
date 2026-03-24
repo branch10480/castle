@@ -59,6 +59,13 @@ ln -sf ~/.homesick/repos/castle/home/.local/bin/tmux ~/.local/bin/tmux
 - **Hammerspoon** - `Ctrl+Space` でWezTermにフォーカス
 - **BetterTouchTool** - カスタムジェスチャー
 
+### Claude Code エージェントチーム
+
+- **tmux shim** (`home/.local/bin/tmux`) - WezTerm内でtmuxコマンドを `wezterm cli` に変換するシム
+- Claude Codeの Agent Teams 機能でペイン分割を実現
+- チームメイトのシャットダウン時にペインを自動クローズ
+- `/config` で `teammateMode` を `tmux` に設定して使用
+
 ### Git
 
 - **tig** - `K` で未ステージ差分をKaleidoscopeで表示

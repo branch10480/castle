@@ -34,8 +34,8 @@ local config = wezterm.config_builder()
 config.automatically_reload_config = true
 
 -- フォント設定
-config.font = wezterm.font "BlexMono Nerd Font"
-config.font_size = 14
+config.font = wezterm.font "FiraCode Nerd Font"
+config.font_size = 13.5
 config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
 config.custom_block_glyphs = true
 

@@ -48,7 +48,7 @@ config.color_scheme = "Kanagawa (Gogh)"
 
 -- 背景の透明度とぼかし
 config.window_background_opacity = 0.7
-config.macos_window_background_blur = 30
+config.macos_window_background_blur = 10
 
 -- タブバーを非表示
 config.enable_tab_bar = false

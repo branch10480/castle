@@ -65,6 +65,7 @@ config.font = wezterm.font "FiraCode Nerd Font"
 config.font_size = 13.5
 config.allow_square_glyphs_to_overflow_width = "WhenFollowedBySpace"
 config.custom_block_glyphs = true
+config.use_ime = true
 
 -- 初期ウィンドウサイズ
 config.initial_cols = 150

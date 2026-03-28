@@ -30,6 +30,33 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
+-- PowerLine タブ表示用
+local SOLID_LEFT_ARROW = wezterm.nerdfonts.ple_lower_right_triangle
+local SOLID_RIGHT_ARROW = wezterm.nerdfonts.ple_upper_left_triangle
+
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+  local background = "#5c6d74"
+  local foreground = "#FFFFFF"
+  local edge_background = "none"
+  if tab.is_active then
+    background = "#ae8b2d"
+    foreground = "#FFFFFF"
+  end
+  local edge_foreground = background
+  local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
+  return {
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = SOLID_LEFT_ARROW },
+    { Background = { Color = background } },
+    { Foreground = { Color = foreground } },
+    { Text = title },
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = SOLID_RIGHT_ARROW },
+  }
+end)
+
 -- 設定変更時自動リロード
 config.automatically_reload_config = true
 
@@ -50,8 +77,22 @@ config.color_scheme = "Kanagawa (Gogh)"
 config.window_background_opacity = 0.7
 config.macos_window_background_blur = 10
 
--- タブバーを非表示
-config.enable_tab_bar = false
+-- タブバー背景色をKanagawaに合わせる
+config.window_background_gradient = {
+  colors = { "#1F1F28" },
+}
+
+-- タブバー設定（PowerLine風）
+config.enable_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = true
+config.show_new_tab_button_in_tab_bar = false
+config.tab_bar_at_bottom = true
+
+-- タブバー透過
+config.window_frame = {
+  inactive_titlebar_bg = "none",
+  active_titlebar_bg = "none",
+}
 
 -- タイトルバーを非表示（リサイズのみ可能）
 config.window_decorations = "RESIZE"
@@ -66,6 +107,13 @@ config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.inactive_pane_hsb = {
     saturation = 1.0,
     brightness = 1.0,
+}
+
+-- タブ間の境界線を非表示
+config.colors = {
+  tab_bar = {
+    inactive_tab_edge = "none",
+  },
 }
 
 -- キーバインドの設定

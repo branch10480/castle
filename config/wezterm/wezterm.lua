@@ -84,7 +84,7 @@ config.window_background_gradient = {
 
 -- タブバー設定（PowerLine風）
 config.enable_tab_bar = true
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.show_new_tab_button_in_tab_bar = false
 config.tab_bar_at_bottom = true
 

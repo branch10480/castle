@@ -5,6 +5,7 @@ if [[ -n "${WEZTERM_PANE:-}" ]]; then
   export TMUX="wezterm-shim/${WEZTERM_PANE}/0"
 fi
 export EDITOR="nvim"
+export CLAUDE_CODE_NO_FLICKER=1
 
 eval "$(anyenv init -)"
 

@@ -5,8 +5,8 @@
       {
         "*": {
           "config": {
-            "acceleration": true,
-            "accelerationRate": 0,
+            "acceleration": false,
+            "accelerationRate": 40,
             "commands": [
               [
                 1,
@@ -143,7 +143,7 @@
                 "label": ""
               }
             ],
-            "speed": 90
+            "speed": 40
           },
           "fileName": "",
           "name": "*"
@@ -152,7 +152,7 @@
     ]
   ],
   "platform": "darwin",
-  "timestamp": 1775199589,
+  "timestamp": 1775282660,
   "trayIcon": true,
   "versionMajor": 2,
   "versionMinor": 0

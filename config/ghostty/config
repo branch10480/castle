@@ -1,3 +1,18 @@
 # Font settings (from WezTerm config)
 font-family = FiraCode Nerd Font
 font-size = 13.5
+
+# Theme
+theme = Kanagawa
+
+# Window appearance
+background-opacity = 0.4
+background-blur = 10
+macos-titlebar-style = hidden
+
+# Window size
+window-width = 150
+window-height = 50
+
+# Keybind: ¥ key to backslash
+keybind = physical:intl_yen=text:\x5c

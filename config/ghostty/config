@@ -3,7 +3,7 @@ font-family = FiraCode Nerd Font
 font-size = 13.5
 
 # Theme
-theme = Kanagawa
+theme = "Kanagawa Dragon"
 
 # Window appearance
 background-opacity = 0.4
@@ -14,5 +14,3 @@ macos-titlebar-style = hidden
 window-width = 150
 window-height = 50
 
-# Keybind: ¥ key to backslash
-keybind = physical:intl_yen=text:\x5c

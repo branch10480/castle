@@ -3,7 +3,7 @@ font-family = FiraCode Nerd Font
 font-size = 13.5
 
 # Theme
-theme = "Kanagawa"
+#theme = "Kanagawa"
 
 # Window appearance
 background-opacity = 0.4
@@ -44,7 +44,6 @@ keybind = copy/u=scroll_page_fractional:-0.5
 keybind = copy/d=scroll_page_fractional:0.5
 keybind = copy/g=scroll_to_top
 keybind = copy/shift+g=scroll_to_bottom
-keybind = copy/slash=search
 keybind = copy/n=navigate_search:next
 keybind = copy/shift+n=navigate_search:previous
 keybind = copy/y=copy_to_clipboard

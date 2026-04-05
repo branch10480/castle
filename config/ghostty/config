@@ -29,3 +29,26 @@ keybind = ctrl+j=goto_split:bottom
 keybind = ctrl+k=goto_split:top
 keybind = ctrl+l=goto_split:right
 
+# Keybindings - Pane resize (direct shortcuts)
+keybind = ctrl+shift+h=resize_split:left,30
+keybind = ctrl+shift+j=resize_split:down,30
+keybind = ctrl+shift+k=resize_split:up,30
+keybind = ctrl+shift+l=resize_split:right,30
+keybind = ctrl+shift+equal=equalize_splits
+
+# Keybindings - Copy mode (Key Tables)
+keybind = ctrl+shift+x=activate_key_table:copy
+keybind = copy/k=scroll_page_lines:-1
+keybind = copy/j=scroll_page_lines:1
+keybind = copy/u=scroll_page_fractional:-0.5
+keybind = copy/d=scroll_page_fractional:0.5
+keybind = copy/g=scroll_to_top
+keybind = copy/shift+g=scroll_to_bottom
+keybind = copy/slash=search
+keybind = copy/n=navigate_search:next
+keybind = copy/shift+n=navigate_search:previous
+keybind = copy/y=copy_to_clipboard
+keybind = copy/escape=deactivate_key_table
+keybind = copy/q=deactivate_key_table
+keybind = copy/catch_all=ignore
+

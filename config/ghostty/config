@@ -3,7 +3,7 @@ font-family = FiraCode Nerd Font
 font-size = 13.5
 
 # Theme
-theme = "Kanagawa Dragon"
+theme = "Kanagawa"
 
 # Window appearance
 background-opacity = 0.4
@@ -13,4 +13,17 @@ macos-titlebar-style = hidden
 # Window size
 window-width = 150
 window-height = 50
+
+# Cursor
+cursor-style = block
+
+# Keybindings - Pane split
+keybind = super+v=new_split:down
+keybind = super+h=new_split:right
+
+# Keybindings - Pane navigation (Vim-style)
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:bottom
+keybind = ctrl+k=goto_split:top
+keybind = ctrl+l=goto_split:right
 

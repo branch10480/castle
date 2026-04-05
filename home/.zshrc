@@ -10,6 +10,7 @@ export CLAUDE_CODE_NO_FLICKER=1
 eval "$(anyenv init -)"
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # starship
 eval "$(starship init zsh)"

@@ -16,10 +16,12 @@ window-height = 50
 
 # Cursor
 cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor,sudo,title
 
 # Keybindings - Pane split
 keybind = ctrl+semicolon=new_split:right
-keybind = ctrl+apostrophe=new_split:down
+keybind = ctrl+shift+apostrophe=new_split:down
 
 # Keybindings - Pane navigation (Vim-style)
 keybind = ctrl+h=goto_split:left

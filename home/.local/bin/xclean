@@ -1,0 +1,272 @@
+#!/bin/bash
+# xclean - Xcode関連キャッシュクリーンアップツール
+#
+# Usage:
+#   xclean          インタラクティブ: 各項目のサイズを表示し選択して削除
+#   xclean -a       全キャッシュ削除（確認プロンプトあり）
+#   xclean -d       DerivedDataのみ削除
+#   xclean -n       ドライラン: サイズ表示のみ
+#   xclean -f       確認なしで全削除
+#   xclean -h       ヘルプ表示
+
+set -euo pipefail
+
+# --- カラー定義 ---
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+# --- 削除対象定義 ---
+# name:path:method (method = rm or simctl or pod)
+TARGETS=(
+  "DerivedData:$HOME/Library/Developer/Xcode/DerivedData:rm"
+  "iOS DeviceSupport:$HOME/Library/Developer/Xcode/iOS DeviceSupport:rm"
+  "Unavailable Simulators::simctl"
+  "SPM Cache:$HOME/Library/Caches/org.swift.swiftpm:rm"
+  "CocoaPods Cache:$HOME/Library/Caches/CocoaPods:pod"
+  "SwiftUI Previews:$HOME/Library/Developer/Xcode/UserData/Previews:rm"
+  "IB Support:$HOME/Library/Developer/Xcode/UserData/IB Support:rm"
+  "Xcode Caches:$HOME/Library/Caches/com.apple.dt.Xcode:rm"
+)
+
+# --- ヘルパー関数 ---
+get_size() {
+  local path="$1"
+  if [[ -d "$path" ]]; then
+    du -sh "$path" 2>/dev/null | cut -f1 | xargs
+  else
+    echo "0B"
+  fi
+}
+
+get_size_bytes() {
+  local path="$1"
+  if [[ -d "$path" ]]; then
+    du -sk "$path" 2>/dev/null | cut -f1
+  else
+    echo "0"
+  fi
+}
+
+print_header() {
+  echo ""
+  echo -e "${BOLD}${CYAN}🧹 xclean - Xcode Cache Cleaner${RESET}"
+  echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+  echo ""
+}
+
+show_usage() {
+  cat <<'USAGE'
+Usage: xclean [options]
+
+Options:
+  (none)    インタラクティブモード: 各項目を選択して削除
+  -a        全キャッシュ削除（確認あり）
+  -d        DerivedDataのみ削除
+  -n        ドライラン（サイズ表示のみ）
+  -f        確認なしで全削除
+  -h        このヘルプを表示
+
+削除対象:
+  1. DerivedData           ビルド成果物・インデックス
+  2. iOS DeviceSupport     デバイスデバッグシンボル
+  3. Unavailable Simulators 古いシミュレータ
+  4. SPM Cache             Swift Package Managerキャッシュ
+  5. CocoaPods Cache       CocoaPodsキャッシュ
+  6. SwiftUI Previews      SwiftUIプレビューキャッシュ
+  7. IB Support            Interface Builderキャッシュ
+  8. Xcode Caches          Xcode一般キャッシュ
+USAGE
+}
+
+# --- サイズ表示 ---
+show_sizes() {
+  local total_kb=0
+  local i=1
+
+  for target in "${TARGETS[@]}"; do
+    IFS=: read -r name path method <<< "$target"
+
+    if [[ "$method" == "simctl" ]]; then
+      echo -e "  ${BOLD}${i}.${RESET} Unavailable Simulators    ${YELLOW}(サイズ不明 - xcrun simctl delete unavailable)${RESET}"
+    else
+      local size
+      size=$(get_size "$path")
+      local size_kb
+      size_kb=$(get_size_bytes "$path")
+      total_kb=$((total_kb + size_kb))
+
+      if [[ "$size" == "0B" ]]; then
+        echo -e "  ${BOLD}${i}.${RESET} ${name}$(printf '%*s' $((25 - ${#name})) '')${YELLOW}存在しない${RESET}"
+      else
+        echo -e "  ${BOLD}${i}.${RESET} ${name}$(printf '%*s' $((25 - ${#name})) '')${GREEN}${size}${RESET}"
+      fi
+    fi
+    i=$((i + 1))
+  done
+
+  echo ""
+  local total_human
+  if [[ $total_kb -gt 1048576 ]]; then
+    total_human="$(echo "scale=1; $total_kb / 1048576" | bc)G"
+  elif [[ $total_kb -gt 1024 ]]; then
+    total_human="$(echo "scale=1; $total_kb / 1024" | bc)M"
+  else
+    total_human="${total_kb}K"
+  fi
+  echo -e "  ${BOLD}合計: ${CYAN}${total_human}${RESET} ${BOLD}(シミュレータ除く)${RESET}"
+  echo ""
+}
+
+# --- 削除実行 ---
+clean_target() {
+  local name="$1"
+  local path="$2"
+  local method="$3"
+
+  case "$method" in
+    rm)
+      if [[ -d "$path" ]]; then
+        local size
+        size=$(get_size "$path")
+        rm -rf "$path"
+        echo -e "  ${GREEN}✓${RESET} ${name} (${size}) を削除しました"
+      else
+        echo -e "  ${YELLOW}-${RESET} ${name}: 存在しないためスキップ"
+      fi
+      ;;
+    simctl)
+      echo -e "  ${CYAN}…${RESET} 使用不可なシミュレータを削除中..."
+      xcrun simctl delete unavailable 2>/dev/null || true
+      echo -e "  ${GREEN}✓${RESET} Unavailable Simulators を削除しました"
+      ;;
+    pod)
+      if command -v pod &>/dev/null && [[ -d "$path" ]]; then
+        local size
+        size=$(get_size "$path")
+        pod cache clean --all --silent 2>/dev/null || rm -rf "$path"
+        echo -e "  ${GREEN}✓${RESET} ${name} (${size}) を削除しました"
+      elif [[ -d "$path" ]]; then
+        local size
+        size=$(get_size "$path")
+        rm -rf "$path"
+        echo -e "  ${GREEN}✓${RESET} ${name} (${size}) を削除しました"
+      else
+        echo -e "  ${YELLOW}-${RESET} ${name}: 存在しないためスキップ"
+      fi
+      ;;
+  esac
+}
+
+clean_all() {
+  echo -e "${BOLD}削除中...${RESET}"
+  echo ""
+  for target in "${TARGETS[@]}"; do
+    IFS=: read -r name path method <<< "$target"
+    clean_target "$name" "$path" "$method"
+  done
+  echo ""
+  echo -e "${GREEN}${BOLD}✨ 完了！${RESET}"
+}
+
+clean_derived_data() {
+  local path="$HOME/Library/Developer/Xcode/DerivedData"
+  if [[ -d "$path" ]]; then
+    local size
+    size=$(get_size "$path")
+    echo -e "${BOLD}DerivedData (${size}) を削除中...${RESET}"
+    rm -rf "$path"
+    echo -e "${GREEN}✨ DerivedData を削除しました！${RESET}"
+  else
+    echo -e "${YELLOW}DerivedData は存在しません${RESET}"
+  fi
+}
+
+interactive_mode() {
+  echo "削除する項目を番号で入力してください（カンマ区切りで複数可、allで全選択）:"
+  echo -n "> "
+  read -r selection
+
+  [[ -z "$selection" ]] && { echo "キャンセルしました"; exit 0; }
+
+  local indices=()
+  if [[ "$selection" == "all" ]]; then
+    for i in $(seq 1 ${#TARGETS[@]}); do
+      indices+=("$i")
+    done
+  else
+    IFS=',' read -ra indices <<< "$selection"
+  fi
+
+  echo ""
+  echo -e "${BOLD}以下を削除します:${RESET}"
+  for idx in "${indices[@]}"; do
+    idx=$(echo "$idx" | xargs) # trim whitespace
+    if [[ "$idx" -ge 1 && "$idx" -le ${#TARGETS[@]} ]] 2>/dev/null; then
+      IFS=: read -r name path method <<< "${TARGETS[$((idx - 1))]}"
+      echo "  - $name"
+    fi
+  done
+
+  echo ""
+  echo -n "実行しますか？ [y/N] "
+  read -r confirm
+  [[ "$confirm" != "y" && "$confirm" != "Y" ]] && { echo "キャンセルしました"; exit 0; }
+
+  echo ""
+  for idx in "${indices[@]}"; do
+    idx=$(echo "$idx" | xargs)
+    if [[ "$idx" -ge 1 && "$idx" -le ${#TARGETS[@]} ]] 2>/dev/null; then
+      IFS=: read -r name path method <<< "${TARGETS[$((idx - 1))]}"
+      clean_target "$name" "$path" "$method"
+    fi
+  done
+
+  echo ""
+  echo -e "${GREEN}${BOLD}✨ 完了！${RESET}"
+}
+
+# --- メイン ---
+MODE="interactive"
+
+while getopts "adfnh" opt; do
+  case "$opt" in
+    a) MODE="all" ;;
+    d) MODE="derived" ;;
+    f) MODE="force" ;;
+    n) MODE="dryrun" ;;
+    h) show_usage; exit 0 ;;
+    *) show_usage; exit 1 ;;
+  esac
+done
+
+print_header
+
+case "$MODE" in
+  dryrun)
+    echo -e "${YELLOW}[ドライラン] 削除対象のサイズ一覧:${RESET}"
+    echo ""
+    show_sizes
+    ;;
+  derived)
+    clean_derived_data
+    ;;
+  all)
+    show_sizes
+    echo -n "全てのキャッシュを削除しますか？ [y/N] "
+    read -r confirm
+    [[ "$confirm" != "y" && "$confirm" != "Y" ]] && { echo "キャンセルしました"; exit 0; }
+    echo ""
+    clean_all
+    ;;
+  force)
+    clean_all
+    ;;
+  interactive)
+    show_sizes
+    interactive_mode
+    ;;
+esac

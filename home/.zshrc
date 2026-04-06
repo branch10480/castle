@@ -22,8 +22,8 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
 alias c='claude'
-alias cc='claude --dangerously-skip-permissions'
-alias ccc='claude -- continue'
+alias cc='cmux claude-teams --dangerously-skip-permissions'
+alias ccc='cmux claude-teams -- continue'
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'
@@ -33,6 +33,8 @@ alias oc='opencode'
 alias gd='git difftool'
 alias ccstatusline='BUN_CONFIG_REGISTRY=https://registry.npmjs.org bunx -y ccstatusline@latest'
 alias cl='clear'
+alias xc='xclean'
+alias xcd='xclean -d'
 
 # fzf + nvim
 v() {

@@ -46,6 +46,9 @@ v() {
 # Zoxide
 eval "$(zoxide init zsh --cmd j)"
 
+# direnv
+eval "$(direnv hook zsh)"
+
 # emacs key bind
 bindkey -e
 

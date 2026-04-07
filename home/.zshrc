@@ -22,8 +22,13 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
 alias c='claude'
-alias cc='cmux claude-teams --dangerously-skip-permissions'
-alias ccc='cmux claude-teams -- continue'
+if command -v cmux &>/dev/null; then
+  alias cc='cmux claude-teams --dangerously-skip-permissions'
+  alias ccc='cmux claude-teams -- continue'
+else
+  alias cc='claude --dangerously-skip-permissions'
+  alias ccc='claude --dangerously-skip-permissions --continue'
+fi
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'

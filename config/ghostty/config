@@ -1,3 +1,6 @@
+# Auto update
+auto-update-channel = tip
+
 # Font settings (from WezTerm config)
 font-family = FiraCode Nerd Font
 font-size = 13.5
@@ -11,8 +14,8 @@ background-blur = 10
 macos-titlebar-style = hidden
 
 # Window size
-window-width = 150
-window-height = 50
+window-width = 155
+window-height = 53
 
 # Cursor
 cursor-style = block

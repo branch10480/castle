@@ -24,13 +24,13 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 # Alias
 alias c='claude'
 if command -v cmux &>/dev/null; then
-  alias cc='cmux claude-teams --dangerously-skip-permissions'
-  alias ccc='cmux claude-teams --continue'
+  alias cc='cmux claude-teams --dangerously-skip-permissions --model opus'
+  alias ccc='cmux claude-teams --continue --model opus'
   alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
   alias ccs='cmux claude-teams --dangerously-skip-permissions --model sonnet'
 else
-  alias cc='claude --dangerously-skip-permissions'
-  alias ccc='claude --dangerously-skip-permissions --continue'
+  alias cc='claude --dangerously-skip-permissions --model opus'
+  alias ccc='claude --dangerously-skip-permissions --continue --model opus'
   alias cch='claude --dangerously-skip-permissions --model haiku'
   alias ccs='claude --dangerously-skip-permissions --model sonnet'
 fi

@@ -28,11 +28,17 @@ if command -v cmux &>/dev/null; then
   alias ccc='cmux claude-teams --continue --model opus'
   alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
   alias ccs='cmux claude-teams --dangerously-skip-permissions --model sonnet'
+  alias ccp='cmux claude-teams --dangerously-skip-permissions --print --model opus'
+  alias cchp='cmux claude-teams --dangerously-skip-permissions --print --model haiku'
+  alias ccsp='cmux claude-teams --dangerously-skip-permissions --print --model sonnet'
 else
   alias cc='claude --dangerously-skip-permissions --model opus'
   alias ccc='claude --dangerously-skip-permissions --continue --model opus'
   alias cch='claude --dangerously-skip-permissions --model haiku'
   alias ccs='claude --dangerously-skip-permissions --model sonnet'
+  alias ccp='claude --dangerously-skip-permissions --print --model opus'
+  alias cchp='claude --dangerously-skip-permissions --print --model haiku'
+  alias ccsp='claude --dangerously-skip-permissions --print --model sonnet'
 fi
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'

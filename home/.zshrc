@@ -25,10 +25,14 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 alias c='claude'
 if command -v cmux &>/dev/null; then
   alias cc='cmux claude-teams --dangerously-skip-permissions'
-  alias ccc='cmux claude-teams -- continue'
+  alias ccc='cmux claude-teams --continue'
+  alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
+  alias ccs='cmux claude-teams --dangerously-skip-permissions --model sonnet'
 else
   alias cc='claude --dangerously-skip-permissions'
   alias ccc='claude --dangerously-skip-permissions --continue'
+  alias cch='claude --dangerously-skip-permissions --model haiku'
+  alias ccs='claude --dangerously-skip-permissions --model sonnet'
 fi
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
@@ -37,7 +41,6 @@ alias o='open'
 alias n='nvim'
 alias oc='opencode'
 alias gd='git difftool'
-alias ccstatusline='BUN_CONFIG_REGISTRY=https://registry.npmjs.org bunx -y ccstatusline@latest'
 alias cl='clear'
 alias xc='xclean'
 alias xcd='xclean -d'

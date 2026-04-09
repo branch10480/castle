@@ -27,21 +27,38 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
 alias c='claude'
+# if command -v cmux &>/dev/null; then
+#   alias cc='cmux claude-teams --dangerously-skip-permissions --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias ccc='cmux claude-teams --continue --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
+#   alias ccs='cmux claude-teams --dangerously-skip-permissions --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+#   alias ccp='cmux claude-teams --dangerously-skip-permissions --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias ccsp='cmux claude-teams --dangerously-skip-permissions --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+#   alias cchp='cmux claude-teams --dangerously-skip-permissions --print --model haiku --bare'
+# else
+#   alias cc='claude --dangerously-skip-permissions --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias ccc='claude --dangerously-skip-permissions --continue --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias cch='claude --dangerously-skip-permissions --model haiku'
+#   alias ccs='claude --dangerously-skip-permissions --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+#   alias ccp='claude --dangerously-skip-permissions --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+#   alias ccsp='claude --dangerously-skip-permissions --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+#   alias cchp='claude --dangerously-skip-permissions --print --model haiku --bare'
+# fi
 if command -v cmux &>/dev/null; then
-  alias cc='cmux claude-teams --dangerously-skip-permissions --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-  alias ccc='cmux claude-teams --continue --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+  alias cc='cmux claude-teams --dangerously-skip-permissions --model opus'
+  alias ccc='cmux claude-teams --continue --model opus'
   alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
-  alias ccs='cmux claude-teams --dangerously-skip-permissions --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-  alias ccp='cmux claude-teams --dangerously-skip-permissions --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-  alias ccsp='cmux claude-teams --dangerously-skip-permissions --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+  alias ccs='cmux claude-teams --dangerously-skip-permissions --model sonnet'
+  alias ccp='cmux claude-teams --dangerously-skip-permissions --print --model opus'
+  alias ccsp='cmux claude-teams --dangerously-skip-permissions --print --model sonnet'
   alias cchp='cmux claude-teams --dangerously-skip-permissions --print --model haiku --bare'
 else
-  alias cc='claude --dangerously-skip-permissions --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-  alias ccc='claude --dangerously-skip-permissions --continue --model us.anthropic.claude-opus-4-6-v1\[1M\]'
+  alias cc='claude --dangerously-skip-permissions --model opus'
+  alias ccc='claude --dangerously-skip-permissions --continue --model opus'
   alias cch='claude --dangerously-skip-permissions --model haiku'
-  alias ccs='claude --dangerously-skip-permissions --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-  alias ccp='claude --dangerously-skip-permissions --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-  alias ccsp='claude --dangerously-skip-permissions --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
+  alias ccs='claude --dangerously-skip-permissions --model sonnet'
+  alias ccp='claude --dangerously-skip-permissions --print --model opus'
+  alias ccsp='claude --dangerously-skip-permissions --print --model sonnet'
   alias cchp='claude --dangerously-skip-permissions --print --model haiku --bare'
 fi
 alias t='tig status'

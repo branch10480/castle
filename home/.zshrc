@@ -1,3 +1,7 @@
+# Ghostty splitでsymlink経由のdotfiles読み込みによりCWDがcastleに変わる問題の回避
+# 初期化前のCWDを保存し、末尾で復元する（ref: ghostty-org/ghostty#647）
+_SHELL_INIT_PWD="$PWD"
+
 export PATH="$HOME/.local/bin:$PATH"
 
 # WezTerm内でClaude Codeのチーム機能を使えるようにtmux環境変数を偽装
@@ -102,3 +106,9 @@ fzf-src-wtp () {
 }
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
+
+# Ghostty split CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
+if [[ -n "$_SHELL_INIT_PWD" && "$PWD" == "$HOME/.homesick/"* && "$PWD" != "$_SHELL_INIT_PWD" ]]; then
+  cd "$_SHELL_INIT_PWD"
+fi
+unset _SHELL_INIT_PWD

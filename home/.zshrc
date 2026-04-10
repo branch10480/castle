@@ -116,7 +116,13 @@ zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
 
 # Ghostty split CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
-if [[ -n "$_SHELL_INIT_PWD" && "$PWD" == "$HOME/.homesick/"* && "$PWD" != "$_SHELL_INIT_PWD" ]]; then
-  cd "$_SHELL_INIT_PWD"
+if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
+  if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
+    # Case 1: .zshrc処理中にCWDが変わった → 保存した元のCWDに復元
+    cd "$_SHELL_INIT_PWD"
+  elif [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
+    # Case 2: 起動時点で既に.homesick配下（OSC 7による誤継承）→ $HOMEへフォールバック
+    cd "$HOME"
+  fi
 fi
 unset _SHELL_INIT_PWD

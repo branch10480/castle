@@ -12,6 +12,9 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export CLAUDE_CODE_NO_FLICKER=1
 
+# マシン固有設定の読み込み（モデル名等を上書き可能）
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
 eval "$(anyenv init -)"
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -27,39 +30,27 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 
 # Alias
 alias c='claude'
-# if command -v cmux &>/dev/null; then
-#   alias cc='cmux claude-teams --dangerously-skip-permissions --effort high --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias ccc='cmux claude-teams --continue --effort high --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
-#   alias ccs='cmux claude-teams --dangerously-skip-permissions --effort high --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-#   alias ccp='cmux claude-teams --dangerously-skip-permissions --effort high --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias ccsp='cmux claude-teams --dangerously-skip-permissions --effort high --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-#   alias cchp='cmux claude-teams --dangerously-skip-permissions --print --model haiku --bare'
-# else
-#   alias cc='claude --dangerously-skip-permissions --effort high --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias ccc='claude --dangerously-skip-permissions --continue --effort high --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias cch='claude --dangerously-skip-permissions --model haiku'
-#   alias ccs='claude --dangerously-skip-permissions --effort high --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-#   alias ccp='claude --dangerously-skip-permissions --effort high --print --model us.anthropic.claude-opus-4-6-v1\[1M\]'
-#   alias ccsp='claude --dangerously-skip-permissions --effort high --print --model us.anthropic.claude-sonnet-4-6-v1\[1M\]'
-#   alias cchp='claude --dangerously-skip-permissions --print --model haiku --bare'
-# fi
+# Claude Codeモデル設定（~/.zshrc.local で上書き可能）
+: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1M]'}
+: ${CLAUDE_MODEL_SONNET:='claude-sonnet-4-6[1M]'}
+: ${CLAUDE_MODEL_HAIKU:=haiku}
+
 if command -v cmux &>/dev/null; then
-  alias cc='cmux claude-teams --dangerously-skip-permissions --effort high --model claude-opus-4-6\[1M\]'
-  alias ccc='cmux claude-teams --continue --effort high --model claude-opus-4-6\[1M\]'
-  alias cch='cmux claude-teams --dangerously-skip-permissions --model haiku'
-  alias ccs='cmux claude-teams --dangerously-skip-permissions --effort high --model claude-sonnet-4-6\[1M\]'
-  alias ccp='cmux claude-teams --dangerously-skip-permissions --effort high --print --model claude-opus-4-6\[1M\]'
-  alias ccsp='cmux claude-teams --dangerously-skip-permissions --effort high --print --model claude-sonnet-4-6\[1M\]'
-  alias cchp='cmux claude-teams --dangerously-skip-permissions --print --model haiku --bare'
+  cc()   { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  ccc()  { cmux claude-teams --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  cch()  { cmux claude-teams --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
+  ccs()  { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
+  ccp()  { cmux claude-teams --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  ccsp() { cmux claude-teams --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+  cchp() { cmux claude-teams --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 else
-  alias cc='claude --dangerously-skip-permissions --effort high --model claude-opus-4-6\[1M\]'
-  alias ccc='claude --dangerously-skip-permissions --continue --effort high --model claude-opus-4-6\[1M\]'
-  alias cch='claude --dangerously-skip-permissions --model haiku'
-  alias ccs='claude --dangerously-skip-permissions --effort high --model claude-sonnet-4-6\[1M\]'
-  alias ccp='claude --dangerously-skip-permissions --effort high --print --model claude-opus-4-6\[1M\]'
-  alias ccsp='claude --dangerously-skip-permissions --effort high --print --model claude-sonnet-4-6\[1M\]'
-  alias cchp='claude --dangerously-skip-permissions --print --model haiku --bare'
+  cc()   { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  ccc()  { claude --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
+  ccs()  { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
+  ccp()  { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  ccsp() { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+  cchp() { claude --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 fi
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'

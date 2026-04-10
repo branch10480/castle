@@ -28,6 +28,7 @@ castle/
 │   └── statusline-config.json   # ステータスライン設定テンプレート
 ├── codex/          # Codex用設定
 │   └── skills/     # Codex用スキル本体
+├── docs/           # 技術ドキュメント（ワークアラウンド解説等）
 ├── scripts/        # 運用スクリプト（Codexスキル同期、ステータスラインセットアップなど）
 └── hammerspoon/    # Hammerspoonマクロ
 ```

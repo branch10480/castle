@@ -1,11 +1,11 @@
 -- Hammerspoon Configuration
--- Ctrl+Spaceでcmuxにフォーカス（なければ起動）
+-- Ctrl+SpaceでGhosttyにフォーカス（なければ起動）
 
 hs.hotkey.bind({"ctrl"}, "space", function()
-    local app = hs.application.find("cmux")
+    local app = hs.application.find("Ghostty")
     if app then
         app:activate()
     else
-        hs.application.launchOrFocus("cmux")
+        hs.application.launchOrFocus("Ghostty")
     end
 end)

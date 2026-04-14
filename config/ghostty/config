@@ -10,6 +10,7 @@ theme = light:Belafonte Day,dark:Kanagawa Dragon
 
 # Window appearance
 background-opacity = 1
+unfocused-split-opacity = 1
 macos-titlebar-style = hidden
 
 # Window size

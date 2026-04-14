@@ -7,7 +7,7 @@ font-size = 13.5
 
 # Theme
 # theme = light:Belafonte Day,dark:Kanagawa Dragon
-theme = light:One Half Light,dark:Kanagawa Dragon
+theme = light:Alabaster,dark:Kanagawa Dragon
 
 # Window appearance
 background-opacity = 1

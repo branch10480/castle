@@ -35,23 +35,13 @@ alias c='claude'
 : ${CLAUDE_MODEL_SONNET:='claude-sonnet-4-6[1M]'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
-if command -v cmux &>/dev/null; then
-  cc()   { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  ccc()  { cmux claude-teams --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  cch()  { cmux claude-teams --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-  ccs()  { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
-  ccp()  { cmux claude-teams --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  ccsp() { cmux claude-teams --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
-  cchp() { cmux claude-teams --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
-else
-  cc()   { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  ccc()  { claude --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-  ccs()  { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
-  ccp()  { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  ccsp() { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
-  cchp() { claude --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
-fi
+cc()   { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { claude --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
+ccs()  { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccp()  { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccsp() { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+cchp() { claude --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'

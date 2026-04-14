@@ -21,6 +21,7 @@ window-height = 53
 # Cursor
 cursor-style = block
 cursor-style-blink = false
+cursor-color = #333333
 shell-integration-features = no-cursor,sudo,title
 
 # Keybindings - Pane split

@@ -37,7 +37,7 @@ alias c='claude'
 
 if command -v cmux &>/dev/null; then
   cc()   { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-  ccc()  { cmux claude-teams --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+  ccc()  { cmux claude-teams --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
   cch()  { cmux claude-teams --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
   ccs()  { cmux claude-teams --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
   ccp()  { cmux claude-teams --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }

@@ -11,13 +11,32 @@ DIM = '\033[2m'
 CACHE_FILE = '/tmp/ccusage-statusline-cache.json'
 CACHE_TTL = 60  # 1 minute
 
+def is_dark_mode():
+    try:
+        r = subprocess.run(
+            ['defaults', 'read', '-g', 'AppleInterfaceStyle'],
+            capture_output=True, text=True, timeout=1)
+        return r.stdout.strip() == 'Dark'
+    except (subprocess.TimeoutExpired, OSError):
+        return True
+
+DARK = is_dark_mode()
+
 def gradient(pct):
-    if pct < 50:
-        r = int(pct * 5.1)
-        return f'\033[38;2;{r};200;80m'
+    if DARK:
+        if pct < 50:
+            r = int(pct * 5.1)
+            return f'\033[38;2;{r};200;80m'
+        else:
+            g = int(200 - (pct - 50) * 4)
+            return f'\033[38;2;255;{max(g, 0)};60m'
     else:
-        g = int(200 - (pct - 50) * 4)
-        return f'\033[38;2;255;{max(g, 0)};60m'
+        if pct < 50:
+            r = int(pct * 3.4)
+            return f'\033[38;2;{r};130;40m'
+        else:
+            g = int(130 - (pct - 50) * 2.6)
+            return f'\033[38;2;200;{max(g, 0)};30m'
 
 def braille_bar(pct, width=8):
     pct = min(max(pct, 0), 100)
@@ -52,12 +71,20 @@ def fmt(label, pct, resets_at=None):
     return s
 
 def cost_color(cost):
-    if cost < 50:
-        return '\033[38;2;100;200;80m'   # green
-    elif cost < 100:
-        return '\033[38;2;200;200;60m'   # yellow
+    if DARK:
+        if cost < 50:
+            return '\033[38;2;100;200;80m'   # green
+        elif cost < 100:
+            return '\033[38;2;200;200;60m'   # yellow
+        else:
+            return '\033[38;2;255;100;60m'   # red
     else:
-        return '\033[38;2;255;100;60m'   # red
+        if cost < 50:
+            return '\033[38;2;40;130;40m'    # dark green
+        elif cost < 100:
+            return '\033[38;2;160;140;0m'    # dark yellow
+        else:
+            return '\033[38;2;200;50;30m'    # dark red
 
 def _refresh_cache_background():
     """Spawn a detached background process to update the ccusage cache."""

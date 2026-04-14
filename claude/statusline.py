@@ -7,7 +7,6 @@ data = json.load(sys.stdin)
 
 BRAILLE = ' ⣀⣄⣤⣦⣶⣷⣿'
 R = '\033[0m'
-DIM = '\033[2m'
 CACHE_FILE = '/tmp/ccusage-statusline-cache.json'
 CACHE_TTL = 60  # 1 minute
 
@@ -21,6 +20,7 @@ def is_dark_mode():
         return True
 
 DARK = is_dark_mode()
+DIM = '\033[2m' if DARK else '\033[38;2;100;100;100m'
 
 def gradient(pct):
     if DARK:

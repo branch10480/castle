@@ -1,7 +1,3 @@
-# Bell sound
-bell-features = audio
-bell-audio-path = /System/Library/Sounds/Blow.aiff
-
 # Auto update
 auto-update-channel = tip
 

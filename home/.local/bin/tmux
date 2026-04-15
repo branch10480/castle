@@ -2,10 +2,19 @@
 # tmux shim for WezTerm
 # Translates tmux commands to wezterm cli commands for Claude Code Agent Teams
 
-# WezTerm外で呼ばれた場合はエラーで終了
+# WezTerm外で呼ばれた場合は本物のtmuxにフォールスルー
 if [[ -z "${WEZTERM_PANE:-}" ]]; then
-  echo "tmux-shim: WezTerm外では tmux は利用できません" >&2
-  exit 1
+  REAL_TMUX=""
+  for p in ${(s/:/)PATH}; do
+    [[ "$p" == "${0:h}" ]] && continue
+    [[ -x "$p/tmux" ]] && REAL_TMUX="$p/tmux" && break
+  done
+  if [[ -n "$REAL_TMUX" ]]; then
+    exec "$REAL_TMUX" "$@"
+  else
+    echo "tmux-shim: tmux が見つかりません" >&2
+    exit 1
+  fi
 fi
 
 CMD="$1"

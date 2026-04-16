@@ -30,14 +30,14 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 # Alias
 alias c='claude'
 # Claude Codeモデル設定（~/.zshrc.local で上書き可能）
-: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1M]'}
-: ${CLAUDE_MODEL_SONNET:='claude-sonnet-4-6[1M]'}
+: ${CLAUDE_MODEL_OPUS:='opus[1m]'}
+: ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
 cc()   { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
 ccc()  { claude --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
 cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-ccs()  { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccs()  { claude --dangerously-skip-permissions --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
 ccp()  { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
 ccsp() { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
 cchp() { claude --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }

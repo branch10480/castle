@@ -107,9 +107,9 @@ fzf-src-wtp () {
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
 
-# Ghostty/cmux CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
-# Case A: homeshickがCWDをcastle配下に移動した場合の復元
-# Case B: cmux新規ワークスペースで別WSのCWDがOSC 7経由で継承された場合の復元
+# Ghostty CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
+# homeshickのsymlink解決によりCWDがcastle配下に移動した場合のみ復元する。
+# cmuxワークスペース間のCWD継承は意図的に対処しない（誤検知による$HOME飛ばし防止）。
 # （ref: ghostty-org/ghostty#647）
 #
 # 注意: .zshrc内のcdではGhosttyのOSC 7フック（_ghostty_report_pwd）が未登録のため、
@@ -117,36 +117,11 @@ bindkey '^w' fzf-src-wtp
 _zshrc_cd_and_report() {
   cd "$1" && printf '\e]7;kitty-shell-cwd://%s%s\a' "${HOST}" "${PWD}" 2>/dev/null
 }
-if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
-  if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
-    # Case A: homeshickによりCWDがcastle配下に移動
-    if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
-      if [[ -n "${CMUX_SHELL_INTEGRATION:-}" && "$_SHELL_INIT_PWD" != "$HOME" ]]; then
-        # cmux: 保存したCWD自体が別WSから継承された可能性 → surface数で判定
-        local _sc
-        _sc=$(echo "list_surfaces $CMUX_WORKSPACE_ID" 2>/dev/null \
-          | command nc -U "$CMUX_SOCKET_PATH" -w 1 2>/dev/null \
-          | command wc -l | command tr -d ' ')
-        if [[ "${_sc:-0}" -le 1 ]]; then
-          _zshrc_cd_and_report "$HOME"
-        else
-          _zshrc_cd_and_report "$_SHELL_INIT_PWD"
-        fi
-      else
-        _zshrc_cd_and_report "$_SHELL_INIT_PWD"
-      fi
-    else
-      _zshrc_cd_and_report "$HOME"
-    fi
-  elif [[ -n "${CMUX_SHELL_INTEGRATION:-}" && "$_SHELL_INIT_PWD" == "$PWD" && "$PWD" != "$HOME" ]]; then
-    # Case B: cmuxでhomeshickがCWDを変えなかったが、別WSのCWDが継承されている
-    local _sc
-    _sc=$(echo "list_surfaces $CMUX_WORKSPACE_ID" 2>/dev/null \
-      | command nc -U "$CMUX_SOCKET_PATH" -w 1 2>/dev/null \
-      | command wc -l | command tr -d ' ')
-    if [[ "${_sc:-0}" -le 1 ]]; then
-      _zshrc_cd_and_report "$HOME"
-    fi
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" && "$PWD" == "$HOME/.homesick/"* ]]; then
+  if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
+    _zshrc_cd_and_report "$_SHELL_INIT_PWD"
+  else
+    _zshrc_cd_and_report "$HOME"
   fi
 fi
 unfunction _zshrc_cd_and_report 2>/dev/null

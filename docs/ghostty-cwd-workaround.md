@@ -90,8 +90,8 @@ eval "$(direnv hook zsh)"            # 環境変数の自動切替
 ### Step 3：CWD の復元（`.zshrc` 末尾）
 
 ```zsh
-if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
-  #                 ↑ 現在のCWDが .homesick 配下か？
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" && "$PWD" == "$HOME/.homesick/"* ]]; then
+  #    ↑ Ghostty環境か？                ↑ 現在のCWDが .homesick 配下か？
 
   if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
     # ┌─ Case 1 ──────────────────────────────────────┐
@@ -100,11 +100,11 @@ if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
     # └────────────────────────────────────────────────┘
     cd "$_SHELL_INIT_PWD"
 
-  elif [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
+  else
     # ┌─ Case 2 ──────────────────────────────────────┐
-    # │ 保存したCWD自体も .homesick 配下               │
+    # │ 保存したCWD自体も .homesick 配下（or 空）      │
     # │ → シェル起動時点で既にCWDが汚染されていた       │
-    # │ → Ghostty環境限定で $HOME にフォールバック      │
+    # │ → $HOME にフォールバック                        │
     # └────────────────────────────────────────────────┘
     cd "$HOME"
   fi
@@ -149,15 +149,26 @@ $PWD = "~/.homesick/repos/castle/home/"  ← 変わらずそのまま
 ```
 同じ失敗ケースで：
   ↓
-外側の条件: OK  .homesick 配下にいる
+外側の条件: OK  Ghostty環境 かつ .homesick 配下にいる
   ↓
 Case 1: NG  _SHELL_INIT_PWD も .homesick 配下（正常な値ではない）
-Case 2: OK  GHOSTTY_RESOURCES_DIR が存在（Ghostty環境）
+Case 2: OK  else 分岐に入る
   ↓
 → $HOME にフォールバック！
 ```
 
 `GHOSTTY_RESOURCES_DIR` は Ghostty が自動的に設定する環境変数。これでスコープを限定することで、WezTerm 等で意図的に `cd ~/.homesick/repos/castle` して作業するケースには影響しない。
+
+## 5.1. 削除された Case B（cmux ワークスペース間 CWD 継承対策）
+
+以前のコードには Case A（`.homesick/` 配下の CWD 復元）に加え、Case B として cmux の `list_surfaces` を使った surface 数ヒューリスティックがあった。これは「cmux が新規ワークスペースを作成した際、別ワークスペースの CWD が OSC 7 経由で継承される」ケースに対処するものだった。
+
+**削除理由：** surface 数による判定は以下の正当な操作でも `$HOME` へリセットしてしまう副作用があった。
+
+- cmux 環境でのペイン分割（子ペインが親の CWD を正しく継承しているのにリセット）
+- `exec $SHELL -l` によるシェル再読み込み（現在の CWD が保持されるべきなのにリセット）
+
+Case B が対処するシナリオ（別 WS の CWD 継承）は、ユーザーが実在する正当なディレクトリにいるだけであり、`.homesick/` 汚染とは本質的に異なる。誤検知のコストがメリットを上回るため削除した。
 
 ## 6. `.zshenv` に移しても解決しない理由
 
@@ -183,22 +194,21 @@ zsh の起動ファイルは以下の順で読み込まれる：
   ├─ .zprofile（castle）     ← brew shellenv
   │
   ▼
-┌─ .zshrc 開始 ──────────────────────────┐
-│                                         │
-│  (1) _SHELL_INIT_PWD="$PWD"  ← CWD保存 │
-│                                         │
-│  (2) anyenv / starship / homeshick /    │
-│      zoxide / direnv 等の初期化         │
-│     （この間にCWDが変わる可能性あり）    │
-│                                         │
-│  (3) 復元チェック:                      │
-│      CWDが.homesick配下？               │
-│        ├─ Yes & 保存値が正常 → 復元     │
-│        ├─ Yes & 保存値も汚染            │
-│        │   └─ Ghostty？→ $HOME         │
-│        └─ No → 何もしない（正常）        │
-│                                         │
-└─────────────────────────────────────────┘
+┌─ .zshrc 開始 ──────────────────────────────┐
+│                                             │
+│  (1) _SHELL_INIT_PWD="$PWD"  ← CWD保存     │
+│                                             │
+│  (2) anyenv / starship / homeshick /        │
+│      zoxide / direnv 等の初期化             │
+│     （この間にCWDが変わる可能性あり）        │
+│                                             │
+│  (3) 復元チェック:                          │
+│      Ghostty環境 かつ CWDが.homesick配下？  │
+│        ├─ Yes & 保存値が正常 → 復元         │
+│        ├─ Yes & 保存値も汚染 → $HOME        │
+│        └─ No → 何もしない（正常）            │
+│                                             │
+└─────────────────────────────────────────────┘
   │
   ▼
 プロンプト表示（ここで OSC 7 が正しいCWDを報告）

@@ -52,6 +52,9 @@ alias cl='clear'
 alias xc='xclean'
 alias xcd='xclean -d'
 
+# Claude Code
+export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
+
 # fzf + nvim
 v() {
   local file

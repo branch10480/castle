@@ -104,14 +104,47 @@ fzf-src-wtp () {
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
 
-# Ghostty split CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
-if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
-  if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
-    # Case 1: .zshrc処理中にCWDが変わった → 保存した元のCWDに復元
-    cd "$_SHELL_INIT_PWD"
-  elif [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
-    # Case 2: 起動時点で既に.homesick配下（OSC 7による誤継承）→ $HOMEへフォールバック
-    cd "$HOME"
+# Ghostty/cmux CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
+# Case A: homeshickがCWDをcastle配下に移動した場合の復元
+# Case B: cmux新規ワークスペースで別WSのCWDがOSC 7経由で継承された場合の復元
+# （ref: ghostty-org/ghostty#647）
+#
+# 注意: .zshrc内のcdではGhosttyのOSC 7フック（_ghostty_report_pwd）が未登録のため、
+# cmuxのサーフェスCWDが更新されない。cdした場合は明示的にOSC 7を発行する。
+_zshrc_cd_and_report() {
+  cd "$1" && printf '\e]7;kitty-shell-cwd://%s%s\a' "${HOST}" "${PWD}" 2>/dev/null
+}
+if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" ]]; then
+  if [[ "$PWD" == "$HOME/.homesick/"* ]]; then
+    # Case A: homeshickによりCWDがcastle配下に移動
+    if [[ -n "$_SHELL_INIT_PWD" && "$_SHELL_INIT_PWD" != "$HOME/.homesick/"* ]]; then
+      if [[ -n "${CMUX_SHELL_INTEGRATION:-}" && "$_SHELL_INIT_PWD" != "$HOME" ]]; then
+        # cmux: 保存したCWD自体が別WSから継承された可能性 → surface数で判定
+        local _sc
+        _sc=$(echo "list_surfaces $CMUX_WORKSPACE_ID" 2>/dev/null \
+          | command nc -U "$CMUX_SOCKET_PATH" -w 1 2>/dev/null \
+          | command wc -l | command tr -d ' ')
+        if [[ "${_sc:-0}" -le 1 ]]; then
+          _zshrc_cd_and_report "$HOME"
+        else
+          _zshrc_cd_and_report "$_SHELL_INIT_PWD"
+        fi
+      else
+        _zshrc_cd_and_report "$_SHELL_INIT_PWD"
+      fi
+    else
+      _zshrc_cd_and_report "$HOME"
+    fi
+  elif [[ -n "${CMUX_SHELL_INTEGRATION:-}" && "$_SHELL_INIT_PWD" == "$PWD" && "$PWD" != "$HOME" ]]; then
+    # Case B: cmuxでhomeshickがCWDを変えなかったが、別WSのCWDが継承されている
+    local _sc
+    _sc=$(echo "list_surfaces $CMUX_WORKSPACE_ID" 2>/dev/null \
+      | command nc -U "$CMUX_SOCKET_PATH" -w 1 2>/dev/null \
+      | command wc -l | command tr -d ' ')
+    if [[ "${_sc:-0}" -le 1 ]]; then
+      _zshrc_cd_and_report "$HOME"
+    fi
   fi
 fi
+unfunction _zshrc_cd_and_report 2>/dev/null
 unset _SHELL_INIT_PWD

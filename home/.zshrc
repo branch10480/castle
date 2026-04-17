@@ -34,12 +34,12 @@ alias c='claude'
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
-cc()   { claude --dangerously-skip-permissions --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { claude --dangerously-skip-permissions --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cc()   { claude --dangerously-skip-permissions --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { claude --dangerously-skip-permissions --continue --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
 cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
 ccs()  { claude --dangerously-skip-permissions --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccsp() { claude --dangerously-skip-permissions --effort high --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccp()  { claude --dangerously-skip-permissions --effort xhigh --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccsp() { claude --dangerously-skip-permissions --effort medium --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
 cchp() { claude --dangerously-skip-permissions --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'

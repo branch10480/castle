@@ -34,13 +34,13 @@ alias c='claude'
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
-cc()   { claude --permission-mode auto --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { claude --permission-mode auto --continue --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
-cch()  { claude --permission-mode auto --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-ccs()  { claude --permission-mode auto --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { claude --permission-mode auto --effort xhigh --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccsp() { claude --permission-mode auto --effort medium --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
-cchp() { claude --permission-mode auto --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
+cc()   { claude --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { claude --continue --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cch()  { claude --model "$CLAUDE_MODEL_HAIKU" "$@"; }
+ccs()  { claude --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccp()  { claude --effort xhigh --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccsp() { claude --effort medium --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+cchp() { claude --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'

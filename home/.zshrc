@@ -35,12 +35,12 @@ alias c='claude'
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
-cc()   { claude --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { claude --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cc()   { claude --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { claude --continue --model "$CLAUDE_MODEL_OPUS" "$@"; }
 cch()  { claude --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-ccs()  { claude --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { claude --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccsp() { claude --effort medium --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccs()  { claude --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccp()  { claude --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccsp() { claude --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
 cchp() { claude --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
@@ -54,7 +54,9 @@ alias xc='xclean'
 alias xcd='xclean -d'
 
 # Claude Code
-#export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
+export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
+# Claude Code effort（cc系関数の共通設定。--effortフラグの代替）
+export CLAUDE_CODE_EFFORT_LEVEL=xhigh
 
 # fzf + nvim
 v() {

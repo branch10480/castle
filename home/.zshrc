@@ -31,14 +31,15 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 alias c='claude'
 # Claude Codeモデル設定（~/.zshrc.local で上書き可能）
 : ${CLAUDE_MODEL_OPUS:='opus[1m]'}
+#: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
-cc()   { claude --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { claude --continue --effort xhigh --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cc()   { claude --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { claude --continue --effort high --model "$CLAUDE_MODEL_OPUS" "$@"; }
 cch()  { claude --model "$CLAUDE_MODEL_HAIKU" "$@"; }
 ccs()  { claude --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { claude --effort xhigh --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccp()  { claude --effort high --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
 ccsp() { claude --effort medium --print --model "$CLAUDE_MODEL_SONNET" "$@"; }
 cchp() { claude --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 alias t='tig status'

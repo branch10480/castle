@@ -2,46 +2,65 @@
 # 初期化前のCWDを保存し、末尾で復元する（ref: ghostty-org/ghostty#647）
 _SHELL_INIT_PWD="$PWD"
 
+# ── Environment ──────────────────────────────────────────
 export PATH="$HOME/.local/bin:$PATH"
 
-# WezTerm内でClaude Codeのチーム機能を使えるようにtmux環境変数を偽装
 if [[ -n "${WEZTERM_PANE:-}" ]]; then
   export TMUX="wezterm-shim/${WEZTERM_PANE}/0"
 fi
 export EDITOR="nvim"
 export VISUAL="nvim"
 
-# マシン固有設定の読み込み（モデル名等を上書き可能）
+# ── Machine-local overrides ──────────────────────────────
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-eval "$(anyenv init -)"
+# ── Tool initialization ──────────────────────────────────
+_brew="${HOMEBREW_PREFIX:-/opt/homebrew}"
 
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# anyenv
+# `anyenv init -` は管理下の全*envのシェル初期化コードを動的生成するが、
+# 毎回サブプロセスを起こすため遅い（~100-200ms）。
+# 生成結果をキャッシュファイルに保存し、次回以降は source で読み込む。
+# anyenv本体が更新された場合（バイナリのタイムスタンプが新しい場合）は自動で再生成する。
+# 手動で再生成したい場合: rm ~/.cache/anyenv-init.zsh
+if (( $+commands[anyenv] )); then
+  _anyenv_cache="$HOME/.cache/anyenv-init.zsh"
+  if [[ ! -f "$_anyenv_cache" ]] || [[ "$(command -v anyenv)" -nt "$_anyenv_cache" ]]; then
+    mkdir -p "${_anyenv_cache:h}"          # ~/.cache がなければ作成
+    anyenv init - > "$_anyenv_cache"       # 初期化コードをファイルに保存
+  fi
+  source "$_anyenv_cache"                  # キャッシュから読み込み（高速）
+  unset _anyenv_cache
+fi
+
+# zsh plugins
+[[ -f "$_brew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$_brew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$_brew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+  source "$_brew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # starship
-eval "$(starship init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
 
 # homeshick
-export HOMESHICK_DIR=/opt/homebrew/opt/homeshick
-source "/opt/homebrew/opt/homeshick/homeshick.sh"
-fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
+if [[ -f "$_brew/opt/homeshick/homeshick.sh" ]]; then
+  export HOMESHICK_DIR="$_brew/opt/homeshick"
+  source "$HOMESHICK_DIR/homeshick.sh"
+  fpath=("$HOMESHICK_DIR/share/zsh/site-functions" $fpath)
+fi
 
-# Alias
-alias c='claude'
-# Claude Codeモデル設定（~/.zshrc.local で上書き可能）
-#: ${CLAUDE_MODEL_OPUS:='opus[1m]'}
-: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
-: ${CLAUDE_MODEL_SONNET:='sonnet'}
-: ${CLAUDE_MODEL_HAIKU:=haiku}
+# zoxide
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh --cmd j)"
 
-cc()   { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { claude --dangerously-skip-permissions --continue --model "$CLAUDE_MODEL_OPUS" "$@"; }
-cch()  { claude --dangerously-skip-permissions --model "$CLAUDE_MODEL_HAIKU" "$@"; }
-ccs()  { claude --effort medium --dangerously-skip-permissions --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { claude --print --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccsp() { claude --print --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-cchp() { claude --print --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
+# direnv
+(( $+commands[direnv] )) && eval "$(direnv hook zsh)"
+
+unset _brew
+
+# ── Key bindings ─────────────────────────────────────────
+bindkey -e
+
+# ── Aliases ──────────────────────────────────────────────
 alias t='tig status'
 alias co='codex --ask-for-approval never --sandbox danger-full-access'
 alias ll='ls -al'
@@ -53,26 +72,33 @@ alias cl='clear'
 alias xc='xclean'
 alias xcd='xclean -d'
 
-# Claude Code
+# ── Claude Code ──────────────────────────────────────────
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
-# Claude Code effort（cc系関数の共通設定。--effortフラグの代替）
 export CLAUDE_CODE_EFFORT_LEVEL=max
 
+alias c='claude'
+: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
+: ${CLAUDE_MODEL_SONNET:='sonnet'}
+: ${CLAUDE_MODEL_HAIKU:='haiku'}
+
+_cc()  { claude --dangerously-skip-permissions "$@"; }
+_ccp() { claude --print "$@"; }
+
+cc()   { _cc --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccc()  { _cc --continue --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cch()  { _cc --model "$CLAUDE_MODEL_HAIKU" "$@"; }
+ccs()  { _cc --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
+ccp()  { _ccp --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccsp() { _ccp --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
+cchp() { _ccp --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
+
+# ── Utility functions ────────────────────────────────────
 # fzf + nvim
 v() {
   local file
   file=$(fzf --height=40% --reverse)
   [[ -n "$file" ]] && nvim "$file"
 }
-
-# Zoxide
-eval "$(zoxide init zsh --cmd j)"
-
-# direnv
-eval "$(direnv hook zsh)"
-
-# emacs key bind
-bindkey -e
 
 # ghq + fzf
 fzf-src () {
@@ -110,7 +136,7 @@ fzf-src-wtp () {
 zle -N fzf-src-wtp
 bindkey '^w' fzf-src-wtp
 
-# Ghostty CWD復元（先頭で保存した_SHELL_INIT_PWDを使用）
+# ── Ghostty CWD restore ─────────────────────────────────
 # homeshickのsymlink解決によりCWDがcastle配下に移動した場合のみ復元する。
 # cmuxワークスペース間のCWD継承は意図的に対処しない（誤検知による$HOME飛ばし防止）。
 # （ref: ghostty-org/ghostty#647）

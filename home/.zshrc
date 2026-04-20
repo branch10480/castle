@@ -30,8 +30,8 @@ fpath=(/opt/homebrew/opt/homeshick/share/zsh/site-functions $fpath)
 # Alias
 alias c='claude'
 # Claude Codeモデル設定（~/.zshrc.local で上書き可能）
-: ${CLAUDE_MODEL_OPUS:='opus[1m]'}
-#: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
+#: ${CLAUDE_MODEL_OPUS:='opus[1m]'}
+: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:=haiku}
 
@@ -56,7 +56,7 @@ alias xcd='xclean -d'
 # Claude Code
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
 # Claude Code effort（cc系関数の共通設定。--effortフラグの代替）
-export CLAUDE_CODE_EFFORT_LEVEL=xhigh
+export CLAUDE_CODE_EFFORT_LEVEL=max
 
 # fzf + nvim
 v() {

@@ -29,7 +29,7 @@ shell-integration-features = no-cursor,sudo,title
 
 # Keybindings - Pane split
 keybind = ctrl+semicolon=new_split:right
-keybind = ctrl+shift+apostrophe=new_split:down
+keybind = ctrl+apostrophe=new_split:down
 
 # Keybindings - Pane navigation (Vim-style)
 keybind = ctrl+h=goto_split:left

@@ -15,7 +15,7 @@
   //     "focusPaneOnFirstClick" : false,
   //     "keepWorkspaceOpenWhenClosingLastSurface" : false,
   //     "language" : "system",
-    "minimalMode" : true,
+  //     "minimalMode" : true,
   //     "newWorkspacePlacement" : "afterCurrent",
     "preferredEditor" : "nvim",
   //     "renameSelectsExistingName" : true,

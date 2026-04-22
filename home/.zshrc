@@ -82,8 +82,8 @@ alias c='claude'
 _cc()  { claude --dangerously-skip-permissions "$@"; }
 _ccp() { claude --print "$@"; }
 
-cc()   { _cc "$@"; }
-ccc()  { _cc --continue "$@"; }
+cc()   { claude "$@"; }
+ccc()  { claude --continue "$@"; }
 cch()  { _cc --model "$CLAUDE_MODEL_HAIKU" "$@"; }
 ccs()  { _cc --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
 ccp()  { _ccp "$@"; }

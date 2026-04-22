@@ -74,21 +74,19 @@ alias xcd='xclean -d'
 
 # ── Claude Code ──────────────────────────────────────────
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
-export CLAUDE_CODE_EFFORT_LEVEL=max
 
 alias c='claude'
-: ${CLAUDE_MODEL_OPUS:='claude-opus-4-6[1m]'}
 : ${CLAUDE_MODEL_SONNET:='sonnet'}
 : ${CLAUDE_MODEL_HAIKU:='haiku'}
 
 _cc()  { claude --dangerously-skip-permissions "$@"; }
 _ccp() { claude --print "$@"; }
 
-cc()   { _cc --model "$CLAUDE_MODEL_OPUS" "$@"; }
-ccc()  { _cc --continue --model "$CLAUDE_MODEL_OPUS" "$@"; }
+cc()   { _cc "$@"; }
+ccc()  { _cc --continue "$@"; }
 cch()  { _cc --model "$CLAUDE_MODEL_HAIKU" "$@"; }
 ccs()  { _cc --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
-ccp()  { _ccp --model "$CLAUDE_MODEL_OPUS" "$@"; }
+ccp()  { _ccp "$@"; }
 ccsp() { _ccp --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }
 cchp() { _ccp --model "$CLAUDE_MODEL_HAIKU" --bare "$@"; }
 

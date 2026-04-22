@@ -4,6 +4,7 @@ auto-update-channel = tip
 # Font settings (from WezTerm config)
 #font-family = FiraCode Nerd Font
 font-family = JetBrainsMono Nerd Font
+font-family = Hiragino Sans W3
 font-size = 13.5
 
 # Theme
@@ -23,7 +24,7 @@ window-height = 53
 # Cursor
 cursor-style = block
 cursor-style-blink = false
-cursor-color = #333333
+cursor-color = #373734
 shell-integration-features = no-cursor,sudo,title
 
 # Keybindings - Pane split

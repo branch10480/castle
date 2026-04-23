@@ -76,7 +76,7 @@ local function open_in_markdown_observer()
 	end
 
 	local fullpath = vim.fn.expand("%:p")
-	local cmd = string.format('open -a "/Applications/MarkdownObserver-Fork.app" "%s"', fullpath)
+	local cmd = string.format('open -a "/opt/homebrew/opt/markdownobserver-fork/MarkdownObserver.app" "%s"', fullpath)
 	local result = vim.fn.system(cmd)
 
 	if vim.v.shell_error ~= 0 then

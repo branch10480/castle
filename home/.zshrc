@@ -71,6 +71,7 @@ alias gd='git difftool'
 alias cl='clear'
 alias xc='xclean'
 alias xcd='xclean -d'
+alias mdo='open -a "/opt/homebrew/opt/markdownobserver-fork/MarkdownObserver.app"'
 
 # ── Claude Code ──────────────────────────────────────────
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1

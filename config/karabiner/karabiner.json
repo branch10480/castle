@@ -139,6 +139,7 @@
                 },
                 {
                     "identifiers": { "is_keyboard": true },
+                    "ignore": true,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "caps_lock" },

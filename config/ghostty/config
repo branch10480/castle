@@ -10,10 +10,15 @@ font-size = 13.5
 # Theme
 # theme = light:Belafonte Day,dark:Kanagawa Dragon
 # theme = light:Alabaster,dark:Kanagawa Dragon
-theme = light:3024 Day Custom,dark:Kanagawa Dragon
+# theme = light:3024 Day Custom,dark:Solarized Dark Patched
+# theme = Solarized Dark Patched
+theme = 0x96f
 
 # Window appearance
-background-opacity = 1
+#background-opacity = 1
+#unfocused-split-opacity = 1
+background-opacity = 0.85
+background-blur-radius = 10
 unfocused-split-opacity = 1
 macos-titlebar-style = hidden
 
@@ -22,9 +27,9 @@ window-width = 155
 window-height = 53
 
 # Cursor
-cursor-style = block
+#cursor-style = block
 cursor-style-blink = false
-cursor-color = #373734
+#cursor-color = #373734
 shell-integration-features = no-cursor,sudo,title
 
 # Keybindings - Pane split

@@ -17,7 +17,7 @@ theme = 0x96f
 # Window appearance
 #background-opacity = 1
 #unfocused-split-opacity = 1
-background-opacity = 0.75
+background-opacity = 0.5
 background-blur-radius = 20
 unfocused-split-opacity = 1
 macos-titlebar-style = tabs

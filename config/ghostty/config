@@ -17,10 +17,10 @@ theme = 0x96f
 # Window appearance
 #background-opacity = 1
 #unfocused-split-opacity = 1
-background-opacity = 0.85
-background-blur-radius = 10
+background-opacity = 0.75
+background-blur-radius = 20
 unfocused-split-opacity = 1
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs
 
 # Window size
 window-width = 155

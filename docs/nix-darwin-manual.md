@@ -1,0 +1,365 @@
+# nix-darwin 運用マニュアル
+
+このリポジトリ (`castle`) における **nix-darwin + Home Manager + 宣言 Homebrew** の
+運用手順をまとめたドキュメント。日々の操作・トラブル対応・設計意図の参照用。
+
+> [!NOTE]
+> 構成ファイルの実体は `castle/config/nix-darwin/` に存在し、homeshick の
+> `home/.config -> ../config` symlink により `~/.config/nix-darwin/` から参照される。
+
+---
+
+## 1. 全体像
+
+```mermaid
+flowchart LR
+    flake[flake.nix<br/>入口] --> darwin[darwin.nix<br/>システム全体]
+    flake --> home[home.nix<br/>ユーザー領域]
+    darwin -- 宣言 --> brew[(Homebrew<br/>tap/brew/cask/mas)]
+    home -- 宣言 --> nixpkgs[(nixpkgs<br/>CLI ツール群)]
+    flake -. 固定 .-> lock[flake.lock]
+```
+
+| ファイル | 役割 | 何を書く |
+| --- | --- | --- |
+| `flake.nix` | エントリポイント | inputs（nixpkgs / nix-darwin / home-manager）と `darwinConfigurations` |
+| `darwin.nix` | システム全体（root 権限） | `/etc/*`, launchd, Homebrew 宣言, `system.primaryUser` |
+| `home.nix` | ユーザー領域 (`~/`) | CLI ツール（`home.packages`）, 個人 launchd agent |
+| `flake.lock` | inputs 固定 | 自動生成・コミット対象 |
+
+### 設計方針
+
+- **CLI = Nix / GUI = Homebrew** で住み分け。
+- `programs.<tool>` 系の Home Manager モジュールは **意図的に有効化しない**。
+  zsh / git / nvim 等の設定は homeshick 配下を唯一のソース・オブ・トゥルースとし、
+  `~/.config/*` の二重管理を避ける。
+- Homebrew は `homebrew.onActivation.cleanup = "none"` で安全側起動。
+  未宣言パッケージを自動削除する `"zap"` への切り替えは、移管が安定してから検討。
+
+---
+
+## 2. 日常運用コマンド
+
+### 2.1 設定変更を反映する
+
+```bash
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+```
+
+- **sudo 必須**。最近の nix-darwin は activation を root 化した。
+- 所要時間: 軽微な変更なら 30 秒〜1 分。新規パッケージのビルド/取得が走ると数分。
+- 完了時に `Activating ...` 系のログが流れて、最後にプロンプトに戻る。
+
+### 2.2 inputs を更新する
+
+```bash
+nix flake update --flake ~/.config/nix-darwin
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+```
+
+- `nix flake update` は `flake.lock` を最新の nixpkgs / nix-darwin / home-manager に書き換える。
+- そのまま switch すれば反映。問題があれば `git checkout flake.lock` で巻き戻せる。
+
+### 2.3 評価のみ（適用なし）
+
+```bash
+nix flake check ~/.config/nix-darwin
+```
+
+- 構文エラー・型エラーを早期検出。実環境に変更を加えない。
+- 編集中に走らせて素早くフィードバックを得る用。
+
+### 2.4 状態確認
+
+```bash
+darwin-rebuild --list-generations           # これまでの世代一覧
+sudo darwin-rebuild rollback                # 直前の世代に戻す
+nix-env --list-generations -p /nix/var/nix/profiles/system   # 同上 (詳細版)
+```
+
+- generation は世代管理。環境を壊しても直前に戻せるのが Nix の強み。
+
+---
+
+## 3. パッケージ管理
+
+### 3.1 CLI ツールを追加する（Nix）
+
+`home.nix` の `home.packages` に追加して switch:
+
+```nix
+home.packages = with pkgs; [
+  ...既存...
+  ripgrep
+  fd
+  bat
+];
+```
+
+```bash
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+which <tool>   # /etc/profiles/per-user/$USER/bin/<tool> を返せば OK
+```
+
+### 3.2 GUI アプリを追加する（Homebrew Cask）
+
+`darwin.nix` の `homebrew.casks` に追加:
+
+```nix
+casks = [
+  ...既存...
+  "iterm2"
+  "discord"
+];
+```
+
+switch すると `brew install --cask <name>` が自動実行される。
+
+### 3.3 サードパーティ tap を使う
+
+```nix
+taps = [
+  "homebrew/services"
+  "anomalyco/tap"        # 例: anomalyco/tap/opencode を入れる場合
+];
+
+brews = [
+  "anomalyco/tap/opencode"
+];
+```
+
+- `<owner>/<tap>/<formula>` 形式で書けば自動で tap 解決される。
+- 明示的に `taps` に書いた方が依存関係が読みやすい（推奨）。
+
+### 3.4 Mac App Store アプリを追加する（mas）
+
+```bash
+brew install mas              # 初回のみ
+mas list                      # アプリ ID を取得
+```
+
+```nix
+masApps = {
+  "Xcode" = 497799835;
+  "Magnet" = 441258766;
+};
+```
+
+---
+
+## 4. brew → Nix 移管手順
+
+CLI ツールを Homebrew から Nix 管理へ移したい場合の安全手順。
+
+### 4.1 標準フロー
+
+1. **Nix 側に追加**（`home.nix` の `home.packages` に書く）
+2. **switch して Nix 版が PATH に乗ることを確認**
+   ```bash
+   sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+   exec zsh -l    # 新シェルで PATH を読み直し
+   which <tool>   # /etc/profiles/per-user/.../bin/<tool> を期待
+   ```
+3. **brew 側を削除**（`darwin.nix` の `brews` からコメントアウト）
+4. もう一度 switch（宣言を反映）
+5. **brew バイナリの実体を掃除**
+   ```bash
+   brew uninstall <tool>
+   which <tool>   # まだ Nix 版が見えれば成功
+   ```
+
+### 4.2 リスク別の移管推奨順
+
+| リスク | 対象 | 注意点 |
+| --- | --- | --- |
+| 低 | `tree`, `watch`, `jq`, `ripgrep`, `fd`, `bat`, `eza`, `tig` | 単発 CLI、設定なし。安全 |
+| 中 | `gh`, `ghq`, `zoxide`, `starship` | シェル統合あり。動作確認しっかり |
+| **要警戒** | `direnv`, `fzf` | Nix の checkPhase でテストがハングする事例あり |
+| 高 | `neovim`, `tmux` | プラグイン管理が効く。設定の互換性確認 |
+| 高 | `node`, `go` | anyenv と競合する可能性。最後に検討 |
+
+### 4.3 checkPhase ハング回避
+
+direnv のように Nix のテストが macOS で固まる場合の選択肢:
+
+- **A**: brew のままにする（合理的）
+- **B**: `home.packages` で `(direnv.overrideAttrs (_: { doCheck = false; }))` でテスト無効化
+
+---
+
+## 5. 既知の落とし穴
+
+### 5.1 PATH 順序: Homebrew が Nix を上書きする
+
+macOS の `/etc/zprofile` が `path_helper` を呼び、`/etc/paths.d/Homebrew` を読んで
+`/opt/homebrew/bin` を **PATH 先頭に再挿入** する。これが nix-darwin の `/etc/zshrc` より
+**後**に効くため、放置すると brew 版が常に勝つ。
+
+**対処**: `home/.zshrc` 冒頭で Nix プロファイルを強制 prepend:
+
+```bash
+for _nix_dir in \
+  "/etc/profiles/per-user/$USER/bin" \
+  /run/current-system/sw/bin \
+  /nix/var/nix/profiles/default/bin; do
+  [[ -d "$_nix_dir" ]] && PATH="$_nix_dir:${PATH//$_nix_dir:/}"
+done
+unset _nix_dir
+export PATH
+```
+
+### 5.2 sudo パスワードと TTY
+
+`sudo darwin-rebuild` は対話入力を要求するので、Claude Code のような非 TTY 環境からは
+直接実行できない。**必ず手元のターミナル**で叩く。
+
+### 5.3 `system.primaryUser` の必須化
+
+最近の nix-darwin は activation を root 化した影響で、`homebrew.enable` などの
+ユーザー紐付けオプションは `system.primaryUser` 明示が必須。未設定だと:
+
+```
+error: Failed assertions: ... `homebrew.enable` ...
+       you have been using to run `darwin-rebuild`.
+```
+
+→ `darwin.nix` に `system.primaryUser = "<username>";` を追加する。
+
+### 5.4 deprecated `homebrew.global.lockfiles`
+
+Homebrew 4.4.0 (2024-10) で lockfile 機能が削除されたため、
+`homebrew.global.lockfiles` / `noLock` は no-op。設定から削除すべし（warning が出る）。
+
+### 5.5 `/Users/...` not owned by you の警告
+
+```
+warning: $HOME ('/Users/...') is not owned by you, falling back to /var/root
+```
+
+`sudo` 配下で `$HOME` が継承されているための無害警告。動作に影響なし。
+気になる場合は `sudo -H darwin-rebuild ...` を使う。
+
+### 5.6 ロールバック
+
+何か壊れたら:
+
+```bash
+sudo darwin-rebuild rollback
+```
+
+または特定の世代に戻す:
+
+```bash
+darwin-rebuild --list-generations
+sudo darwin-rebuild switch --switch-generation <番号>
+```
+
+---
+
+## 6. ファイル別の編集の流れ
+
+### 6.1 「全マシン共通の追加」をしたい場合
+
+→ `darwin.nix` または `home.nix` を直接編集 → switch → `/castle` で push。
+
+### 6.2 「このマシンでだけ動かしたい」場合（将来）
+
+現状は単一ホスト構成。複数ホスト対応にしたくなったら以下の構成にリファクタ:
+
+```
+config/nix-darwin/
+├── flake.nix
+├── modules/
+│   ├── common-darwin.nix
+│   └── common-home.nix
+└── hosts/
+    ├── private-mbp/
+    │   ├── darwin.nix
+    │   └── home.nix
+    └── work-mba/
+        ├── darwin.nix
+        └── home.nix
+```
+
+`flake.nix` の `darwinConfigurations` でホスト名別にエントリを生やす。
+
+---
+
+## 7. 別マシンへの展開
+
+### 7.1 単純複製（同じセットアップでよい場合）
+
+```bash
+# ターゲットマシンで
+git clone git@github.com:branch10480/castle.git ~/.homesick/repos/castle
+homeshick link castle
+
+# Nix インストール
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# 適用
+~/.homesick/repos/castle/scripts/bootstrap-nix-darwin.sh
+```
+
+### 7.2 ユーザー名・hostname が違う場合の事前作業
+
+- `darwin.nix` の `system.primaryUser = username;` は `flake.nix` の `username` を経由。
+  別ユーザー名のマシンに当てる場合は `flake.nix` の `username` を上書き、
+  または特殊引数 (`specialArgs`) を分岐させる。
+- `flake.nix` の `darwinConfigurations` に該当 hostname のエントリを追加するか、
+  `default` フォールバックを利用する。
+
+---
+
+## 8. クリーンアップ運用（cleanup モード）
+
+`darwin.nix` の `homebrew.onActivation.cleanup` で挙動を選択:
+
+| 値 | 挙動 | 用途 |
+| --- | --- | --- |
+| `"none"` | 宣言外の brew/cask に触らない | **現在の値**。安全運用、検証期間中 |
+| `"uninstall"` | 宣言外を `brew uninstall` する | バイナリは消すが、tap や設定は残す |
+| `"zap"` | `brew uninstall --zap` 相当（設定ファイルも削除） | 完全宣言管理。理想形だが破壊的 |
+
+**`"zap"` への切り替え条件**:
+- すべての brew/cask が宣言と一致していること
+- 試験的に `brew install` した一時パッケージが残っていないこと
+- 普段から「宣言ファースト」で運用する習慣がついていること
+
+---
+
+## 9. トラブルシューティング早見表
+
+| 症状 | 原因 | 対処 |
+| --- | --- | --- |
+| `which <tool>` が brew 版を返す | PATH 順序 | `exec zsh -l` で再読込。それでもなら §5.1 |
+| `system activation must now be run as root` | sudo 忘れ | `sudo darwin-rebuild switch ...` |
+| `homebrew.enable ... primaryUser` エラー | `system.primaryUser` 未設定 | §5.3 |
+| `nix flake check` で `not tracked by Git` | flake は git tracked ファイルしか見ない | `git add -N <file>` で intent-to-add |
+| direnv ビルドが固まる | checkPhase ハング | §4.3、または brew のままにする |
+| switch が途中で止まる | `Sorry, try again.` 後の再入力 / ネットワーク | `Ctrl+C` 後に再実行 |
+| 環境を壊した | activation 失敗 | `sudo darwin-rebuild rollback` |
+
+---
+
+## 10. 参照リンク
+
+- [nix-darwin (LnL7/nix-darwin)](https://github.com/LnL7/nix-darwin)
+- [Home Manager (nix-community/home-manager)](https://github.com/nix-community/home-manager)
+- [nix-darwin Manual](https://daiderd.com/nix-darwin/manual/index.html)
+- [nixpkgs (NixOS/nixpkgs)](https://github.com/NixOS/nixpkgs)
+- [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)
+- [Homebrew Bundle 仕様](https://docs.brew.sh/Manpage#bundle-subcommand)
+
+---
+
+## 11. 関連ファイル
+
+- `config/nix-darwin/flake.nix` — 入口
+- `config/nix-darwin/darwin.nix` — システム宣言
+- `config/nix-darwin/home.nix` — ユーザー宣言
+- `config/nix-darwin/flake.lock` — inputs 固定（自動生成）
+- `config/nix-darwin/README.md` — 短縮版概要
+- `scripts/bootstrap-nix-darwin.sh` — 初回適用スクリプト
+- `home/.zshrc` — Nix PATH 強制 prepend ブロックを含む
+- `CLAUDE.md` — リポジトリ全体の概要に nix-darwin 節あり

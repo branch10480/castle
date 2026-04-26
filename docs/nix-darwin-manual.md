@@ -297,26 +297,10 @@ sudo darwin-rebuild switch --switch-generation <番号>
 
 → `darwin.nix` または `home.nix` を直接編集 → switch → `/castle` で push。
 
-### 6.2 「このマシンでだけ動かしたい」場合（将来）
+### 6.2 「このマシンでだけ動かしたい」場合
 
-現状は単一ホスト構成。複数ホスト対応にしたくなったら以下の構成にリファクタ:
-
-```
-config/nix-darwin/
-├── flake.nix
-├── modules/
-│   ├── common-darwin.nix
-│   └── common-home.nix
-└── hosts/
-    ├── private-mbp/
-    │   ├── darwin.nix
-    │   └── home.nix
-    └── work-mba/
-        ├── darwin.nix
-        └── home.nix
-```
-
-`flake.nix` の `darwinConfigurations` でホスト名別にエントリを生やす。
+マルチホスト構成への移行手順は **§7.2** を参照。
+共通設定だけで済む段階では `flake.nix` にホストエントリを足すだけで OK。
 
 ---
 
@@ -336,13 +320,136 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 ~/.homesick/repos/castle/scripts/bootstrap-nix-darwin.sh
 ```
 
-### 7.2 ユーザー名・hostname が違う場合の事前作業
+### 7.2 仕事マシンを別ホストとして追加する手順
 
-- `darwin.nix` の `system.primaryUser = username;` は `flake.nix` の `username` を経由。
-  別ユーザー名のマシンに当てる場合は `flake.nix` の `username` を上書き、
-  または特殊引数 (`specialArgs`) を分岐させる。
-- `flake.nix` の `darwinConfigurations` に該当 hostname のエントリを追加するか、
-  `default` フォールバックを利用する。
+例: 仕事用マシン `WorkMBA` を追加し、private 機 (`ToshiharunoMacBook-Pro`) と差分管理する。
+
+#### Step 1. ターゲットマシンの hostname を確認
+
+```bash
+# 仕事マシン側で
+scutil --get LocalHostName   # 例: WorkMBA
+hostname -s
+```
+
+`flake.nix` の `darwinConfigurations` のキーはこの hostname と一致させる。
+
+#### Step 2. `flake.nix` にホストエントリを追加
+
+```nix
+darwinConfigurations = {
+  "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro";
+  "WorkMBA"                = mkDarwin "WorkMBA";    # ← 追加
+  default                  = mkDarwin "ToshiharunoMacBook-Pro";
+};
+```
+
+これだけで両機共通の `darwin.nix` / `home.nix` が当たるようになる。
+
+#### Step 3. ホスト別の差分が必要な場合だけディレクトリ分割
+
+共通設定で済むなら Step 2 で終了。仕事用にだけ入れたいパッケージや、
+private にしか入れたくないものが出てきた段階で構造を分ける:
+
+```
+config/nix-darwin/
+├── flake.nix
+├── modules/
+│   ├── common-darwin.nix      # 既存 darwin.nix の共通部分
+│   └── common-home.nix        # 既存 home.nix の共通部分
+└── hosts/
+    ├── private/
+    │   ├── darwin.nix         # private 専用 (例: hammerspoon, vlc)
+    │   └── home.nix
+    └── work/
+        ├── darwin.nix         # 仕事専用 (例: 社内ツール、Slack)
+        └── home.nix
+```
+
+`flake.nix` の `mkDarwin` を以下のように改造:
+
+```nix
+mkDarwin = hostname: hostDir:
+  nix-darwin.lib.darwinSystem {
+    inherit system;
+    specialArgs = { inherit username hostname; };
+    modules = [
+      ./modules/common-darwin.nix
+      (./hosts + "/${hostDir}/darwin.nix")
+      home-manager.darwinModules.home-manager
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.extraSpecialArgs = { inherit username; };
+        home-manager.users.${username} = import (./hosts + "/${hostDir}/home.nix");
+        networking.hostName = hostname;
+        networking.computerName = hostname;
+      }
+    ];
+  };
+
+darwinConfigurations = {
+  "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro" "private";
+  "WorkMBA"                = mkDarwin "WorkMBA" "work";
+};
+```
+
+各 `hosts/<name>/darwin.nix` は `imports = [ ../../modules/common-darwin.nix ];`
+で共通部分を取り込み、上書きしたいキーだけ書く。
+
+#### Step 4. ユーザー名が違う場合
+
+`flake.nix` の `username` をホスト別に分岐:
+
+```nix
+mkDarwin = hostname: hostDir: username:
+  nix-darwin.lib.darwinSystem {
+    specialArgs = { inherit username hostname; };
+    # ...
+  };
+
+darwinConfigurations = {
+  "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro" "private" "toshiharuimaeda";
+  "WorkMBA"                = mkDarwin "WorkMBA"                "work"    "t-imaeda";
+};
+```
+
+`darwin.nix` 側の `system.primaryUser = username;` と `users.users.${username}` は
+`specialArgs` 経由で受け取っているのでそのまま動く。
+
+#### Step 5. 仕事マシン側で初回適用
+
+```bash
+# 1) dotfiles を入れる
+brew install homeshick   # まだ無ければ
+homeshick clone branch10480/castle
+homeshick link castle
+
+# 2) Nix を入れる
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+exec "$SHELL" -l
+
+# 3) 初回 switch（hostname が flake のキーと一致していれば --flake . でOK）
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin#WorkMBA
+```
+
+以後は `darwin-rebuild switch --flake ~/.config/nix-darwin` で日常運用可。
+
+#### Step 6. 機密差分の扱い
+
+仕事専用の社内 tap・private registry など **公開リポジトリにコミットしたくない**
+設定が出たら、`hosts/work/local.nix` を `.gitignore` に入れて参照する:
+
+```nix
+# hosts/work/darwin.nix
+imports = [
+  ../../modules/common-darwin.nix
+  ./local.nix   # gitignored
+];
+```
+
+または `~/.zshrc.local` と同様に、castle 外のディレクトリに置いて
+`builtins.readFile` 等で取り込む方式も可。
 
 ---
 

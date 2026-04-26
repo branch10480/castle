@@ -68,7 +68,7 @@
       "ffmpeg"
       "fzf"
       # "gh"     # → migrated to home.nix (Nix)
-      "ghq"
+      # "ghq"    # → migrated to home.nix (Nix)
       "go"
       "homeshick"
       "libyaml"

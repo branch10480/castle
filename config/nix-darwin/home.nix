@@ -35,5 +35,6 @@
     (direnv.overrideAttrs (_: { doCheck = false; }))
     # Migrated from Homebrew (phase 2: medium-risk CLIs with shell integrations)
     gh
+    ghq
   ];
 }

@@ -67,7 +67,7 @@
       # "direnv"  # → migrated to home.nix (Nix, doCheck=false)
       "ffmpeg"
       "fzf"
-      "gh"
+      # "gh"     # → migrated to home.nix (Nix)
       "ghq"
       "go"
       "homeshick"

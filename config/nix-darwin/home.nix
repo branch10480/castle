@@ -33,5 +33,7 @@
     # direnv: Nix の checkPhase が macOS でハング（zsh/fish/bash の統合テスト
     # が TTY 待ちでブロックする）するため doCheck=false でテストを skip する。
     (direnv.overrideAttrs (_: { doCheck = false; }))
+    # Migrated from Homebrew (phase 2: medium-risk CLIs with shell integrations)
+    gh
   ];
 }

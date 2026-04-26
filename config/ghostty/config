@@ -23,8 +23,8 @@ background-blur-radius = 25
 macos-titlebar-style = tabs
 
 # Window size
-window-width = 155
-window-height = 53
+window-width = 100
+window-height = 30
 
 # Cursor
 #cursor-style = block

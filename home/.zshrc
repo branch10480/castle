@@ -5,6 +5,18 @@ _SHELL_INIT_PWD="$PWD"
 # ── Environment ──────────────────────────────────────────
 export PATH="$HOME/.local/bin:$PATH"
 
+# Nix (nix-darwin + Home Manager) を Homebrew より優先させる。
+# /etc/zprofile の path_helper が /opt/homebrew/bin を先頭に挿入し直すため、
+# .zshrc 側で再度 Nix プロファイルを prepend する必要がある。
+for _nix_dir in \
+  "/etc/profiles/per-user/$USER/bin" \
+  /run/current-system/sw/bin \
+  /nix/var/nix/profiles/default/bin; do
+  [[ -d "$_nix_dir" ]] && PATH="$_nix_dir:${PATH//$_nix_dir:/}"
+done
+unset _nix_dir
+export PATH
+
 if [[ -n "${WEZTERM_PANE:-}" ]]; then
   export TMUX="wezterm-shim/${WEZTERM_PANE}/0"
 fi

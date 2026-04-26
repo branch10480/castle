@@ -28,5 +28,9 @@
     bat
     eza
     tig
+    # Migrated from Homebrew (phase 1: low-risk CLIs)
+    tree
+    # direnv: kept on Homebrew because Nix's checkPhase hangs on macOS
+    # (zsh/fish/bash integration tests block waiting for TTY).
   ];
 }

@@ -80,7 +80,7 @@
       "satococoa/tap/wtp"
       "starship"
       "tmux"
-      "tree"
+      # "tree"    # → migrated to home.nix (Nix)
       "uv"
       "watch"
       "xcode-build-server"

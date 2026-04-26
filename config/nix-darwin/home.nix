@@ -30,7 +30,8 @@
     tig
     # Migrated from Homebrew (phase 1: low-risk CLIs)
     tree
-    # direnv: kept on Homebrew because Nix's checkPhase hangs on macOS
-    # (zsh/fish/bash integration tests block waiting for TTY).
+    # direnv: Nix の checkPhase が macOS でハング（zsh/fish/bash の統合テスト
+    # が TTY 待ちでブロックする）するため doCheck=false でテストを skip する。
+    (direnv.overrideAttrs (_: { doCheck = false; }))
   ];
 }

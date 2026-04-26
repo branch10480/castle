@@ -64,7 +64,7 @@
       "anomalyco/tap/opencode"
       "anyenv"
       "branch10480/tap/markdownobserver-fork"
-      "direnv"
+      # "direnv"  # → migrated to home.nix (Nix, doCheck=false)
       "ffmpeg"
       "fzf"
       "gh"

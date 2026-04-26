@@ -41,6 +41,9 @@
     # Migrated from Homebrew (phase 3: low-risk standalone CLIs)
     ffmpeg
     xcodegen
+    # fzf: direnv と同様に macOS の checkPhase ハングリスクを避けるため
+    # 最初から doCheck=false で起動。問題なければ標準 attr に戻して良い。
+    (fzf.overrideAttrs (_: { doCheck = false; }))
     # xcode-build-server: nixpkgs に未収載。brew で運用継続。
     nb
     mint

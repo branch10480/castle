@@ -66,7 +66,7 @@
       "branch10480/tap/markdownobserver-fork"
       # "direnv"  # → migrated to home.nix (Nix, doCheck=false)
       # "ffmpeg"  # → migrated to home.nix (Nix)
-      "fzf"
+      # "fzf"   # → migrated to home.nix (Nix, doCheck=false)
       # "gh"     # → migrated to home.nix (Nix)
       # "ghq"    # → migrated to home.nix (Nix)
       "go"

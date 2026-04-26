@@ -38,5 +38,12 @@
     ghq
     zoxide
     starship
+    # Migrated from Homebrew (phase 3: low-risk standalone CLIs)
+    ffmpeg
+    xcodegen
+    # xcode-build-server: nixpkgs に未収載。brew で運用継続。
+    nb
+    mint
+    uv
   ];
 }

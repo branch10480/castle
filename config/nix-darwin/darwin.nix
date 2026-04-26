@@ -65,15 +65,15 @@
       "anyenv"
       "branch10480/tap/markdownobserver-fork"
       # "direnv"  # → migrated to home.nix (Nix, doCheck=false)
-      "ffmpeg"
+      # "ffmpeg"  # → migrated to home.nix (Nix)
       "fzf"
       # "gh"     # → migrated to home.nix (Nix)
       # "ghq"    # → migrated to home.nix (Nix)
       "go"
       "homeshick"
       "libyaml"
-      "mint"
-      "nb"
+      # "mint"    # → migrated to home.nix (Nix)
+      # "nb"      # → migrated to home.nix (Nix)
       "neovim"
       "node"
       "oven-sh/bun/bun"
@@ -81,10 +81,10 @@
       # "starship" # → migrated to home.nix (Nix)
       "tmux"
       # "tree"    # → migrated to home.nix (Nix)
-      "uv"
+      # "uv"      # → migrated to home.nix (Nix)
       "watch"
-      "xcode-build-server"
-      "xcodegen"
+      "xcode-build-server"  # nixpkgs に未収載のため brew のまま
+      # "xcodegen"           # → migrated to home.nix (Nix)
       # "zoxide" # → migrated to home.nix (Nix)
       "zsh-autosuggestions"
       "zsh-syntax-highlighting"

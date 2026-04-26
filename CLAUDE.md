@@ -19,7 +19,8 @@ castle/
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── wezterm/    # WezTermターミナル設定
 │   ├── karabiner/  # Karabiner-Elements設定
-│   └── git/        # Gitグローバル設定
+│   ├── git/        # Gitグローバル設定
+│   └── nix-darwin/ # nix-darwin + Home Manager 構成（flake.nix / darwin.nix / home.nix）
 ├── claude/         # Claude Code用設定（~/.claude/にリンク）
 │   ├── agents/     # カスタムエージェント定義
 │   ├── commands/   # ユーザー呼び出し可能なコマンド
@@ -73,3 +74,21 @@ scripts/setup-claude-statusline.sh
 # 変更をプッシュ（Claude Codeから）
 /castle
 ```
+
+## nix-darwin / Home Manager
+
+`config/nix-darwin/` に nix-darwin + Home Manager + Homebrew(宣言) の構成を集約。
+詳細は `config/nix-darwin/README.md`。
+
+```bash
+# 初回適用（Nix インストール後）
+scripts/bootstrap-nix-darwin.sh
+
+# 日常運用
+darwin-rebuild switch --flake ~/.config/nix-darwin
+```
+
+方針:
+- CLI = Nix (`home.nix` の `home.packages`) / GUI = Homebrew (`darwin.nix` の `homebrew.casks`)
+- 既存 dotfiles は homeshick 管理を維持し、HM の `programs.<tool>` は有効化しない
+- Homebrew は `cleanup = "none"` で安全側起動（取り込み完了後に `"zap"` 化を検討）

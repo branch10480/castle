@@ -78,7 +78,7 @@
       "node"
       "oven-sh/bun/bun"
       "satococoa/tap/wtp"
-      "starship"
+      # "starship" # → migrated to home.nix (Nix)
       "tmux"
       # "tree"    # → migrated to home.nix (Nix)
       "uv"

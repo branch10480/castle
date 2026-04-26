@@ -37,5 +37,6 @@
     gh
     ghq
     zoxide
+    starship
   ];
 }

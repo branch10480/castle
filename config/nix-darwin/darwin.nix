@@ -85,7 +85,7 @@
       "watch"
       "xcode-build-server"
       "xcodegen"
-      "zoxide"
+      # "zoxide" # → migrated to home.nix (Nix)
       "zsh-autosuggestions"
       "zsh-syntax-highlighting"
     ];

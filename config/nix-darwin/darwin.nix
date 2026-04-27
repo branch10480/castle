@@ -91,7 +91,8 @@
     ];
 
     casks = [
-      "codex"
+      # codex (CLI) は npm 版 @openai/codex を使うため Nix 宣言から除外。
+      # Caskroom の codex-app (GUI) はそのまま残す。
       "codex-app"
       "font-fira-code-nerd-font"
       "font-ibm-plex-mono"
@@ -101,7 +102,6 @@
       "hammerspoon"
       "raycast"
       "vlc"
-      "wezterm@nightly"
     ];
 
     masApps = {

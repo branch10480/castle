@@ -274,7 +274,33 @@ warning: $HOME ('/Users/...') is not owned by you, falling back to /var/root
 `sudo` 配下で `$HOME` が継承されているための無害警告。動作に影響なし。
 気になる場合は `sudo -H darwin-rebuild ...` を使う。
 
-### 5.6 ロールバック
+### 5.6 `useUserPackages` は `share/<任意名>/` を merge しない
+
+home-manager の `useUserPackages = true` は store path 配下の **定型ディレクトリ**
+（`bin/`, `lib/`, `share/man/`, `share/info/`, `share/zsh/`, `share/locale/`,
+`share/terminfo/` など）だけを `/etc/profiles/per-user/$USER/` に merge する。
+
+つまり、パッケージが `share/<custom-name>/` のような非標準サブディレクトリに
+ファイルを置くと、profile 配下からは見えなくなる。
+
+**実例**: `zsh-syntax-highlighting`
+- 本体: `/nix/store/.../share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh`
+- profile: 露出しない（`share/zsh-syntax-highlighting/` は捨てられる）
+
+**対応パターン**: `home.nix` の `home.file` で安定パスへ symlink する。
+
+```nix
+home.file.".local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh".source =
+  "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+```
+
+`darwin-rebuild switch` のたびに symlink が貼り直されるので、store path の
+バージョン変動にも自動追従。`.zshrc` 側はバージョンを意識せず source できる。
+
+参考: 同じ作りでも `zsh-autosuggestions` は `share/zsh/plugins/...` に置かれる
+ため `share/zsh/` 経由で自動 merge され、追加対応は不要。
+
+### 5.7 ロールバック
 
 何か壊れたら:
 

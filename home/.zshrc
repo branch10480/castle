@@ -42,11 +42,22 @@ if (( $+commands[anyenv] )); then
   unset _anyenv_cache
 fi
 
-# zsh plugins
-[[ -f "$_brew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-  source "$_brew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-[[ -f "$_brew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-  source "$_brew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# zsh plugins (Nix を優先、brew にフォールバック)
+# 注意: nixpkgs ではプラグイン毎に share/ 配下のパスが揺れるため明示する。
+_nix_share="/etc/profiles/per-user/$USER/share"
+_zsh_plugin_paths=(
+  "$_nix_share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  "$_brew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  "$HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  "$_brew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+)
+# autosuggestions と syntax-highlighting をそれぞれ最初に見つかった方だけ source。
+for _name in zsh-autosuggestions zsh-syntax-highlighting; do
+  for _p in $_zsh_plugin_paths; do
+    [[ "$_p" == *"/$_name/"* && -f "$_p" ]] && { source "$_p"; break; }
+  done
+done
+unset _nix_share _zsh_plugin_paths _name _p
 
 # starship
 (( $+commands[starship] )) && eval "$(starship init zsh)"

@@ -86,8 +86,8 @@
       "xcode-build-server"  # nixpkgs に未収載のため brew のまま
       # "xcodegen"           # → migrated to home.nix (Nix)
       # "zoxide" # → migrated to home.nix (Nix)
-      "zsh-autosuggestions"
-      "zsh-syntax-highlighting"
+      # "zsh-autosuggestions"     # → migrated to home.nix (Nix)
+      # "zsh-syntax-highlighting"  # → migrated to home.nix (Nix)
     ];
 
     casks = [

@@ -55,5 +55,17 @@
     # Migrated from Homebrew (phase 5: editor & runtime)
     neovim
     bun
+    # Migrated from Homebrew (phase 6: zsh plugins)
+    # 注意: バイナリではなく share/ 配下にスクリプトを配置するパッケージ。
+    # autosuggestions は share/zsh/plugins/ に置かれるため自動で profile に
+    # merge されるが、syntax-highlighting は share/zsh-syntax-highlighting/
+    # （非標準サブディレクトリ）に置かれ、useUserPackages が拾わない。
+    # 後段の home.file で安定パスへ symlink して .zshrc から参照する。
+    zsh-autosuggestions
+    zsh-syntax-highlighting
   ];
+
+  # zsh-syntax-highlighting の本体スクリプトを安定パスへ露出させる。
+  home.file.".local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh".source =
+    "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
 }

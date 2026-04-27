@@ -48,5 +48,9 @@
     nb
     mint
     uv
+    # Migrated from Homebrew (phase 4: safe-tier batch 2)
+    tmux
+    go
+    procps  # `watch` バイナリを提供（Homebrew の watch formula 相当）
   ];
 }

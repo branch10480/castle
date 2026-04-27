@@ -69,7 +69,7 @@
       # "fzf"   # → migrated to home.nix (Nix, doCheck=false)
       # "gh"     # → migrated to home.nix (Nix)
       # "ghq"    # → migrated to home.nix (Nix)
-      "go"
+      # "go"      # → migrated to home.nix (Nix)
       "homeshick"
       "libyaml"
       # "mint"    # → migrated to home.nix (Nix)
@@ -79,10 +79,10 @@
       "oven-sh/bun/bun"
       "satococoa/tap/wtp"
       # "starship" # → migrated to home.nix (Nix)
-      "tmux"
+      # "tmux"    # → migrated to home.nix (Nix)
       # "tree"    # → migrated to home.nix (Nix)
       # "uv"      # → migrated to home.nix (Nix)
-      "watch"
+      # "watch"   # → migrated to home.nix (procps)
       "xcode-build-server"  # nixpkgs に未収載のため brew のまま
       # "xcodegen"           # → migrated to home.nix (Nix)
       # "zoxide" # → migrated to home.nix (Nix)

@@ -17,9 +17,6 @@ done
 unset _nix_dir
 export PATH
 
-if [[ -n "${WEZTERM_PANE:-}" ]]; then
-  export TMUX="wezterm-shim/${WEZTERM_PANE}/0"
-fi
 export EDITOR="nvim"
 export VISUAL="nvim"
 

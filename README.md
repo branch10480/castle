@@ -15,15 +15,6 @@ homeshick clone git@github.com:branch10480/castle.git
 homeshick link castle
 ```
 
-### 手動シンボリックリンク
-
-homeshick は既存ディレクトリ内のファイルを自動リンクしないため、以下は手動で作成する：
-
-```bash
-# WezTerm用 tmux shim（Claude Codeのエージェントチーム機能に必要）
-ln -sf ~/.homesick/repos/castle/home/.local/bin/tmux ~/.local/bin/tmux
-```
-
 ## 含まれる設定
 
 ### シェル (zsh)
@@ -58,13 +49,6 @@ ln -sf ~/.homesick/repos/castle/home/.local/bin/tmux ~/.local/bin/tmux
 - **Karabiner-Elements** - CapsLock→Control、日本語キーボードカスタマイズ
 - **Hammerspoon** - `Ctrl+Space` でWezTermにフォーカス
 - **BetterTouchTool** - カスタムジェスチャー
-
-### Claude Code エージェントチーム
-
-- **tmux shim** (`home/.local/bin/tmux`) - WezTerm内でtmuxコマンドを `wezterm cli` に変換するシム
-- Claude Codeの Agent Teams 機能でペイン分割を実現
-- チームメイトのシャットダウン時にペインを自動クローズ
-- `/config` で `teammateMode` を `tmux` に設定して使用
 
 ### Git
 

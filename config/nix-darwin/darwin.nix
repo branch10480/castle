@@ -74,9 +74,9 @@
       "libyaml"
       # "mint"    # → migrated to home.nix (Nix)
       # "nb"      # → migrated to home.nix (Nix)
-      "neovim"
+      # "neovim"  # → migrated to home.nix (Nix)
       "node"
-      "oven-sh/bun/bun"
+      # "oven-sh/bun/bun"  # → migrated to home.nix (Nix)
       "satococoa/tap/wtp"
       # "starship" # → migrated to home.nix (Nix)
       # "tmux"    # → migrated to home.nix (Nix)

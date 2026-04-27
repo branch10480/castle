@@ -52,5 +52,8 @@
     tmux
     go
     procps  # `watch` バイナリを提供（Homebrew の watch formula 相当）
+    # Migrated from Homebrew (phase 5: editor & runtime)
+    neovim
+    bun
   ];
 }

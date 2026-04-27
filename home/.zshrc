@@ -82,6 +82,10 @@ alias xc='xclean'
 alias xcd='xclean -d'
 alias mdo='open -a "/opt/homebrew/opt/markdownobserver-fork/MarkdownObserver.app"'
 alias nixman='nvim ~/.homesick/repos/castle/docs/nix-darwin-manual.md'
+# nix-darwin: switch / rollback / generation list
+alias nrs='sudo darwin-rebuild switch --flake ~/.config/nix-darwin'
+alias nrb='darwin-rebuild --rollback'
+alias nrl='darwin-rebuild --list-generations'
 
 # ── Claude Code ──────────────────────────────────────────
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1

@@ -513,4 +513,9 @@ imports = [
 
 ```bash
 nixman      # このマニュアル (docs/nix-darwin-manual.md) を nvim で開く
+nrs         # sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+nrb         # darwin-rebuild --rollback
+nrl         # darwin-rebuild --list-generations
 ```
+
+`nrs` の名前は **n**ix **r**ebuild **s**witch の略。`nrb` = rollback、`nrl` = list。

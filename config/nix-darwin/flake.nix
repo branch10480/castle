@@ -17,10 +17,9 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, ... }:
     let
-      username = "toshiharuimaeda";
       system = "aarch64-darwin";
 
-      mkDarwin = hostname:
+      mkDarwin = { hostname, username }:
         nix-darwin.lib.darwinSystem {
           inherit system;
           specialArgs = { inherit username hostname; };
@@ -40,9 +39,13 @@
     in
     {
       darwinConfigurations = {
-        "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro";
+        "ToshiharunoMacBook-Pro" =
+          mkDarwin { hostname = "ToshiharunoMacBook-Pro"; username = "toshiharuimaeda"; };
+        "lymL7VFGX9MD3" =
+          mkDarwin { hostname = "lymL7VFGX9MD3"; username = "toimaeda"; };
         # default alias so `darwin-rebuild switch --flake .` works regardless of hostname
-        default = mkDarwin "ToshiharunoMacBook-Pro";
+        default =
+          mkDarwin { hostname = "ToshiharunoMacBook-Pro"; username = "toshiharuimaeda"; };
       };
     };
 }

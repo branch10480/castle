@@ -55,6 +55,7 @@
     # Migrated from Homebrew (phase 5: editor & runtime)
     neovim
     bun
+    nodejs  # nixpkgs-unstable では現在の LTS (v24)。明示固定したい場合は nodejs_24 等を指定。
     # Migrated from Homebrew (phase 6: zsh plugins)
     # 注意: バイナリではなく share/ 配下にスクリプトを配置するパッケージ。
     # autosuggestions は share/zsh/plugins/ に置かれるため自動で profile に

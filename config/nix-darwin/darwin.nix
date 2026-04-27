@@ -75,7 +75,7 @@
       # "mint"    # → migrated to home.nix (Nix)
       # "nb"      # → migrated to home.nix (Nix)
       # "neovim"  # → migrated to home.nix (Nix)
-      "node"
+      # "node"    # → migrated to home.nix (Nix, nodejs LTS)
       # "oven-sh/bun/bun"  # → migrated to home.nix (Nix)
       "satococoa/tap/wtp"
       # "starship" # → migrated to home.nix (Nix)

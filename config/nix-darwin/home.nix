@@ -69,4 +69,10 @@
   # zsh-syntax-highlighting の本体スクリプトを安定パスへ露出させる。
   home.file.".local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh".source =
     "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+
+  # MarkdownObserver(fork) のユーザー CSS をマシン横断で同期する。
+  # 組み込みテーマの上に重ねて当たるカラーパレット調整。アプリ側がこの
+  # ディレクトリを読み込むので themes/ 配下に固定で配置する。
+  home.file."Library/Application Support/MarkdownObserver/themes/user.css".source =
+    ./files/markdownobserver/user.css;
 }

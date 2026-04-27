@@ -1,0 +1,14 @@
+/* Personal color tweaks.
+   Applied on top of whichever built-in theme is selected. */
+
+:root {
+  --reader-fg: #373734;
+  --reader-bg: #F5F5F2;
+}
+
+/* Table tinted rows + definition list — scoped so code blocks keep their own background. */
+.markdown-body thead th,
+.markdown-body tbody tr:nth-child(even) td,
+.markdown-body dl {
+  background: #EDECE8;
+}

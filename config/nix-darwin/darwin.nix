@@ -62,7 +62,6 @@
       "cocoapods"
       "homeshick"
       "libyaml"
-      "node@22"
       "pandoc"
       "rbenv-bundler"
       "satococoa/tap/wtp"

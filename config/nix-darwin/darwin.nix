@@ -39,10 +39,9 @@
     onActivation = {
       autoUpdate = false;
       upgrade = false;
-      # IMPORTANT: keep "none" until every existing brew package has been
-      # transcribed into the lists below. Switching to "zap" removes any
-      # brew/cask not declared here.
-      cleanup = "none";
+      # zap = 宣言外の brew/cask を次回 switch で自動削除する。
+      # 「宣言＝真実」を強制し、手動 `brew install` した残骸が積もるのを防ぐ。
+      cleanup = "zap";
     };
 
     global = {
@@ -50,13 +49,9 @@
       # `lockfiles` は Homebrew 4.4.0 で機能廃止のため削除。
     };
 
-    # Imported from `brew tap` / `brew leaves` / `brew list --cask` on
-    # 2026-04-26. Optimization (deduping with Nix-provided CLI) is deferred
-    # until after the first successful `darwin-rebuild switch`.
     taps = [
       "anomalyco/tap"
       "branch10480/tap"
-      "oven-sh/bun"
       "satococoa/tap"
     ];
 
@@ -64,30 +59,15 @@
       "anomalyco/tap/opencode"
       "anyenv"
       "branch10480/tap/markdownobserver-fork"
-      # "direnv"  # → migrated to home.nix (Nix, doCheck=false)
-      # "ffmpeg"  # → migrated to home.nix (Nix)
-      # "fzf"   # → migrated to home.nix (Nix, doCheck=false)
-      # "gh"     # → migrated to home.nix (Nix)
-      # "ghq"    # → migrated to home.nix (Nix)
-      # "go"      # → migrated to home.nix (Nix)
+      "cocoapods"
       "homeshick"
       "libyaml"
-      # "mint"    # → migrated to home.nix (Nix)
-      # "nb"      # → migrated to home.nix (Nix)
-      # "neovim"  # → migrated to home.nix (Nix)
-      # "node"    # → migrated to home.nix (Nix, nodejs LTS)
-      # "oven-sh/bun/bun"  # → migrated to home.nix (Nix)
+      "node@22"
+      "pandoc"
+      "rbenv-bundler"
       "satococoa/tap/wtp"
-      # "starship" # → migrated to home.nix (Nix)
-      # "tmux"    # → migrated to home.nix (Nix)
-      # "tree"    # → migrated to home.nix (Nix)
-      # "uv"      # → migrated to home.nix (Nix)
-      # "watch"   # → migrated to home.nix (procps)
+      "weasyprint"
       "xcode-build-server"  # nixpkgs に未収載のため brew のまま
-      # "xcodegen"           # → migrated to home.nix (Nix)
-      # "zoxide" # → migrated to home.nix (Nix)
-      # "zsh-autosuggestions"     # → migrated to home.nix (Nix)
-      # "zsh-syntax-highlighting"  # → migrated to home.nix (Nix)
     ];
 
     casks = [

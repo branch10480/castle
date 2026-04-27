@@ -543,7 +543,7 @@ nrs         # sudo darwin-rebuild switch --flake ~/.config/nix-darwin
 nrb         # darwin-rebuild --rollback
 nrl         # darwin-rebuild --list-generations
 nru         # nix flake update --flake ~/.config/nix-darwin（inputs を最新化）
-nrgc        # sudo nix-collect-garbage -d（古い世代を削除して容量回収）
+nrgc        # system + user 両 profile の "14日より古い" 世代を削除して容量回収
 ```
 
 `nrs` の名前は **n**ix **r**ebuild **s**witch の略。`nrb` = rollback、`nrl` = list、`nru` = update、`nrgc` = garbage collect。
@@ -551,9 +551,19 @@ nrgc        # sudo nix-collect-garbage -d（古い世代を削除して容量回
 ### 通常の更新フロー
 
 ```bash
-nru   # flake.lock を更新（nixpkgs 等が最新コミットに）
-nrs   # 実際にシステムへ反映
-nrl   # 世代が増えたか確認（問題あれば nrb で戻せる）
+nru                                                       # flake.lock を更新
+git -C ~/.config/nix-darwin diff flake.lock | head -80    # 破壊的差分が無いか確認
+nrs                                                       # システムへ反映
+nrl                                                       # 世代を確認（問題あれば nrb）
+
+# castle へ反映（別マシンへ伝搬させるため）
+cd ~/.homesick/repos/castle && git add config/nix-darwin/flake.lock && git commit -m "chore(nix-darwin): bump flake inputs" && git push
 ```
 
-容量が気になってきたら `nrgc` で古い世代を一掃。直前の `nrb` 余地は失われる点だけ注意。
+> ⚠️ `~/.config/nix-darwin/flake.lock` は castle の `config/nix-darwin/flake.lock` の実体（homeshick リンク）。`nru` で書き換わるので **castle 側でコミットを忘れると別マシンに更新が伝わらない**。
+
+### 容量回収（`nrgc`）の挙動
+
+- `nix-collect-garbage` は **system profile（root）** と **user profile（home-manager）** を別々に管理する。`nrgc` は両方を 1 コマンドで掃除する zsh 関数。
+- `--delete-older-than 14d` を採用しているため、直近 2 週間の世代は残る → `nrb` で戻れる安全マージン付き。
+- それでも容量が足りない時は手動で `sudo nix-collect-garbage -d && nix-collect-garbage -d` を流す（rollback 余地は失われる）。

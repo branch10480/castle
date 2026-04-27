@@ -99,7 +99,11 @@ alias nrb='darwin-rebuild --rollback'
 alias nrl='darwin-rebuild --list-generations'
 # nix flake: update inputs (nixpkgs 等を最新化) → switch で反映
 alias nru='nix flake update --flake ~/.config/nix-darwin'
-alias nrgc='sudo nix-collect-garbage -d'
+# nrgc: system / user 両 profile の "14日より古い" 世代を削除（rollback 余地を保つ）
+nrgc() {
+  sudo nix-collect-garbage --delete-older-than 14d
+  nix-collect-garbage --delete-older-than 14d
+}
 
 # ── Claude Code ──────────────────────────────────────────
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1

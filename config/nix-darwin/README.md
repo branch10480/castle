@@ -7,6 +7,9 @@ macOS 環境の宣言的構成を管理する。
 homeshick の `castle` リポジトリ配下にあり、`home/.config -> ../config` の
 シンボリックリンク経由で実体は `~/.config/nix-darwin/` から参照される。
 
+> 詳細な運用手順・トラブルシューティング・新ホスト追加方法は
+> [`../../docs/nix-darwin-manual.md`](../../docs/nix-darwin-manual.md) を参照。
+
 ## ファイル構成
 
 | ファイル | 役割 |
@@ -57,3 +60,20 @@ mas list             # → masApps へ転記
 ```
 
 転記後 `darwin-rebuild switch` で差分ゼロを確認できたら `cleanup = "zap"` 化。
+
+## ホスト構成
+
+`flake.nix` の `mkDarwin` は `{ hostname, username }` を受け取る形に
+拡張済みで、複数マシンを同一 flake から管理できる。エントリを増やすだけで
+新ホストを追加できる:
+
+```nix
+darwinConfigurations = {
+  "MacA" = mkDarwin { hostname = "MacA"; username = "alice"; };
+  "MacB" = mkDarwin { hostname = "MacB"; username = "bob"; };
+};
+```
+
+新ホストの追加手順・既存マシンとの差分管理・落とし穴
+（`/etc/bashrc` `/etc/zshrc` 衝突、cask と既存バイナリの衝突など）は
+[`../../docs/nix-darwin-manual.md`](../../docs/nix-darwin-manual.md) §7 と §5 を参照。

@@ -315,6 +315,60 @@ darwin-rebuild --list-generations
 sudo darwin-rebuild switch --switch-generation <番号>
 ```
 
+### 5.8 `/etc/bashrc` / `/etc/zshrc` Unexpected files エラー（初回 activation）
+
+新規マシンの初回 `darwin-rebuild switch` で以下のように停止することがある:
+
+```
+error: Unexpected files in /etc, aborting activation
+The following files have unrecognized content and would be overwritten:
+  /etc/bashrc
+  /etc/zshrc
+Please check there is nothing critical in these files, rename them by adding
+.before-nix-darwin to the end, and then try again.
+```
+
+**原因**: nix-darwin は `/etc/bashrc` `/etc/zshrc` 等を自分で管理対象にしようとするが、既存ファイルの内容ハッシュが「macOS 出荷時」「nix-darwin 由来」のいずれにも一致しない場合は安全装置が発動して停止する。Determinate Systems Nix インストーラが Nix daemon の PATH 設定行を追記したケースなどで該当する。
+
+**対処**: メッセージ通りリネームして再実行:
+
+```bash
+sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+sudo mv /etc/zshrc  /etc/zshrc.before-nix-darwin
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+```
+
+リネーム後は nix-darwin が新しい `/etc/bashrc` `/etc/zshrc` を `/etc/static/` 配下の symlink として作り直す。Nix daemon の PATH も新しい方には自動的に組み込まれるので機能は失われない。リネームなのでいつでも元に戻せる安全な操作。
+
+### 5.9 既存 `/opt/homebrew/bin/<tool>` と cask の衝突
+
+cask を新たに `homebrew.casks` に宣言した時、`brew bundle` が以下のように失敗することがある:
+
+```
+Installing codex
+Installing codex has failed!
+==> Installing Cask codex
+Error: It seems there is already a Binary at '/opt/homebrew/bin/codex'.
+==> Purging files for version 0.124.0 of Cask codex
+```
+
+**原因**: その cask が `/opt/homebrew/bin/<tool>` に symlink を張ろうとしたが、既に **別経路** (formula、npm `-g`、手動 symlink、別 cask など) で同名のバイナリが存在しているため Homebrew が上書きを拒否する。
+
+**対処の選択肢**:
+
+| 方針 | アクション |
+| --- | --- |
+| **既存を残し cask 宣言を外す** | `darwin.nix` の `casks` から該当行を削除。npm/anyenv 等で更新を回したい CLI 向け |
+| **cask 版にバトンタッチ** | `rm /opt/homebrew/bin/<tool>`（user 所有 symlink なら sudo 不要）→ `darwin-rebuild switch` 再実行 |
+| **両方残したいが衝突回避** | 既存を別パス（例 `/opt/homebrew/bin/<tool>.npm`）にリネームし、cask は既定パスに置く |
+
+**実例**: `codex` は OpenAI Codex CLI で、cask 版と npm 版 `@openai/codex` の両方が存在する。本リポジトリでは npm 管理を選択して cask 宣言から外している（`darwin.nix` の `casks` リスト直前のコメント参照）。
+
+> [!TIP]
+> ログの末尾には `Using wezterm@nightly` のように **失敗とは無関係の "Using" 表示**が
+> 続くことがある。`brew bundle` は失敗 1 件でも処理を継続して残りを `Using` として
+> 列挙するため、エラー本体は **`failed to install` の前**を `grep` する必要がある。
+
 ---
 
 ## 6. ファイル別の編集の流れ
@@ -362,11 +416,19 @@ hostname -s
 
 #### Step 2. `flake.nix` にホストエントリを追加
 
+> [!NOTE]
+> 現行実装の `mkDarwin` は `{ hostname, username }` の attrset を受け取る形に
+> 拡張済み（`flake.nix:23` 参照）。username を **ホストごとに切り替えられる**
+> ので、業務用 / 私用でアカウント名が違っても同一 flake で管理できる。
+
 ```nix
 darwinConfigurations = {
-  "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro";
-  "WorkMBA"                = mkDarwin "WorkMBA";    # ← 追加
-  default                  = mkDarwin "ToshiharunoMacBook-Pro";
+  "ToshiharunoMacBook-Pro" =
+    mkDarwin { hostname = "ToshiharunoMacBook-Pro"; username = "toshiharuimaeda"; };
+  "WorkMBA" =
+    mkDarwin { hostname = "WorkMBA"; username = "t-imaeda"; };    # ← 追加
+  default =
+    mkDarwin { hostname = "ToshiharunoMacBook-Pro"; username = "toshiharuimaeda"; };
 };
 ```
 
@@ -423,25 +485,49 @@ darwinConfigurations = {
 各 `hosts/<name>/darwin.nix` は `imports = [ ../../modules/common-darwin.nix ];`
 で共通部分を取り込み、上書きしたいキーだけ書く。
 
-#### Step 4. ユーザー名が違う場合
+#### Step 4. ユーザー名が違う場合（**現行採用の構成**）
 
-`flake.nix` の `username` をホスト別に分岐:
+`mkDarwin` を attrset 受け取りにすると、ホスト別に username を分岐できる。
+本リポジトリで実採用済みの形がこちら:
 
 ```nix
-mkDarwin = hostname: hostDir: username:
+mkDarwin = { hostname, username }:
   nix-darwin.lib.darwinSystem {
+    inherit system;
     specialArgs = { inherit username hostname; };
-    # ...
+    modules = [
+      ./darwin.nix
+      home-manager.darwinModules.home-manager
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.extraSpecialArgs = { inherit username; };
+        home-manager.users.${username} = import ./home.nix;
+        networking.hostName = hostname;
+        networking.computerName = hostname;
+      }
+    ];
   };
 
 darwinConfigurations = {
-  "ToshiharunoMacBook-Pro" = mkDarwin "ToshiharunoMacBook-Pro" "private" "toshiharuimaeda";
-  "WorkMBA"                = mkDarwin "WorkMBA"                "work"    "t-imaeda";
+  "ToshiharunoMacBook-Pro" =
+    mkDarwin { hostname = "ToshiharunoMacBook-Pro"; username = "toshiharuimaeda"; };
+  "lymL7VFGX9MD3" =
+    mkDarwin { hostname = "lymL7VFGX9MD3"; username = "toimaeda"; };
 };
 ```
 
 `darwin.nix` 側の `system.primaryUser = username;` と `users.users.${username}` は
-`specialArgs` 経由で受け取っているのでそのまま動く。
+`specialArgs` 経由で受け取っているのでそのまま動く。新ホストを足したいときは
+`darwinConfigurations` に attrset エントリを 1 行追加するだけ。
+
+> [!TIP]
+> hostname に macOS が自動付与した識別子（例: `lymL7VFGX9MD3`）を使う場合、
+> `bootstrap-nix-darwin.sh` は `hostname -s` の出力で `darwinConfigurations.<key>`
+> を引き当てるので、**flake のキーを実機 hostname と完全一致させる**のが最も
+> 安全。一致するエントリが無い場合は `default` にフォールバックするが、その
+> `default` が他ホスト用なら activation で `users.users.<user>` 不在エラーで
+> 落ちる点に注意。
 
 #### Step 5. 仕事マシン側で初回適用
 
@@ -508,6 +594,8 @@ imports = [
 | `_direnv_hook:2: no such file or directory: ...` | hook が古い brew パスを参照 | §4.4: `brew uninstall <tool>` → `exec "$SHELL" -l` |
 | switch が途中で止まる | `Sorry, try again.` 後の再入力 / ネットワーク | `Ctrl+C` 後に再実行 |
 | 環境を壊した | activation 失敗 | `sudo darwin-rebuild rollback` |
+| 初回 activation で `Unexpected files in /etc` で停止 | nix-darwin の安全装置 | §5.8（`.before-nix-darwin` リネーム） |
+| `Installing <cask> has failed!` / `there is already a Binary at ...` | 既存 brew/npm/手動 symlink との衝突 | §5.9（cask 宣言を外す or 既存削除） |
 
 ---
 

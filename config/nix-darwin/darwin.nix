@@ -62,6 +62,10 @@
       "cocoapods"
       "homeshick"
       "libyaml"
+      # mint: Swift 製 yonaskolb/Mint。nixpkgs の `mint` は Mint Programming
+      # Language で別物のため brew を採用（Scripts/start.sh が `mint bootstrap`
+      # を要求する）。
+      "mint"
       "pandoc"
       "rbenv-bundler"
       "satococoa/tap/wtp"

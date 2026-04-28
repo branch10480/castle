@@ -46,7 +46,9 @@
     (fzf.overrideAttrs (_: { doCheck = false; }))
     # xcode-build-server: nixpkgs に未収載。brew で運用継続。
     nb
-    mint
+    # mint: nixpkgs の `mint` は Mint Programming Language (mint-lang) で、
+    # Swift の yonaskolb/Mint とは別物。Swift 側 mint は `brew install mint`
+    # で導入する（Scripts/start.sh が `mint bootstrap` を要求するため）。
     uv
     # Migrated from Homebrew (phase 4: safe-tier batch 2)
     tmux

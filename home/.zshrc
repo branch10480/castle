@@ -106,7 +106,6 @@ nrgc() {
 }
 
 # ── Claude Code ──────────────────────────────────────────
-export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
 
 alias c='claude'
 : ${CLAUDE_MODEL_SONNET:='sonnet'}

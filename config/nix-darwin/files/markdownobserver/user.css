@@ -87,3 +87,21 @@
   .hljs-strong         { font-weight: 700; }
   .hljs-punctuation    { color: #8a857a; }
 }
+
+/* ===== Font override =====
+   JetBrains Mono Nerd Font for ASCII / Latin / icons, falling back to
+   Hiragino Sans W3 for Japanese (and other unsupported codepoints).
+   Applies in both light and dark mode. */
+html, body {
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 100;
+}
+
+code, pre,
+.markdown-body code,
+.markdown-body pre {
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", "SF Mono", Menlo, ui-monospace, monospace;
+  font-weight: 100;
+  font-variant-ligatures: contextual;
+  font-feature-settings: "calt", "liga";
+}

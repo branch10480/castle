@@ -17,7 +17,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --reader-bg: #131312;
-    --reader-fg: #e8e3d6;
+    --reader-fg: #d4cfc1;
     --reader-fg-secondary: #9a958a;
 
     --reader-code-bg: #1d1d1c;
@@ -33,9 +33,9 @@
     --reader-changed-deleted: #d97766;
     --reader-mark-signal: #d4a76a;
 
-    --reader-h1: #f1ecdf;
-    --reader-h2: #ece6d6;
-    --reader-h3: #e2dcc9;
+    --reader-h1: #dcd6c7;
+    --reader-h2: #d6d0c1;
+    --reader-h3: #cdc7b6;
   }
 
   /* Tinted rows / definition list — re-tint for dark base. */
@@ -54,11 +54,11 @@
 
   .markdown-body :not(pre) > code {
     background: #232220;
-    color: #e8e3d6;
+    color: #d4cfc1;
   }
 
   /* highlight.js syntax overrides (lavender keys / warm green strings / amber numbers). */
-  .hljs                { color: #e8e3d6; background: transparent; }
+  .hljs                { color: #d4cfc1; background: transparent; }
   .hljs-comment,
   .hljs-quote          { color: #6b6960; font-style: italic; }
   .hljs-keyword,

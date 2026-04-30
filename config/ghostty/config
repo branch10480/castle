@@ -4,7 +4,7 @@ auto-update-channel = tip
 # Font settings (from WezTerm config)
 #font-family = FiraCode Nerd Font
 font-family = JetBrainsMono Nerd Font
-font-family = Hiragino Sans
+font-family = Hiragino Sans W3
 font-style = Light
 font-size = 14
 

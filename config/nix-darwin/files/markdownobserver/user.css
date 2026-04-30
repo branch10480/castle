@@ -12,3 +12,78 @@
 .markdown-body dl {
   background: #EDECE8;
 }
+
+/* ===== Dark mode override ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --reader-bg: #131312;
+    --reader-fg: #e8e3d6;
+    --reader-fg-secondary: #9a958a;
+
+    --reader-code-bg: #1d1d1c;
+    --reader-border: #2a2a28;
+    --reader-link: #d4a76a;
+
+    --reader-blockquote-bg: #1a1a18;
+    --reader-blockquote-fg: #c8c2b3;
+    --reader-blockquote-accent: #4a463d;
+
+    --reader-changed-added: #a8c97f;
+    --reader-changed-edited: #d4a76a;
+    --reader-changed-deleted: #d97766;
+    --reader-mark-signal: #d4a76a;
+
+    --reader-h1: #f1ecdf;
+    --reader-h2: #ece6d6;
+    --reader-h3: #e2dcc9;
+  }
+
+  /* Tinted rows / definition list — re-tint for dark base. */
+  .markdown-body thead th,
+  .markdown-body tbody tr:nth-child(even) td,
+  .markdown-body dl {
+    background: #1f1e1c;
+  }
+
+  /* Code block subtle inner edge to mimic the reference look. */
+  .markdown-body pre {
+    background: var(--reader-code-bg);
+    border-color: var(--reader-border);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+
+  .markdown-body :not(pre) > code {
+    background: #232220;
+    color: #e8e3d6;
+  }
+
+  /* highlight.js syntax overrides (lavender keys / warm green strings / amber numbers). */
+  .hljs                { color: #e8e3d6; background: transparent; }
+  .hljs-comment,
+  .hljs-quote          { color: #6b6960; font-style: italic; }
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-built_in,
+  .hljs-name,
+  .hljs-tag,
+  .hljs-attr           { color: #c2a9ff; }
+  .hljs-string,
+  .hljs-title,
+  .hljs-section,
+  .hljs-attribute,
+  .hljs-literal,
+  .hljs-template-tag,
+  .hljs-template-variable,
+  .hljs-type,
+  .hljs-addition       { color: #a8c97f; }
+  .hljs-number,
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-meta,
+  .hljs-link           { color: #d4a76a; }
+  .hljs-variable,
+  .hljs-deletion       { color: #d97766; }
+  .hljs-emphasis       { font-style: italic; }
+  .hljs-strong         { font-weight: 700; }
+  .hljs-punctuation    { color: #8a857a; }
+}

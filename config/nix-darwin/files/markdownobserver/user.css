@@ -89,11 +89,13 @@
 }
 
 /* ===== Font override =====
-   JetBrains Mono Nerd Font for ASCII / Latin / icons, falling back to
-   Hiragino Sans W3 for Japanese (and other unsupported codepoints).
-   Applies in both light and dark mode. */
+   本文: JetBrains Mono Nerd Font (ASCII/Latin/icons) + 日本語は明朝体。
+         CSS の font-family はコードポイント単位でフォールバックするため、
+         ASCII は JetBrains、和文は Hiragino Mincho ProN が自動で当たる。
+   コード: 従来どおり JetBrains + Hiragino Sans (ゴシック) を維持。
+         コード内の和文コメントは可読性のためゴシック寄せ。 */
 html, body {
-  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Mincho ProN", "YuMincho", serif;
   font-weight: 100;
 }
 

@@ -26,8 +26,14 @@
     coreutils
   ];
 
+  # フォントは Nix 経由で供給する。Homebrew Cask 経由だとネットワークエラー等で
+  # silent に skip されることがあり、別マシンで `nrs` 後もフォントが入らず
+  # CSS のフォールバック（Hiragino 等）に落ちる事故が起きるため。
   fonts.packages = with pkgs; [
-    # add fonts here as needed, e.g. nerd-fonts.jetbrains-mono
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.symbols-only
+    ibm-plex
   ];
 
   # Homebrew is used for macOS GUI apps (casks) and App Store apps that Nix
@@ -78,10 +84,8 @@
       # Caskroom の codex-app (GUI) はそのまま残す。
       "codex-app"
       "drawio"
-      "font-fira-code-nerd-font"
-      "font-ibm-plex-mono"
-      "font-jetbrains-mono-nerd-font"
-      "font-symbols-only-nerd-font"
+      # font-* casks は fonts.packages (Nix) に移行済み。
+      # cleanup = "zap" により次回 switch で Cask 側の残骸が自動削除される。
       "ghostty"
       "hammerspoon"
       "raycast"

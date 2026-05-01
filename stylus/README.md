@@ -6,7 +6,7 @@
 
 | ファイル | 適用先URL | 用途 |
 |---|---|---|
-| `slack.css` | `slack.com` を含むURL | Slackブラウザ版のフォント差し替え（本文: ヒラギノ明朝ProN / コード: JetBrainsMono Nerd Font） |
+| `slack.css` | `slack.com` を含むURL | Slackブラウザ版のフォント差し替え（英数字: JetBrainsMono Nerd Font / 日本語フォールバック: ヒラギノ明朝ProN） |
 
 ## 使い方
 
@@ -29,11 +29,34 @@
 fc-list | grep -iE "(hira|jetbrains)"
 ```
 
-## 設計メモ（CSSの3層構造）
+## 設計メモ（per-glyph fallback 戦略）
 
-1. **Layer 1**: `* { JetBrainsMono }` で全画面を等幅で塗りつぶす（土台）
-2. **Layer 2**: 本文セレクタで明朝に上書き
-3. **Layer 3**: コードブロックは同一クラスを4回重ねた高詳細度セレクタで再度等幅に戻す
+CSSの `font-family` リストは **「文字ごとにフォント探索」** する仕様で、
+最初のフォントに該当グリフが無ければ自動で次のフォントへフォールバックする。
+この仕様を活かして以下の設計：
 
-Slack内蔵CSSが3クラス連結（詳細度 `(0,0,3,0)`）の `!important` を使うため、
-こちらは4回重ね（`(0,0,4,0)`）で詳細度勝負に勝つ設計。
+```
+font-family:
+  "JetBrainsMono Nerd Font",   /* 英数字・記号・コード合字 */
+  "Hiragino Mincho ProN",       /* 日本語（JBMにグリフが無いので自動フォールバック） */
+  ...
+```
+
+結果として：
+
+- **Hello world** → JetBrainsMono Nerd Font
+- **こんにちは** → ヒラギノ明朝ProN（自動フォールバック）
+- **PRレビューOK** → 「PR」「OK」JBM ＋ 「レビュー」明朝のハイブリッド表示
+
+### コードブロックの詳細度勝負
+
+Slack内蔵CSSは `.c-texty_input_unstyled__container .ql-editor .ql-code-block` のような
+**3クラス連結 `!important`**（詳細度 `(0,0,3,0)`）でコードブロックの font-family を上書きしてくる。
+これに勝つため、こちらは **同一クラスを4回重ねた `(0,0,4,0)` セレクタ** を使って詳細度バトルに勝つ設計：
+
+```css
+.ql-code-block.ql-code-block.ql-code-block.ql-code-block { ... }
+```
+
+CSS仕様上、同じクラスを複数回書いてもマッチ条件は変わらないが、**詳細度カウントだけ上がる**ため、
+他要件への影響を最小化しつつ確実に上書きできる。

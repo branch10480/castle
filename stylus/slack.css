@@ -1,62 +1,39 @@
 /* ═══════════════════════════════════════════════════════════
-   Slack カスタムフォント (Stylus用)
-   - 本文: ヒラギノ明朝ProN
-   - コード: JetBrainsMono Nerd Font
+   Slack カスタムフォント (per-glyph fallback版)
+   - 第1優先: JetBrainsMono Nerd Font (英数字・記号・コード合字)
+   - フォールバック: ヒラギノ明朝ProN (日本語グリフが無い時に自動選択)
+   - 戦略: CSS仕様の per-character font fallback で1セレクタ完結
    - 適用先: app.slack.com (URL に slack.com を含む)
-   - 戦略: 「全要素に等幅 → 本文だけ明朝で上書き → コードを自己クラス重ねで再保護」
    ═══════════════════════════════════════════════════════════ */
 
-/* ---------- フォント定義 ---------- */
 :root {
-  --slack-body-font:
+  --slack-font:
+    "JetBrainsMono Nerd Font",
+    "JetBrainsMono Nerd Font Mono",
+    "JetBrainsMonoNL Nerd Font",
+    "JetBrains Mono",
     "Hiragino Mincho ProN",
     "HiraMinProN-W3",
     "ヒラギノ明朝 ProN W3",
     "ヒラギノ明朝 ProN",
     "Hiragino Mincho Pro",
-    serif;
+    Menlo, Consolas, monospace, serif;
 
-  --slack-code-font:
-    "JetBrainsMono Nerd Font",
-    "JetBrainsMono Nerd Font Mono",
-    "JetBrainsMonoNL Nerd Font",
-    "JetBrains Mono",
-    Menlo, Consolas, monospace;
-
-  --SlackCodeFont: var(--slack-code-font) !important;
-  --font-family-mono: var(--slack-code-font) !important;
-  --font-mono: var(--slack-code-font) !important;
+  /* Slack内部のCSS変数も差し替え（保険） */
+  --SlackCodeFont: var(--slack-font) !important;
+  --font-family-mono: var(--slack-font) !important;
+  --font-mono: var(--slack-font) !important;
 }
 
-/* ---------- Layer 1: 全要素を等幅で塗る（土台） ---------- */
+/* ---------- 全要素に統一フォントスタックを適用 ---------- */
 * {
-  font-family: var(--slack-code-font) !important;
+  font-family: var(--slack-font) !important;
 }
 
-/* ---------- Layer 2: 本文エリアを明朝で上書き ---------- */
-body,
-.p-client,
-.c-message_kit__text, .c-message_kit__text *,
-.c-message__body, .c-message__body *,
-.c-message_kit__blocks, .c-message_kit__blocks *,
-.c-message_kit__gutter,
-.p-rich_text_section, .p-rich_text_section *,
-.p-rich_text_block, .p-rich_text_block *,
-.c-search_message__body,
-[data-qa="message_content"], [data-qa="message_content"] *,
-.p-channel_sidebar, .p-channel_sidebar *,
-.p-threads_view__default_background,
-.c-message_kit__thread_label,
-.p-ia4_top_nav, .p-ia4_top_nav *,
-.p-ia4_view_header__title,
-.ql-editor, .ql-editor * {
-  font-family: var(--slack-body-font) !important;
-}
-
-/* ---------- Layer 3: コードブロックを自己クラス重ねで強制保護 ----------
-   Slack側が `.c-texty_input_unstyled__container .ql-editor .ql-code-block`
-   のような3クラス連結 !important を使ってくるため、こちらは同じクラスを
-   4回重ねて詳細度 (0,0,4,0) を確保し、確実に勝つ。               */
+/* ---------- コードブロックの詳細度勝負（自己クラス重ね） ----------
+   Slack内蔵CSS (.c-texty_input_unstyled__container .ql-editor .ql-code-block)
+   が3クラス連結 !important で font-family を上書きしてくるため、
+   同じクラス4回重ねで詳細度 (0,0,4,0) を確保し、確実に勝つ。      */
 .ql-code-block.ql-code-block.ql-code-block.ql-code-block,
 .ql-code-block.ql-code-block.ql-code-block.ql-code-block *,
 .ql-code-block-container.ql-code-block-container.ql-code-block-container.ql-code-block-container,
@@ -69,13 +46,7 @@ body,
 .p-rich_text_preformatted.p-rich_text_preformatted.p-rich_text_preformatted.p-rich_text_preformatted *,
 .p-rich_text_inline_code.p-rich_text_inline_code.p-rich_text_inline_code.p-rich_text_inline_code,
 .p-rich_text_inline_code.p-rich_text_inline_code.p-rich_text_inline_code.p-rich_text_inline_code * {
-  font-family: var(--slack-code-font) !important;
-}
-
-/* ---------- 太字も明朝で統一 ---------- */
-strong, b, .c-mrkdwn__bold {
-  font-family: var(--slack-body-font) !important;
-  font-weight: 600 !important;
+  font-family: var(--slack-font) !important;
 }
 
 /* ---------- アイコン保護（Slack独自フォントを壊さない） ---------- */

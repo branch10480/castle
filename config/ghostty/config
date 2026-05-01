@@ -4,9 +4,17 @@ auto-update-channel = tip
 # Font settings (from WezTerm config)
 #font-family = FiraCode Nerd Font
 font-family = JetBrainsMono Nerd Font
-font-family = Hiragino Sans W3
+font-family = Hiragino Mincho ProN W3
 font-style = Light
 font-size = 14
+
+# Force JP code points to Mincho (CoreText auto-cascade prefers Hiragino Sans otherwise)
+font-codepoint-map = U+3000-U+303F=Hiragino Mincho ProN W3
+font-codepoint-map = U+3040-U+309F=Hiragino Mincho ProN W3
+font-codepoint-map = U+30A0-U+30FF=Hiragino Mincho ProN W3
+font-codepoint-map = U+3400-U+4DBF=Hiragino Mincho ProN W3
+font-codepoint-map = U+4E00-U+9FFF=Hiragino Mincho ProN W3
+font-codepoint-map = U+FF00-U+FFEF=Hiragino Mincho ProN W3
 
 # Theme
 # theme = light:Belafonte Day,dark:Kanagawa Dragon

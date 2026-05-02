@@ -144,7 +144,7 @@ fzf-src () {
   zle clear-screen
 }
 zle -N fzf-src
-bindkey '^]' fzf-src
+bindkey '^[' fzf-src
 
 # wtp + fzf
 fzf-src-wtp () {

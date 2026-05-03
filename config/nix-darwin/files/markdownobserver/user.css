@@ -20,7 +20,7 @@
     --reader-fg: #d4cfc1;
     --reader-fg-secondary: #9a958a;
 
-    --reader-code-bg: #1d1d1c;
+    --reader-code-bg: #1a1916;
     --reader-border: #2a2a28;
     --reader-link: #d4a76a;
 
@@ -49,43 +49,46 @@
   .markdown-body pre {
     background: var(--reader-code-bg);
     border-color: var(--reader-border);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    color: #ece6d5;
   }
 
   .markdown-body :not(pre) > code {
     background: #232220;
-    color: #d4cfc1;
+    color: #e0dac9;
   }
 
-  /* highlight.js syntax overrides (lavender keys / warm green strings / amber numbers). */
-  .hljs                { color: #d4cfc1; background: transparent; }
-  .hljs-comment,
-  .hljs-quote          { color: #6b6960; font-style: italic; }
-  .hljs-keyword,
-  .hljs-selector-tag,
-  .hljs-built_in,
-  .hljs-name,
-  .hljs-tag,
-  .hljs-attr           { color: #c2a9ff; }
-  .hljs-string,
-  .hljs-title,
-  .hljs-section,
-  .hljs-attribute,
-  .hljs-literal,
-  .hljs-template-tag,
-  .hljs-template-variable,
-  .hljs-type,
-  .hljs-addition       { color: #a8c97f; }
-  .hljs-number,
-  .hljs-symbol,
-  .hljs-bullet,
-  .hljs-meta,
-  .hljs-link           { color: #d4a76a; }
-  .hljs-variable,
-  .hljs-deletion       { color: #d97766; }
-  .hljs-emphasis       { font-style: italic; }
-  .hljs-strong         { font-weight: 700; }
-  .hljs-punctuation    { color: #8a857a; }
+  /* highlight.js syntax overrides (lavender keys / warm green strings / amber numbers).
+     dark 系 syntax theme（githubDark / oneDark / monokai 等）を前提に運用する。
+     `.markdown-body` を前置して特異性 (0,2,0) に上げ、同梱の `pre code.hljs` (0,1,2) に勝たせる。 */
+  .markdown-body .hljs           { color: #f0eadc; background: transparent; }
+  .markdown-body .hljs-comment,
+  .markdown-body .hljs-quote     { color: #8a8578; font-style: italic; }
+  .markdown-body .hljs-keyword,
+  .markdown-body .hljs-selector-tag,
+  .markdown-body .hljs-built_in,
+  .markdown-body .hljs-name,
+  .markdown-body .hljs-tag,
+  .markdown-body .hljs-attr      { color: #c2a9ff; }
+  .markdown-body .hljs-string,
+  .markdown-body .hljs-title,
+  .markdown-body .hljs-section,
+  .markdown-body .hljs-attribute,
+  .markdown-body .hljs-literal,
+  .markdown-body .hljs-template-tag,
+  .markdown-body .hljs-template-variable,
+  .markdown-body .hljs-type,
+  .markdown-body .hljs-addition  { color: #c8de9c; }
+  .markdown-body .hljs-number,
+  .markdown-body .hljs-symbol,
+  .markdown-body .hljs-bullet,
+  .markdown-body .hljs-meta,
+  .markdown-body .hljs-link      { color: #e0b87a; }
+  .markdown-body .hljs-variable,
+  .markdown-body .hljs-deletion  { color: #e08576; }
+  .markdown-body .hljs-emphasis  { font-style: italic; }
+  .markdown-body .hljs-strong    { font-weight: 700; }
+  .markdown-body .hljs-punctuation { color: #b8b2a3; }
 }
 
 /* ===== Font override =====

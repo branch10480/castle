@@ -42,6 +42,9 @@ cursor-style-blink = true
 #cursor-color = #373734
 shell-integration-features = no-cursor,sudo,title
 
+# Keybindings - Send ESC (0x1B) for Ctrl+[ instead of fixterms CSI 91;5u
+keybind = ctrl+left_bracket=text:\x1b
+
 # Keybindings - Pane split
 keybind = ctrl+semicolon=new_split:right
 keybind = ctrl+apostrophe=new_split:down

@@ -29,6 +29,7 @@ theme = Kanagawa Dragon
 background-opacity = 0.75
 background-blur-radius = 5
 macos-titlebar-style = tabs
+split-divider-color = #54546d
 
 # Window size
 window-width = 122

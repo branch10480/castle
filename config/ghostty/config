@@ -34,7 +34,7 @@ macos-titlebar-style = tabs
 
 # Window size
 window-width = 122
-window-height = 44
+window-height = 38
 
 # Cursor
 #cursor-style = block

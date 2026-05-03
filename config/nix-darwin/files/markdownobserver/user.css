@@ -89,13 +89,13 @@
 }
 
 /* ===== Font override =====
-   本文: JetBrains Mono Nerd Font (ASCII/Latin/icons) + 日本語は明朝体。
+   本文: JetBrains Mono Nerd Font (ASCII/Latin/icons) + 日本語はヒラギノゴシック。
          CSS の font-family はコードポイント単位でフォールバックするため、
-         ASCII は JetBrains、和文は Hiragino Mincho ProN が自動で当たる。
+         ASCII は JetBrains、和文は Hiragino Sans が自動で当たる。
    コード: 従来どおり JetBrains + Hiragino Sans (ゴシック) を維持。
          コード内の和文コメントは可読性のためゴシック寄せ。 */
 html, body {
-  font-family: "JetBrainsMono Nerd Font", "Hiragino Mincho ProN", "YuMincho", serif;
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", "Hiragino Kaku Gothic ProN", "YuGothic", sans-serif;
   font-weight: 100;
 }
 

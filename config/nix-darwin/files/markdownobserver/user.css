@@ -89,6 +89,11 @@
   .markdown-body .hljs-emphasis  { font-style: italic; }
   .markdown-body .hljs-strong    { font-weight: 700; }
   .markdown-body .hljs-punctuation { color: #b8b2a3; }
+
+  /* ダーク時は彩度のあるオレンジで前に出す。 */
+  .markdown-body :is(strong, b) {
+    color: #f2a96a;
+  }
 }
 
 /* ===== Font override =====
@@ -98,15 +103,28 @@
    コード: 従来どおり JetBrains + Hiragino Sans (ゴシック) を維持。
          コード内の和文コメントは可読性のためゴシック寄せ。 */
 html, body {
-  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", "Hiragino Kaku Gothic ProN", "YuGothic", sans-serif;
-  font-weight: 100;
+  /* "Hiragino Sans W3" は単一ウェイトのファミリ名で font-weight が効かないため、
+     ウェイト可変な "Hiragino Sans" を指定して W3/W6 などを CSS から選べるようにする。 */
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "YuGothic", sans-serif;
+  font-weight: 300;
+}
+
+/* 強調は親 weight の影響を受けないよう絶対値で固定（UA の bolder 解決を回避）。
+   色はオレンジ系で本文と差別化する。 */
+.markdown-body :is(strong, b) {
+  font-weight: 700;
+  color: #b85c1f;
 }
 
 code, pre,
 .markdown-body code,
 .markdown-body pre {
-  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans W3", "SF Mono", Menlo, ui-monospace, monospace;
-  font-weight: 100;
+  font-family: "JetBrainsMono Nerd Font", "Hiragino Sans", "SF Mono", Menlo, ui-monospace, monospace;
+  font-weight: 400;
   font-variant-ligatures: contextual;
   font-feature-settings: "calt", "liga";
+}
+
+.markdown-body pre :is(strong, b) {
+  font-weight: 700;
 }

@@ -185,3 +185,14 @@ if [[ -n "${GHOSTTY_RESOURCES_DIR:-}" && "$PWD" == "$HOME/.homesick/"* ]]; then
 fi
 unfunction _zshrc_cd_and_report 2>/dev/null
 unset _SHELL_INIT_PWD
+
+# ── Ghostty: auto-exec tmux ─────────────────────────────
+# Ghostty で新規ペイン/タブ/ウィンドウを開いたら自動で tmux に切り替える。
+# CWD 復元の後で exec するため、tmux は補正後の CWD で起動する。
+# - 既に tmux 内 / 非 interactive / NO_AUTO_TMUX が設定されている場合はスキップ
+# - tmux 未インストール時はスキップ（シェルがロックされないように防御）
+# - 一時的に無効化したいときは `NO_AUTO_TMUX=1 exec zsh -l`
+if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
+  && (( $+commands[tmux] )); then
+  exec tmux new-session
+fi

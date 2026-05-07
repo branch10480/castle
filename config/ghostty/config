@@ -25,7 +25,7 @@ font-codepoint-map = U+FF00-U+FFEF=Hiragino Sans W3
 theme = Kanagawa Dragon
 
 # Window appearance
-#unfocused-split-opacity = 1
+unfocused-split-opacity = 1
 background-opacity = 1.0
 #background-blur-radius = 5
 macos-titlebar-style = tabs

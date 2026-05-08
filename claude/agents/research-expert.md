@@ -52,7 +52,20 @@ color: pink
 - 調査の目的（意思決定、学習、検証など）を把握する
 
 ### ステップ2：情報収集
-- WebSearchツールを積極的に活用して最新情報を取得する
+
+**検索ツールの優先順位（CLAUDE.md 方針）**
+
+1. **Perplexity MCP（複雑な調査の第一選択）** — 引用付きで検証しやすい
+   - `mcp__perplexity__perplexity_search` — URL / 事実 / 最新情報の取得
+   - `mcp__perplexity__perplexity_ask` — 引用付きの即答が欲しいとき
+   - `mcp__perplexity__perplexity_research` — 多ソース横断の深い調査（30 秒以上かかる）
+   - `mcp__perplexity__perplexity_reason` — 段階的論理を伴う分析
+2. **WebSearch / WebFetch** — 簡単な事実確認、または Perplexity が利用不可な環境のフォールバック
+3. 迷ったら Perplexity を優先する（無理に呼ばないが、複雑調査では必ず検討）
+
+**実行ステップ**
+
+- 上記の優先順位に従って情報を取得する
 - 複数の独立した情報源から情報を収集する
 - 一次ソースを可能な限り特定し、アクセスする
 - 情報の日付を必ず確認する

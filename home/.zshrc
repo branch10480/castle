@@ -77,6 +77,18 @@ fi
 
 unset _brew
 
+# ── ~/.zshrc.d/ snippets (castle-managed) ────────────────
+# 機能ごとの初期化スクリプトを小さく分割して置く場所。
+# Phase 2 (1Password CLI 統合) で導入。homeshick が ~/.zshrc.d を
+# castle/home/.zshrc.d への symlink として張る。
+# (N) は zsh glob qualifier: マッチ 0 件でもエラーにしない指定。
+if [[ -d ~/.zshrc.d ]]; then
+  for _f in ~/.zshrc.d/*.zsh(N); do
+    source "$_f"
+  done
+  unset _f
+fi
+
 # ── Key bindings ─────────────────────────────────────────
 bindkey -e
 

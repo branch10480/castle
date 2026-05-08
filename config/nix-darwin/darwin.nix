@@ -80,6 +80,9 @@
     ];
 
     casks = [
+      # 1Password GUI: Touch ID 解錠 / SSH agent / op-ssh-sign を提供。
+      # CLI 本体 (`op`) は home.nix の _1password-cli (Nix) で供給する。
+      "1password"
       # codex (CLI) は npm 版 @openai/codex を使うため Nix 宣言から除外。
       # Caskroom の codex-app (GUI) はそのまま残す。
       "codex-app"

@@ -18,8 +18,9 @@
 # Check current signin / unlock state. Returns non-zero if locked, so it
 # can be chained: `op-status && oprun -- foo` style.
 op-status() {
-  if op whoami >/dev/null 2>&1; then
-    op whoami
+  local out
+  if out=$(op whoami 2>/dev/null); then
+    print -r -- "$out"
   else
     print -r -- "1Password CLI is locked. Open the desktop app or run 'op signin'." >&2
     return 1
@@ -37,6 +38,11 @@ oprun() {
     env_file="${1#--env-file=}"
     shift
   done
+  # Accept (but do not require) a `--` separator before the command,
+  # so the documented `oprun [--env-file=…] -- cmd args…` form does not
+  # get re-injected into `op run`'s own argv (which would make op treat
+  # the second `--` as the executable name and fail with ENOENT).
+  [[ "${1-}" == "--" ]] && shift
   if [[ ! -f "$env_file" ]]; then
     print -r -- "oprun: env-file not found: $env_file" >&2
     return 1

@@ -225,7 +225,7 @@ op account list   # アカウントが 1 件以上見えるか（GUI integration
    `op signin` は idempotent（公式: "It only prompts for authentication if you aren't already authenticated"）なので、すでに session があれば何も起こらず安全。
 
 2. **GUI 側のトグル目視確認**（`op signin` で Touch ID プロンプトが出ない / password 入力を要求された場合）:
-   - 1Password 8 GUI → `Settings` (`⌘,`) → **Security** → **Touch ID for 1Password CLI** が ON か（biometric を CLI と共有する前提設定）
+   - 1Password 8 GUI → `Settings` (`⌘,`) → **Security** → **Touch ID 系のトグル** が ON か（macOS / 1Password 版数で `Unlock using Touch ID` / `Touch ID for 1Password CLI` 等の表記揺れあり。biometric を CLI と共有する前提のアプリ側設定）
    - 1Password 8 GUI → `Settings` (`⌘,`) → **Developer** → **Integrate with 1Password CLI** が ON か（CLI 連携の本体トグル）
    - どちらか OFF だったら ON に。両方既に ON なら、**Developer 側を OFF → ON にトグル**して握手を再発動させる
    - その後あらためて `op signin` を試す
@@ -250,7 +250,7 @@ op account list   # アカウントが 1 件以上見えるか（GUI integration
 #### 仕組み（次に詰まったときのために）
 
 - `op-status` (= 内部で `op whoami` を呼ぶ) は **session token を必要とする**ため、session が切れていると `locked` を返す。`op account list` は **アカウントレジストリの読み出しだけ**で session を必要としない。両者の差で「session 切れか / 連携完全断か」を切り分けられる
-- 1Password 8 と CLI の通信は **NSXPCConnection (XPC)** 経由で `1Password Browser Helper` プロセスが XPC server として動作する（[公式: app integration security](https://developer.1password.com/docs/cli/app-integration-security/)）。GUI 再起動で XPC 接続が張り直される
+- 1Password 8 と CLI の通信は **NSXPCConnection (XPC)** 経由で `1Password Browser Helper` プロセスが XPC server として 1Password アプリと CLI の **メッセージリレー**を担う（[公式: app integration security](https://developer.1password.com/docs/cli/app-integration-security/)）。GUI 再起動で XPC 接続が張り直される
 - `~/.config/op/op-daemon.sock` は **`op` CLI 側のキャッシュ層用 socket**（`--cache=true` 既定）。GUI integration の経路ではない。`lsof -U | grep op-daemon` または `lsof -c op` で listening 状態を確認できるが、GUI integration の故障とは独立に存在しうる
 - **経験則として**、1Password 8 のメジャーアップデートや macOS のセキュリティアップデート後に **"Integrate with 1Password CLI" トグルが OFF に戻る事例が報告されている**（公式 changelog では確認できない、ユーザー側の運用観察）
 

@@ -14,7 +14,8 @@ castle/
 │   ├── .config -> ../config
 │   ├── .hammerspoon -> ../hammerspoon
 │   ├── .codex/skills/<skill-name> -> ../../../codex/skills/<skill-name>
-│   └── .zshrc
+│   ├── .zshrc      # zsh 起動スクリプト本体
+│   └── .zshrc.d/   # 機能別 zsh snippet（op.zsh など）— ~/.zshrc から自動 source
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── wezterm/    # WezTermターミナル設定
@@ -93,6 +94,54 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 - CLI = Nix (`home.nix` の `home.packages`) / GUI = Homebrew (`darwin.nix` の `homebrew.casks`)
 - 既存 dotfiles は homeshick 管理を維持し、HM の `programs.<tool>` は有効化しない
 - Homebrew は `cleanup = "none"` で安全側起動（取り込み完了後に `"zap"` 化を検討）
+
+## 1Password CLI シェル統合（Phase 2: secrets management）
+
+`home/.zshrc.d/op.zsh` に 1Password CLI (`op`) のシェル統合スクリプトを集約。`~/.zshrc.d/*.zsh(N)` ループで自動 source される（`home/.zshrc`）。
+
+### 提供ヘルパ
+
+- `op-status` — `op whoami` のラッパ。lock 状態なら non-zero を返してヒント文を出す
+- `oprun [--env-file=<path>] -- <command...>` — `op run --env-file=<path> --no-masking -- <command>` のショートカット。env-file は省略時 `./.env.op`（Phase 3 の `.env` テンプレ運用で使う規約）
+
+### Shell Plugins（`gh`, `aws` 等）
+
+`op plugin init <cli>` を 1 度実行すると `~/.config/op/plugins.sh` に alias が追記される。`op.zsh` はこのファイルが存在すれば source する。
+
+```bash
+# 例: gh を Personal Access Token を介さず 1Password 経由で動かす
+op plugin init gh   # 対話で 1Password 内のアイテムを選ぶ
+exec zsh            # plugins.sh が読まれる
+which gh            # → op plugin run -- gh ... に置き換わる alias になっている
+```
+
+`op plugin init` は対話プロセスのため自動化できない。各 CLI を 1Password 化したくなったタイミングで個別に実行する。
+
+### 設計上のポイント
+
+- **シェル起動時に `op read` でシークレットをキャッシュしない**: 起動遅延・非対話 shell でのプロンプト・監査ログ希薄化を避けるため、必要時に `op run` / `op plugin run` で都度注入する
+- **`OP_ACCOUNT` の machine-local 切り替え**: 個人 / 仕事 Mac でアカウントを変えたい場合は `~/.zshrc.local` に `export OP_ACCOUNT=<short_name>` を書く（castle 共通設定からは分離）
+- **`op` 未インストール環境では早期 return**: 仕事 Mac の bootstrap 中など、op CLI が無くても zsh 起動が壊れない
+
+### 初回セットアップ手順（新規 Mac で 1 度だけ）
+
+1. 1Password 8 を起動 → Settings → Developer → **Integrate with 1Password CLI** を ON（Touch ID で `op` を unlock するために必須）
+2. `homeshick link castle` を実行。`~/.zshrc.d` の symlink が自動で作られない場合は手動で:
+   ```bash
+   if [ ! -e ~/.zshrc.d ]; then
+     ln -s ~/.homesick/repos/castle/home/.zshrc.d ~/.zshrc.d
+   fi
+   ```
+3. 動作確認（新規 zsh セッション or `exec zsh` 後）:
+   ```bash
+   op-status                   # → my.1password.com / <email> / <user id>
+   op item list --vault Private | head
+   ```
+4. 必要な CLI のみ Shell Plugin 化（任意）:
+   ```bash
+   op plugin init gh           # 対話で 1Password アイテムを選択
+   exec zsh                    # plugins.sh が source される
+   ```
 
 ## SSH 設定（1Password agent 連携）
 

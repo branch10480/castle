@@ -1,0 +1,46 @@
+# Managed by homeshick (castle).
+#
+# Machine-local identity (user.email, user.signingkey) lives in
+# ~/.gitconfig.local so personal and work Macs can diverge their
+# email and signing key without polluting the dotfiles repo.
+# `[include] path = ~/.gitconfig.local` at the bottom pulls it in.
+#
+# Phase 5 of the secrets management migration: commit signing is
+# delegated to the 1Password SSH agent (see config/ssh/config) and
+# verified locally via the allowed_signers file.
+
+[user]
+	name = branch10480
+
+[commit]
+	gpgsign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+[diff]
+	tool = Kaleidoscope
+
+[difftool "Kaleidoscope"]
+	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+
+[difftool]
+	prompt = false
+	trustExitCode = true
+
+[merge]
+	tool = Kaleidoscope
+
+[mergetool "Kaleidoscope"]
+	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+	trustExitCode = true
+
+[mergetool]
+	prompt = false
+
+[include]
+	path = ~/.gitconfig.local

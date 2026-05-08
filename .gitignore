@@ -15,3 +15,7 @@ config/opencode/skills/wiki-to-jira-update/
 *.pyc
 **/.DS_Store
 **/.serena
+
+# Machine-local SSH commit signing roster (per-machine email/key pairs;
+# not shared because work / personal Macs use different identities).
+config/git/allowed_signers

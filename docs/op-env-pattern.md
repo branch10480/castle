@@ -90,15 +90,19 @@ Makefile は sh 経由なので npm 同様に `op run` を直接呼ぶ。
 
 ```bash
 # .env.op を op inject で実値に解決し、direnv の `dotenv` ローダに食わせる。
-# `dotenv` は KEY=VALUE を文字列としてパースするため、値に $(...) /
-# バックティック / 引用符 / 改行が含まれていても shell injection や
-# 値破壊が起きない。`eval "$(op inject ...)"` 形式は値次第で危険なので
-# 使わない。
+# `dotenv` は KEY=VALUE を文字列パースするため、`$(...)` / バックティック等
+# による任意コード実行（shell injection）は発生しない。ただし以下の値破壊
+# は依然起きるので注意:
+#   - 値中の `$VAR` / `${VAR}` は env var 展開される（go-dotenv の挙動）
+#   - 改行・空白・引用符・`#` を含む値は dotenv パーサで取り込めない
+# したがって PEM 鍵 / 複数行 token / 引用符を含む値などは direnv 経路に
+# 載せず、`op run --env-file=` 経路（コンテナ実行・サービス起動）で扱うこと。
 if has op && [[ -f .env.op ]]; then
   watch_file .env.op
   resolved="$(direnv_layout_dir)/op-env"
   mkdir -p "$(dirname "$resolved")"
-  op inject -i .env.op > "$resolved"
+  ( umask 077 && op inject -i .env.op > "$resolved" )
+  chmod 600 "$resolved"
   dotenv "$resolved"
 elif ! has op; then
   log_status "op CLI not found; skipping .env.op resolution"
@@ -107,9 +111,15 @@ fi
 
 `direnv allow` を 1 度実行すれば、以降は `cd` するだけで環境変数が揃う。1Password GUI のセッションが生きていれば Touch ID プロンプトは出ない。
 
-> ⚠️ **`eval "$(op inject ... | sed 's/^/export /')"` 形式は使わないこと**: 値に `$(...)` / バックティック / 引用符 / 改行が混じった瞬間に shell injection や構文崩壊を起こす。1Password vault には PEM 鍵や複数行 token が入りうるため、必ず `dotenv` 関数経由で値を文字列としてロードする。
+> ⚠️ **`eval "$(op inject ... | sed 's/^/export /')"` 形式は使わないこと**: 値に `$(...)` / バックティックが混じった瞬間に **任意コード実行**（shell injection）を起こす。`dotenv` 経路にすれば任意コード実行は確実に防げる。
 >
-> 補足: `direnv` 標準の `dotenv` は `op://` URI を解釈しないため、まず `op inject` で **解決済み env-file** を `.direnv/op-env` に書き出してから `dotenv` に渡す。`.direnv/` はプロジェクトの `.gitignore` に必ず追加する（解決済みファイルには生値が含まれる）。
+> ただし `dotenv` 経路でも以下の **値破壊** は残る点に注意:
+> - 値中の `$VAR` / `${VAR}` は env var 展開される（go-dotenv の仕様）
+> - 改行・空白・引用符・`#` を含む値は parse 失敗または先頭行のみ取り込み
+>
+> このため PEM 鍵・複数行 token のような **任意バイト列を含む secret は direnv 経路には乗せず、`op run --env-file=` 経路で扱う**こと。
+>
+> 補足: `direnv` 標準の `dotenv` は `op://` URI を解釈しないため、まず `op inject` で **解決済み env-file** を `.direnv/op-env` に書き出してから `dotenv` に渡す。`.direnv/` はプロジェクトの `.gitignore` に必ず追加し、`umask 077` + `chmod 600` で他ユーザー読取も防ぐ（解決済みファイルには生値が含まれる）。可能なら Time Machine / Spotlight / IDE のインデックス対象からも `.direnv/` を除外することが望ましい。
 
 ### Docker / Docker Compose
 

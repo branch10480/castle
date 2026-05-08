@@ -120,7 +120,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 
 - 1Password の SSH agent socket パス (`~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`) は AgileBits Team ID に依存し、**個人/ビジネスを問わずアカウント横断で同一**。複数 Mac（個人 / 仕事）で同じ config が機能する
 - `Host github.com` ブロックには `IdentityFile` を置かず、認証は 1Password agent 経由のみ（秘密鍵をディスクに置かない設計）
-- **秘密鍵はディスクに置かない**。auth / signing 双方が `op-ssh-sign` + 1Password agent 経由で完結し、Touch ID で都度承認される。新規 Mac では「1Password 内で SSH 鍵を新規生成」もしくは「既存鍵を import 後にローカルファイルを退避（`mv ~/.ssh/id_* ~/.ssh-keys-backup/`）→ 動作確認後に削除」の流れで運用する
+- **秘密鍵はディスクに置かない**。auth / signing 双方が `op-ssh-sign` + 1Password agent 経由で完結し、Touch ID で都度承認される。新規 Mac では「1Password 内で SSH 鍵を新規生成」もしくは「既存鍵を import 後にローカルファイルを退避（`mkdir -p -m 700 ~/.ssh-keys-backup && mv ~/.ssh/id_* ~/.ssh-keys-backup/`）→ `ssh -T git@github.com` と test commit で動作確認 → バックアップは緊急復旧用に保持」の流れで運用する
 
 ## Git 設定（commit signing 含む）
 

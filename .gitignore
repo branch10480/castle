@@ -19,3 +19,12 @@ config/opencode/skills/wiki-to-jira-update/
 # Machine-local SSH commit signing roster (per-machine email/key pairs;
 # not shared because work / personal Macs use different identities).
 config/git/allowed_signers
+
+# 1Password CLI runtime state (op-daemon.sock, plugins.sh, config.json...)
+# are machine-local. Track only env-file templates that contain `op://`
+# URI references — never raw secrets. The `[!.]*.env` form (rather than
+# `*.env`) excludes dotfile env-files like `.cache.env` to keep any
+# future runtime state under a hidden name from being unintentionally
+# allowlisted.
+config/op/*
+!config/op/[!.]*.env

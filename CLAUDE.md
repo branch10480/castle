@@ -20,7 +20,8 @@ castle/
 │   ├── wezterm/    # WezTermターミナル設定
 │   ├── karabiner/  # Karabiner-Elements設定
 │   ├── git/        # Gitグローバル設定
-│   └── nix-darwin/ # nix-darwin + Home Manager 構成（flake.nix / darwin.nix / home.nix）
+│   ├── nix-darwin/ # nix-darwin + Home Manager 構成（flake.nix / darwin.nix / home.nix）
+│   └── ssh/        # SSH client config（~/.ssh/config から `Include` で参照）
 ├── claude/         # Claude Code用設定（~/.claude/にリンク）
 │   ├── agents/     # カスタムエージェント定義
 │   ├── commands/   # ユーザー呼び出し可能なコマンド
@@ -92,3 +93,17 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 - CLI = Nix (`home.nix` の `home.packages`) / GUI = Homebrew (`darwin.nix` の `homebrew.casks`)
 - 既存 dotfiles は homeshick 管理を維持し、HM の `programs.<tool>` は有効化しない
 - Homebrew は `cleanup = "none"` で安全側起動（取り込み完了後に `"zap"` 化を検討）
+
+## SSH 設定（1Password agent 連携）
+
+`config/ssh/config` に SSH client 設定本体を集約。`home/.config -> ../config` 経由で `~/.config/ssh/config` に自動 symlink される。
+
+`~/.ssh/` には秘密鍵があり homeshick で扱わないため、`~/.ssh/config` は **machine-local** の最小ファイルとして以下の 1 行のみを置く（初回セットアップ時に手動で作成）:
+
+```
+Include ~/.config/ssh/config
+```
+
+ポイント:
+- 1Password の SSH agent socket パス (`~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`) は AgileBits Team ID に依存し、**個人/ビジネスを問わずアカウント横断で同一**。複数 Mac（個人 / 仕事）で同じ config が機能する
+- 既存鍵の `IdentityFile` 行は phase 5（次フェーズ）で 1Password に鍵 import 後に削除し、agent 専用に切り替える

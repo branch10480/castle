@@ -25,6 +25,11 @@ set -euo pipefail
 #   classic-OpenAI pattern fire on every Markdown CSS file.
 # - Minimum-length ({40,}) is calibrated to each provider's real key
 #   format so that short identifier-style strings don't match.
+# - The classic OpenAI pattern `sk-[A-Za-z0-9]{40,}` intentionally
+#   overlaps with the Anthropic / project / service-account variants:
+#   one real `sk-ant-…` line may be reported under multiple labels.
+#   We accept that noise because we'd rather have a key reported twice
+#   than missed once, and BSD grep doesn't support negative lookaheads.
 patterns=(
   "Perplexity API key|pplx-[A-Za-z0-9]{40,}"
   "Anthropic API key|sk-ant-(api|admin)[0-9]+-[A-Za-z0-9_-]{40,}"
@@ -60,13 +65,26 @@ case "${1-}" in
     ;;
 esac
 
+# `head` and `staged` modes shell out to git; bail early with a clear
+# message if we're outside a working tree, instead of letting `set -e`
+# pull the rug out from under the user partway through list_files().
+if [[ "$mode" != "explicit" ]]; then
+  if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+    printf 'scan-secrets.sh: not inside a git repository (use explicit paths instead).\n' >&2
+    exit 2
+  fi
+fi
+
 list_files() {
   case "$mode" in
     head)
       git ls-files
       ;;
     staged)
-      git diff --cached --name-only --diff-filter=AM
+      # ACMR = Added / Copied / Modified / Renamed (post-rename path).
+      # `AM` alone misses `git mv old.env new.env`, which would smuggle
+      # an existing secret-bearing file past the scanner.
+      git diff --cached --name-only --diff-filter=ACMR
       ;;
     explicit)
       printf '%s\n' "${explicit_files[@]}"
@@ -81,7 +99,9 @@ while IFS= read -r file; do
   for entry in "${patterns[@]}"; do
     label="${entry%%|*}"
     regex="${entry#*|}"
-    matches="$(grep -nE -- "$regex" "$file" || true)"
+    # -I skips binary files (portable across BSD/GNU grep); without it
+    # PNGs and fonts can spuriously match high-entropy patterns.
+    matches="$(grep -InE -- "$regex" "$file" || true)"
     if [[ -n "$matches" ]]; then
       hit=1
       printf '\n[!] %s\n    file: %s\n' "$label" "$file"

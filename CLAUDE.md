@@ -162,7 +162,7 @@ Claude Code の `~/.claude.json` の `mcpServers.<name>.env.<KEY>` に**生 API 
 1. 1Password で API Credential テンプレのアイテムを作成（例: `Private/Perplexity API/credential` フィールドに値を保管）
 2. `op-status` で signin 状態を確認、`op item get "Perplexity API" --vault Private --fields credential --reveal` で値が引けることを確認
 3. `~/.config/op/<server>.env`（castle 経由なら `config/op/<server>.env`）の `op://` URI が 1Password 側のアイテム名・フィールド名と一致しているか確認
-4. `~/.claude.json` の `mcpServers.<server>` を **jq で部分書き換え**（既存の他キーを潰さない）:
+4. **Claude Code（および Claude Desktop）を一旦終了**してから `~/.claude.json` を **jq で部分書き換え**（既存の他キーを潰さない）。Claude Code 稼働中だと last-writer-wins の競合で編集が消える可能性があるため:
    ```bash
    jq '.mcpServers.perplexity = {
      type: "stdio",

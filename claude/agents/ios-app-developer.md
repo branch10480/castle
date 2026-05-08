@@ -89,8 +89,8 @@ Button(action: submit) {
 - 順次 `await` で並列化可能なケースを見逃さない（`async let` / `withTaskGroup`）
 
 ### SwiftUI 状態管理
-- `@State`: View ローカルの値型
-- `@Bindable` + `@Observable`: 参照型の状態
+- `@State`: View ローカルの値型、または親 View が所有する `@Observable` クラスのインスタンス保持
+- `@Bindable`: 親から渡された `@Observable` クラスのプロパティに子 View 側で双方向バインドする際に使用
 - `@Environment`: グローバル / DI
 - `@StateObject` / `@ObservedObject` は移行期のみ。新規は `@Observable` を使う
 

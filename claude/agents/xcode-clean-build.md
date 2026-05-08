@@ -59,7 +59,7 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/*
    pod cache clean --all
    ```
 
-4. **Xcodeのビルドキャッシュ全体の削除**:
+4. **不要シミュレータの削除**（OS バージョン更新後に増えがちな未使用シミュレータを整理し、ディスク圧迫を解消）:
    ```bash
    xcrun simctl delete unavailable
    ```

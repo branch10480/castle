@@ -1,0 +1,38 @@
+# SSH client configuration (managed by homeshick / castle).
+#
+# This file is symlinked to ~/.config/ssh/config by homeshick (via
+# home/.config -> ../config). The actual ~/.ssh/config is kept
+# machine-local with a single line:
+#
+#     Include ~/.config/ssh/config
+#
+# Why split:
+# - ~/.ssh/ contains private keys that must never enter the dotfiles repo.
+# - castle/home/.ssh as a directory would collide with the existing ~/.ssh.
+# - Routing through ~/.config/ssh/config + Include keeps secrets out and
+#   shares the policy across machines (personal + work).
+#
+# Phase 5 (Git / SSH integration) of the secrets management migration;
+# see config/nix-darwin/ for the Nix-supplied 1Password CLI side of the
+# story (introduced in an earlier phase).
+
+# === 1Password SSH agent (cross-machine) ===========================
+# AgileBits Team ID (2BUA8C4S2C) is shared by both personal and business
+# 1Password accounts, so this socket path resolves correctly on every
+# Mac running 1Password 8 regardless of which account is signed in.
+# Keys are sourced from whichever account(s) are active in the desktop
+# app on each machine.
+Host *
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# === GitHub ========================================================
+Host github.com
+  HostName github.com
+  User git
+  # TODO(phase-5): once the existing ~/.ssh/id_ed25519 is imported into
+  # 1Password (or replaced with a key generated inside 1Password), drop
+  # the IdentityFile / AddKeysToAgent lines so authentication goes
+  # through the 1Password agent exclusively (Touch ID prompts, no
+  # private key on disk).
+  IdentityFile ~/.ssh/id_ed25519
+  AddKeysToAgent yes

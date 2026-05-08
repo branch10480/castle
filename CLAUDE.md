@@ -98,12 +98,25 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 
 `config/ssh/config` に SSH client 設定本体を集約。`home/.config -> ../config` 経由で `~/.config/ssh/config` に自動 symlink される。
 
-`~/.ssh/` には秘密鍵があり homeshick で扱わないため、`~/.ssh/config` は **machine-local** の最小ファイルとして以下の 1 行のみを置く（初回セットアップ時に手動で作成）:
+`~/.ssh/` には秘密鍵があり homeshick で扱わないため、`~/.ssh/config` は **machine-local** の最小ファイル（`Include ~/.config/ssh/config` の 1 行）として運用する。
 
-```
-Include ~/.config/ssh/config
-```
+### 初回セットアップ手順（新規 Mac で 1 度だけ）
 
-ポイント:
+1. `homeshick link castle` を実行（`config/ssh/config` が `~/.config/ssh/config` に symlink される）
+2. **permissions を当てる**（git は read/write bit を追跡しないため、新規 clone 後は 644 で展開される）:
+   ```bash
+   chmod 700 ~/.config/ssh
+   chmod 600 ~/.config/ssh/config
+   ```
+3. `~/.ssh/config` を machine-local の Include stub として作成:
+   ```bash
+   printf 'Include ~/.config/ssh/config\n' > ~/.ssh/config
+   chmod 600 ~/.ssh/config
+   ```
+4. 1Password 8 を起動 → Settings → Developer → **Use the SSH agent** を ON
+5. 動作確認: `ssh -T git@github.com` で `Hi <username>! You've successfully authenticated...` が返ることを確認
+
+### ポイント
+
 - 1Password の SSH agent socket パス (`~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock`) は AgileBits Team ID に依存し、**個人/ビジネスを問わずアカウント横断で同一**。複数 Mac（個人 / 仕事）で同じ config が機能する
 - 既存鍵の `IdentityFile` 行は phase 5（次フェーズ）で 1Password に鍵 import 後に削除し、agent 専用に切り替える

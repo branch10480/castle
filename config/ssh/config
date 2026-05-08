@@ -12,8 +12,9 @@
 # - Routing through ~/.config/ssh/config + Include keeps secrets out and
 #   shares the policy across machines (personal + work).
 #
-# Phase 7 of the secrets management migration; see config/nix-darwin/ for
-# the Nix-supplied 1Password CLI side of the story.
+# Phase 5 (Git / SSH integration) of the secrets management migration;
+# see config/nix-darwin/ for the Nix-supplied 1Password CLI side of the
+# story (introduced in an earlier phase).
 
 # === 1Password SSH agent (cross-machine) ===========================
 # AgileBits Team ID (2BUA8C4S2C) is shared by both personal and business

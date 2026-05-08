@@ -15,6 +15,8 @@ homeshick clone git@github.com:branch10480/castle.git
 homeshick link castle
 ```
 
+> 仕事 Mac（別の 1Password アカウント / 別の GitHub identity / 別の SSH 鍵を使う環境）でセットアップする場合は、個人 Mac との差分手順を [`docs/work-mac-setup.md`](docs/work-mac-setup.md) に集約してあるので併せて参照すること。
+
 ## 含まれる設定
 
 ### シェル (zsh)

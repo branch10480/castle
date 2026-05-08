@@ -66,6 +66,12 @@
     # 後段の home.file で安定パスへ symlink して .zshrc から参照する。
     zsh-autosuggestions
     zsh-syntax-highlighting
+
+    # Migrated from Homebrew (phase 7: secrets management)
+    # 1Password CLI. GUI (Homebrew cask `1password`) と併用。Touch ID 解錠・
+    # SSH agent・op-ssh-sign は GUI 側が供給するため、本パッケージは `op`
+    # バイナリのみを Nix で提供する責務に絞る。
+    _1password-cli
   ];
 
   # zsh-syntax-highlighting の本体スクリプトを安定パスへ露出させる。

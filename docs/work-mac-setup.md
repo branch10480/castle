@@ -196,6 +196,67 @@ oprun --env-file=.env.op.local -- npm run dev
 | Touch ID プロンプトが個人鍵を要求してくる | SSH config の `Host` を指定せず `git@github.com` で clone した | clone URL を `git@github-work:...` に変更。既存 remote は `git remote set-url origin git@github-work:org/repo.git` |
 | commit が Personal の email で署名されてしまう | `~/.gitconfig.local` を作っていない or `includeIf` の directory パスがズレている | `git -C <repo> config user.email` で確認。期待値と違えば `~/.gitconfig.local` / `~/.gitconfig.work` 経路を見直す |
 | 仕事 GitHub 上で commit が Verified にならない | 仕事 GitHub アカウントの **Signing keys** に公開鍵を登録していない（Authentication keys だけ登録した） | GitHub Settings → SSH and GPG keys → Signing keys に登録（同じ鍵でも別管理が必要） |
+| `op-status` が `1Password CLI is locked` を返す（GUI は起動しているのに） | OS / 1Password アプリのアップデート後に "Integrate with 1Password CLI" トグルが OFF に戻った / GUI と `op` daemon の握手が切れた | 下の「1Password CLI integration の復旧」節を参照 |
+
+### 1Password CLI integration の復旧
+
+OS / 1Password アプリのアップデート後など、`op-status` が `1Password CLI is locked` を返す状態に陥ったときの復旧手順。**初手で GUI 側のトグルを目視確認**するのが最重要（出力文言だけでは原因が判別できない）。
+
+#### 切り分け
+
+```bash
+op-status         # 期待: URL/Email/User ID 3 行。"locked" が出れば異常
+op account list   # アカウントが 1 件以上見えるか（GUI integration の最低限の通信確認）
+```
+
+| `op-status` | `op account list` | 状態 |
+|---|---|---|
+| ✓ | ✓ | 正常 |
+| ✗ locked | ✓ アカウント可視 | **アカウントは見えるが session 無し**（最頻パターン）— GUI integration が中途半端に切れている |
+| ✗ locked | ✗ 空（"No accounts configured"） | GUI integration が完全に切れている / トグル OFF |
+
+#### 復旧手順（順に実行）
+
+1. **GUI 側のトグル目視確認**（多くはこれだけで直る）:
+   - 1Password 8 GUI → `Settings` (`⌘,`) → **Developer** → **"Integrate with 1Password CLI" が ON か**
+   - OFF だったら ON にする
+   - **既に ON でも、一度 OFF → ON にトグル**して握手を再発動させる
+
+2. それでも `op-status` が `locked` のまま:
+   ```bash
+   # 古い socket と op daemon を片付ける
+   pkill -f "op-daemon" 2>/dev/null
+   rm -f ~/.config/op/op-daemon.sock
+
+   # 1Password GUI を強制終了 → 再起動（osascript の quit は効かないことがあるので killall を使う）
+   killall 1Password 2>/dev/null
+   killall "1Password Helper" 2>/dev/null
+   killall "1Password Helper (GPU)" 2>/dev/null
+   killall "1Password Helper (Renderer)" 2>/dev/null
+   killall "1Password-BrowserSupport" 2>/dev/null
+   sleep 3
+
+   # GUI が完全停止したか確認
+   pgrep -lf "1Password" | head
+
+   # 起動し直す
+   open -a "1Password"
+   ```
+   → GUI を **Touch ID で unlock** → トグルが ON のままか再確認 → `op-status` 確認
+
+3. アカウントは見えるが session が無い（中間状態）の場合は **`op signin` で握手をやり直す**:
+   ```bash
+   op signin
+   # → Touch ID プロンプトが出るので承認
+   ```
+   その後 `op-status` が通れば成功。`claude mcp list` で `perplexity ✓ Connected` も確認。
+
+#### 仕組み（次に詰まったときのために）
+
+- `op-status` (= 内部で `op whoami` を呼ぶ) は **session token を必要とする**ため、GUI から daemon への握手が切れていると `locked` を返す
+- `op account list` は **アカウントレジストリの読み出しだけ**で session を必要としない。両者の差で「整合度合い」が分かる
+- `~/.config/op/op-daemon.sock` は `op` 側の自前 socket。`lsof | grep op-daemon` で実プロセスが listening しているかが分かる
+- 1Password 8 のメジャーアップデートや macOS 系のセキュリティ強化で **"Integrate with 1Password CLI" トグルが暗黙にリセットされる**ことがある（運用上の最頻原因）
 
 ## 設計上の注意
 

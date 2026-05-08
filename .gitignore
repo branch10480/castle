@@ -28,3 +28,8 @@ config/git/allowed_signers
 # allowlisted.
 config/op/*
 !config/op/[!.]*.env
+
+# Claude Code が `Agent({isolation: "worktree"})` 等で生成する一時 worktree
+# ディレクトリ。中身は別ブランチの作業コピーで machine-local かつ短命な
+# ため、castle 側では追跡しない。
+.claude/worktrees/

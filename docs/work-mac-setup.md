@@ -114,7 +114,7 @@ echo "<work email> <work ssh public key>" > ~/.config/git/allowed_signers
 chmod 600 ~/.config/git/allowed_signers
 ```
 
-> 注意: 個人と仕事の両方の repo を同じ Mac で扱うなら、`includeIf` で directory ベースに自動切替する運用も可。`~/.gitconfig` 自体は **`castle/home/.gitconfig` への symlink なので絶対に書き込まない**。代わりに `~/.gitconfig.local` 側に `[includeIf]` を追記する（git の `[includeIf]` は include されたファイル内でも再帰的に有効 — [git-config 公式仕様](https://git-scm.com/docs/git-config) "include and includeIf sections behave identically"）:
+> 注意: 個人と仕事の両方の repo を同じ Mac で扱うなら、`includeIf` で directory ベースに自動切替する運用も可。`~/.gitconfig` 自体は **`castle/home/.gitconfig` への symlink なので絶対に書き込まない**。代わりに `~/.gitconfig.local` 側に `[includeIf]` を追記する（git の include は ["The contents of the included file are inserted immediately, as if they had been found at the location of the include directive."](https://git-scm.com/docs/git-config) という仕様で、include 先のファイル内に書かれた `[includeIf]` も同じ位置に展開されるため再帰的に有効）:
 >
 > ```ini
 > # ~/.gitconfig.local（machine-local、castle 管理外）
@@ -157,7 +157,7 @@ git -C ~/.homesick/repos/castle update-index --assume-unchanged \
   config/op/perplexity.env
 ```
 
-> ⚠️ `--assume-unchanged` は git pull 時の conflict を黙らせるだけで、castle 側で正規の更新があった場合に **取り込めない**点に注意。castle 本体で URI 変更があったときは `git update-index --no-assume-unchanged config/op/perplexity.env` で解除し、手動で merge → 再度 assume-unchanged をかける運用になる。極力 **vault 名共通化（推奨案）** で済ませること。
+> ⚠️ `--assume-unchanged` は **ローカル変更を index に反映しないように git に伝えるフラグ**で、git 公式仕様では当該ファイルを更新する必要が出た merge / pull 操作は **graceful に fail する**（公式: "Git will fail (gracefully) in case it needs to modify this file in the index"）。pull が黙って通るわけではなく、当該ファイルが upstream で更新されたときに pull が止まる挙動。upstream に変更が入ったら `git update-index --no-assume-unchanged config/op/perplexity.env` で一旦解除し、手動 merge → 再度 assume-unchanged をかける運用になる。極力 **vault 名共通化（推奨案）** で済ませること。
 
 ### 7. プロジェクト `.env.op` の上書き（Phase 3 連携）
 
@@ -199,10 +199,10 @@ oprun --env-file=.env.op.local -- npm run dev
 
 ## 設計上の注意
 
-1. **castle 内のファイルは編集しない**: 仕事 Mac だけの差分はすべて `~/.zshrc.local` / `~/.gitconfig.local` / `~/.gitconfig.work` / `~/.config/op/<server>.env`（symlink を解除した実体）/ `.env.op.local` に逃がす。castle に commit する瞬間に「仕事固有の値」が入っていたら個人 Mac 側で壊れる
+1. **castle 内のファイルは編集しない**: 仕事 Mac だけの差分はすべて `~/.zshrc.local` / `~/.gitconfig.local`（必要に応じて派生する `~/.gitconfig.work`）/ `.env.op.local` に逃がす。MCP API キーは 1Password 側で vault / item 名を仕事 / 個人で共通化して castle 追跡ファイルを変えずに済ませる（共通化できない場合のみ最終手段として `--assume-unchanged`、セクション 6 参照）。castle に commit する瞬間に「仕事固有の値」が入っていたら個人 Mac 側で壊れる
 2. **`OP_ACCOUNT` を `~/.zshrc.local` で固定する**: 都度 `op --account=...` を打つよりミス耐性が高い
 3. **GitHub の Authentication と Signing は別管理**: 同じ公開鍵でも GitHub 上で別の枠に登録しないと、push は通るが Verified バッジが付かない
-4. **`includeIf` でディレクトリベース切替も検討**: `ghq` で個人と仕事を別 root に置いている場合、`~/.gitconfig` の `includeIf "gitdir:..."` で identity を自動切替できる。castle 共通 `home/.gitconfig` は変えず、machine-local 側で `[includeIf]` を組む
+4. **`includeIf` でディレクトリベース切替も検討**: `ghq` で個人と仕事を別 root に置いている場合、`~/.gitconfig.local` 内に `[includeIf "gitdir:..."]` を書いて identity を自動切替できる（git の include は再帰的に有効。詳細はセクション 5 参照）。castle 共通 `home/.gitconfig` および `~/.gitconfig`（symlink）には触らない
 
 ## 関連
 

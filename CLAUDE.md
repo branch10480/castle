@@ -18,10 +18,10 @@ castle/
 │   └── .zshrc.d/   # 機能別 zsh snippet（op.zsh など）— ~/.zshrc から自動 source
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
-│   ├── wezterm/    # WezTermターミナル設定
+│   ├── ghostty/    # Ghostty ターミナル設定（Claude Day light/dark テーマ含む）
 │   ├── karabiner/  # Karabiner-Elements設定
 │   ├── git/        # Git 関連設定（global ignore, allowed_signers (machine-local) ）
-│   ├── nix-darwin/ # nix-darwin + Home Manager 構成（flake.nix / darwin.nix / home.nix）
+│   ├── nix-darwin/ # nix-darwin + Home Manager 構成（flake.nix / darwin.nix / home.nix と、files/markdownobserver・files/xcode 配下の CSS / Xcode テーマも配布）
 │   ├── op/         # 1Password CLI 関連（*.env テンプレ＝op:// URI のみ追跡、他は ignore）
 │   └── ssh/        # SSH client config（~/.ssh/config から `Include` で参照）
 ├── claude/         # Claude Code用設定（~/.claude/にリンク）

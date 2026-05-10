@@ -173,9 +173,48 @@ tmux で `prefix c` で windows を増やせば、同じターミナルセッシ
 
 ---
 
-## 5. 関連リンク
+## 5. 採用方針: A.2 ハイブリッド
 
-- [`CLAUDE.md`](../CLAUDE.md) — Phase 4 (MCP API キーを op:// で隠匿)
+§3 の対策候補から **A.2 ハイブリッド** を採用 (実装 commit は本ファイルと同タイムラインで push される `feat(op): pre-resolve MCP env-files...`)。
+
+### 設計
+
+1. ghostty 起動時、tmux に exec する直前に `op-warm-mcp` (Phase 2 ヘルパ) を呼ぶ
+2. `op-warm-mcp` は `~/.config/op/*.env`（op:// URI を含む env-file）を `op run -- bash -c '...'` で resolve し、`/tmp/op-mcp-<basename>` に literal 値で書き出す（mode 0600）
+3. `~/.claude.json` の `mcpServers.perplexity.args[--env-file=...]` を `/tmp/op-mcp-perplexity.env` に向け直す（[`scripts/setup-claude-mcp-perplexity.sh`](../scripts/setup-claude-mcp-perplexity.sh) で jq 自動編集）
+4. tmux ペイン内で `claude` 起動 → MCP の `op run --env-file=/tmp/op-mcp-perplexity.env -- npx ...` が走る
+5. `/tmp` 側のファイルには op:// が無い (= literal 値のみ) ので、`op run` は 1Password に問い合わせず env を素通しで spawn → **Touch ID 不要**
+
+### 性能・セキュリティ実測
+
+| ステップ | 時間 | Touch ID |
+|---|---|---|
+| `op-warm-mcp` (1 ghostty 起動につき 1 回) | 1.5〜10s | 1 回（cache 状態次第） |
+| `op run --env-file=/tmp/op-mcp-...` (各ペイン × 各 claude 起動) | 0.05s | **0 回 ✅** |
+
+ファイルパーミッション: `( umask 077; op run ... > $out )` のサブシェルで 0600 を保証。
+
+### Trade-off
+
+| 項目 | 内容 |
+|---|---|
+| Secret の所在 | `/tmp/op-mcp-*.env` に session 中存在（OS 再起動でクリア） |
+| 多重 ghostty | 各 ghostty が op-warm-mcp を独立に走らせ、最後の 1 つが /tmp を上書き。Touch ID は ghostty インスタンスごとに 1 回 |
+| 鍵 rotate | `rm /tmp/op-mcp-*.env` してから ghostty 再起動 |
+| ~/.claude.json 編集 | 新マシンで 1 度だけ `scripts/setup-claude-mcp-perplexity.sh` 実行（Phase 4 の jq セットアップの延長） |
+| `op-warm-mcp` 失敗時 | 旧 `~/.config/op/*.env` (op:// URI) を読まないので perplexity MCP がそのフェーズで動かない。再 warm or fall back に手動対応 |
+
+### 採用しなかった案の備忘
+
+- **A.1 厳格** (op を完全外す + tmux global env): 似たような Touch ID 削減効果。差は secret の所在 (tmux server プロセスメモリ vs /tmp ファイル)。castle の他フェーズ (Phase 5 .p8) と思想を揃える意図で /tmp 側を採用
+- **B 再署名**: nix-darwin の home.activation で codesign を組めば技術的に可能だが、1Password が adhoc + self-cert を信頼するか不明 (実証コスト > 期待効果)
+- **C Service Account Token**: Family プランでは利用不可。仕事 Mac で Business アカウントが入ったときに再検討
+
+## 6. 関連リンク
+
+- [`CLAUDE.md`](../CLAUDE.md) — Phase 4 (MCP API キーを op:// で隠匿) + tmux 複数ペイン用追加セットアップ
 - [`docs/op-env-pattern.md`](op-env-pattern.md) — `op://` env-file パターン
+- [`home/.zshrc.d/op.zsh`](../home/.zshrc.d/op.zsh) — `op-warm-mcp` 実装本体
+- [`scripts/setup-claude-mcp-perplexity.sh`](../scripts/setup-claude-mcp-perplexity.sh) — `~/.claude.json` の jq 書き換えスクリプト
 - 1Password 8 Developer Settings の "Connect with 1Password CLI" 設定
 - このプロンプト本文の「詳しく見る」リンク先（1Password 公式ドキュメント）

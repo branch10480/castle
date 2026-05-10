@@ -114,6 +114,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 
 - `op-status` — `op whoami` のラッパ。lock 状態なら non-zero を返してヒント文を出す
 - `oprun [--env-file=<path>] -- <command...>` — `op run --env-file=<path> --no-masking -- <command>` のショートカット。env-file は省略時 `./.env.op`（Phase 3 の `.env` テンプレ運用で使う規約 → [`docs/op-env-pattern.md`](docs/op-env-pattern.md)）
+- `op-warm-mcp` — `~/.config/op/*.env` を `op run -- bash -c '...'` で resolve し `/tmp/op-mcp-<basename>` に書き出す（mode 0600）。Ghostty 起動時に `home/.zshrc` から自動呼び出し。`~/.claude.json` の MCP `--env-file=` を `/tmp/op-mcp-...` に向け直しておけば、tmux ペイン分割時の per-pane Touch ID を回避できる（詳細: [`docs/op-touchid-investigation.md`](docs/op-touchid-investigation.md)、セットアップ: `scripts/setup-claude-mcp-perplexity.sh`）
 
 ### Shell Plugins（`gh`, `aws` 等）
 
@@ -201,11 +202,27 @@ Claude Code の `~/.claude.json` の `mcpServers.<name>.env.<KEY>` に**生 API 
 5. **Claude Code を再起動**（既存セッションは古い設定を保持しているため）
 6. 動作確認: `claude mcp list` で `perplexity ✓ Connected` が出る + Perplexity ツールが応答する
 
+### tmux で複数ペインを使う場合の追加セットアップ (per-pane Touch ID 回避)
+
+1Password 8 は呼び出し元の **pty (= tmux ペイン) ごとに 10 分間の transient grant** を発行するため、上記そのままだと「ペインを分割して各ペインで `claude` を起動 → ペインの数だけ Touch ID」が発生する。castle の Nix tmux は adhoc 署名で「永続認可済みアプリ」リストにも乗らない（詳細: [`docs/op-touchid-investigation.md`](docs/op-touchid-investigation.md)）。
+
+**対策 (A.2 ハイブリッド)**: ghostty 起動時に `op-warm-mcp` (Phase 2 ヘルパ) で `op://` を一度 resolve → `/tmp/op-mcp-perplexity.env` に literal 保存。`~/.claude.json` の `--env-file` をそこへ向け直すと、tmux 内のすべての `op run` が 1Password 呼び出しを skip する。
+
+```bash
+# Claude Code を一旦終了してから:
+bash ~/.homesick/repos/castle/scripts/setup-claude-mcp-perplexity.sh
+# .mcpServers.perplexity.args の --env-file を /tmp/op-mcp-perplexity.env に書き換える
+# Claude Code を起動し直す
+```
+
+**Trade-off**: secret が `/tmp/op-mcp-*.env` に 0600 で session 中存在する（OS 再起動でクリア）。鍵 rotate 時は `rm /tmp/op-mcp-*.env` してから ghostty 再起動で再 warm。
+
 ### ポイント
 
 - **Claude Code 自体は op:// を解釈しない**: `command` 階層で `op run` を噛ませることで、Claude Code には透過に見せる
 - **env-file は 1 行 = 1 環境変数**: `KEY=op://...` のみ。複数 MCP サーバを共用にしたい場合でも、サーバごとにファイルを分けると依存関係を局所化できる
 - **`--no-masking` は付けない**: Phase 2 の `oprun` ヘルパとは違い、MCP サーバの stdio に対して masking を切る必要は無い（むしろ stderr の意図しない出力が機密扱いになるリスクを減らす）
+- **Resolved file (`/tmp/op-mcp-*.env`) も "1 行 = `KEY=literal-value`" の env-file 形式**: `op run` は op:// が無い行を素通しするので、warm 済みファイルへの再アクセスは 1Password を呼ばない（実測 0.05s, silent）
 
 ## Phase 5: ASC API キー (`.p8`) を 1Password 経由で配信時のみ展開する
 

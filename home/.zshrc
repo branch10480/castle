@@ -220,6 +220,11 @@ unset _SHELL_INIT_PWD
 #   人は稀で、誤分割リスクが極めて低いため採用。
 if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
   && (( $+commands[tmux] )); then
+  # Pre-resolve op:// MCP env-files so claude-in-tmux-pane can read
+  # secrets without per-pane Touch ID (1Password 8 issues per-pty
+  # authorization grants — see docs/op-touchid-investigation.md).
+  # Defined in home/.zshrc.d/op.zsh; no-op if op CLI not installed.
+  (( $+functions[op-warm-mcp] )) && op-warm-mcp 2>&1
   group_member="$(tmux list-sessions -F '#{session_name}|#{session_group}' \
                   2>/dev/null | awk -F'|' '$2=="main"{print $1; exit}')"
   if [[ -n "$group_member" ]]; then

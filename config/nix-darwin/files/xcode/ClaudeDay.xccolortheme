@@ -34,26 +34,57 @@
 -->
 <plist version="1.0">
 <dict>
+	<!--
+	  Console (debug area) — designed to match the source editor "本文" feel.
+	  Background, cursor, selection use the same Claude Day chrome as the
+	  source editor. Output text inherits the markup palette (slate / g700 /
+	  olive-d / clay-d) so prose-style logs read like the rest of the theme,
+	  not like a third-party widget. Font size matches DVTSourceTextSyntaxFonts
+	  (13.0pt) — earlier 12.0pt left the console feeling like a different
+	  surface even when the colors were aligned.
+
+	    DebuggerInput        slate    (#141413)  user input at (lldb) prompt
+	    DebuggerOutput       g700     (#3D3D3A)  LLDB chatter (secondary tier)
+	    DebuggerPrompt       clay-d   (#B85C3E)  the "(lldb)" accent itself
+	    ExectuableInput      slate    (#141413)  stdin from interactive runs
+	    ExectuableOutput     slate    (#141413)  stdout — primary tier, same as
+	                                             body text. Earlier olive-d
+	                                             (#5C6E45) was too low-contrast
+	                                             on ivory for long log reading;
+	                                             slate keeps stdout as readable
+	                                             as the source editor body.
+	                                             LLDB chatter stays one tier
+	                                             down at g700 so the hierarchy
+	                                             "app log > debugger noise" is
+	                                             still expressed via lightness.
+	    TextBackground       ivory    (#FAF9F5)  same ground as source editor
+	    TextInsertionPoint   clay     (#D97757)  cursor accent
+	    TextSelection        oat      (#E3DACC)  warm-neutral selection
+
+	  Note: Apple's key naming "Exectuable" is a typo in Xcode itself
+	  (Executable → Exectuable). Do NOT correct it; Xcode reads exactly
+	  this misspelling.
+	-->
 	<key>DVTConsoleDebuggerInputTextColor</key>
 	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleDebuggerInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleDebuggerOutputTextColor</key>
 	<string>0.2392 0.2392 0.2275 1</string>
 	<key>DVTConsoleDebuggerOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleDebuggerPromptTextColor</key>
 	<string>0.7216 0.3608 0.2431 1</string>
 	<key>DVTConsoleDebuggerPromptTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleExectuableInputTextColor</key>
 	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleExectuableInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleExectuableOutputTextColor</key>
-	<string>0.3608 0.4314 0.2706 1</string>
+	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleExectuableOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleTextBackgroundColor</key>
 	<string>0.9804 0.9765 0.9608 1</string>
 	<key>DVTConsoleTextInsertionPointColor</key>

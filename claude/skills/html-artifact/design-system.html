@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toshi's HTML Artifact — Design System</title>
+<style>
+  /* ============================================================
+     :root tokens  —  copy this block into any new artifact
+     Inspired by thariqs/html-effectiveness (Anthropic ivory + clay)
+     ============================================================ */
+  :root {
+    /* color */
+    --ivory:  #FAF9F5;
+    --paper:  #FFFFFF;
+    --slate:  #141413;
+    --clay:   #D97757;
+    --clay-d: #B85C3E;
+    --oat:    #E3DACC;
+    --olive:  #788C5D;
+    --olive-d:#5C6E45;
+    --g100:   #F0EEE6;
+    --g200:   #E6E3DA;
+    --g300:   #D1CFC5;
+    --g500:   #87867F;
+    --g700:   #3D3D3A;
+
+    /* type */
+    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+    /* radius */
+    --r-pill:  999px;
+    --r-card:  14px;
+    --r-panel: 12px;
+    --r-row:   8px;
+    --r-chip:  6px;
+
+    /* border */
+    --b-hair: 1px solid var(--g200);
+    --b-rule: 1.5px solid var(--g300);
+    --b-strong: 1.5px solid var(--slate);
+
+    /* shadow */
+    --sh-card: 0 10px 30px rgba(20, 20, 19, 0.10);
+    --sh-soft: 0 4px 14px rgba(20, 20, 19, 0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--ivory);
+    color: var(--slate);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px 140px; }
+
+  /* ───────────────────────────────────────────
+     Masthead
+     ─────────────────────────────────────────── */
+  header.masthead {
+    padding: 80px 0 56px;
+    border-bottom: var(--b-rule);
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--g500);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 24px; height: 1.5px;
+    background: var(--clay);
+  }
+  h1.display {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(38px, 5.4vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.018em;
+    margin: 0 0 8px;
+    max-width: 18ch;
+  }
+  h1.display em {
+    font-style: italic;
+    color: var(--clay);
+  }
+  .lead {
+    font-size: 16.5px;
+    color: var(--g700);
+    margin: 22px 0 0;
+    max-width: 640px;
+  }
+  .lead a { color: var(--clay); text-decoration-color: var(--oat); text-underline-offset: 3px; }
+  .lead a:hover { text-decoration-color: var(--clay); }
+  .meta {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--g500);
+  }
+  .meta span strong { color: var(--g700); font-weight: 500; }
+
+  /* ───────────────────────────────────────────
+     TOC pills
+     ─────────────────────────────────────────── */
+  nav.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 26px 0 0;
+  }
+  nav.toc a {
+    font-size: 12.5px;
+    padding: 7px 14px;
+    border: var(--b-rule);
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    color: var(--g700);
+    background: var(--paper);
+    transition: border-color 120ms, color 120ms;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  nav.toc a .n { font-family: var(--mono); font-size: 10px; color: var(--g500); }
+  nav.toc a:hover { border-color: var(--slate); color: var(--slate); }
+  nav.toc a:hover .n { color: var(--clay); }
+
+  /* ───────────────────────────────────────────
+     Section head
+     ─────────────────────────────────────────── */
+  section { margin-top: 72px; scroll-margin-top: 28px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .sec-head .idx {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--clay);
+    font-weight: 600;
+    width: 34px;
+    flex-shrink: 0;
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 27px;
+    margin: 0;
+    letter-spacing: -0.012em;
+  }
+  .sec-head .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--g500);
+    background: var(--g100);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+  }
+  .sec-intro {
+    font-size: 14.5px;
+    color: var(--g700);
+    max-width: 720px;
+    margin: 0 0 24px 50px;
+  }
+  @media (max-width: 640px) { .sec-intro, .demos { margin-left: 0 !important; } }
+
+  .demos { margin-left: 50px; display: flex; flex-direction: column; gap: 28px; }
+  .demo-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--g500);
+    margin: 0 0 8px;
+  }
+
+  /* ───────────────────────────────────────────
+     1) Color tokens
+     ─────────────────────────────────────────── */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .swatch {
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+  }
+  .swatch .chip {
+    height: 84px;
+    border-bottom: var(--b-hair);
+  }
+  .swatch .info {
+    padding: 10px 12px 12px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--g700);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .swatch .info .name { color: var(--slate); font-weight: 500; }
+  .swatch .info .hex { color: var(--g500); }
+
+  /* ───────────────────────────────────────────
+     2) Typography
+     ─────────────────────────────────────────── */
+  .type-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: baseline;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: var(--b-hair);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--g500);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .t-display  { font-family: var(--serif); font-size: 48px; line-height: 1.1;  font-weight: 500; letter-spacing: -0.02em; }
+  .t-h1       { font-family: var(--serif); font-size: 32px; line-height: 1.2;  font-weight: 500; letter-spacing: -0.012em; }
+  .t-h2       { font-family: var(--serif); font-size: 24px; line-height: 1.3;  font-weight: 500; letter-spacing: -0.01em; }
+  .t-h3       { font-family: var(--serif); font-size: 19px; line-height: 1.35; font-weight: 500; }
+  .t-lead     { font-family: var(--sans);  font-size: 17px; line-height: 1.5;  color: var(--g700); }
+  .t-body     { font-family: var(--sans);  font-size: 15px; line-height: 1.55; }
+  .t-small    { font-family: var(--sans);  font-size: 13px; line-height: 1.5;  color: var(--g700); }
+  .t-mono     { font-family: var(--mono);  font-size: 13px; line-height: 1.4; }
+  .t-eyebrow  { font-family: var(--mono);  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g500); }
+
+  /* ───────────────────────────────────────────
+     3) Buttons & Pills
+     ─────────────────────────────────────────── */
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 500 14px var(--sans);
+    padding: 9px 16px;
+    border-radius: var(--r-pill);
+    border: var(--b-rule);
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 120ms, background 120ms, border-color 120ms;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--clay);  color: var(--paper); border-color: var(--clay); }
+  .btn-primary:hover { background: var(--clay-d); border-color: var(--clay-d); }
+  .btn-outline { background: var(--paper); color: var(--slate); }
+  .btn-outline:hover { border-color: var(--slate); }
+  .btn-ghost   { background: transparent;  color: var(--g700); border-color: transparent; }
+  .btn-ghost:hover { background: var(--g100); }
+  .btn-link    { padding: 0; border: none; background: none; color: var(--clay);
+                 text-decoration: underline; text-decoration-color: var(--oat); text-underline-offset: 3px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border-radius: var(--r-pill);
+    font: 500 12px var(--sans);
+    border: var(--b-rule);
+    background: var(--paper);
+    color: var(--g700);
+  }
+  .pill-clay  { background: rgba(217, 119, 87, 0.12); color: var(--clay-d); border-color: transparent; }
+  .pill-olive { background: rgba(120, 140, 93, 0.14); color: var(--olive-d); border-color: transparent; }
+  .pill-oat   { background: var(--oat); color: var(--g700); border-color: transparent; }
+  .pill-slate { background: var(--slate); color: var(--ivory); border-color: transparent; }
+  .pill-dot::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ───────────────────────────────────────────
+     4) Cards
+     ─────────────────────────────────────────── */
+  .grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  a.card {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-card);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+    overflow: hidden;
+  }
+  a.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sh-card);
+    border-color: var(--slate);
+  }
+  .card .thumb {
+    height: 124px;
+    background: var(--g100);
+    border-bottom: var(--b-hair);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    transition: background 150ms ease;
+  }
+  a.card:hover .thumb { background: var(--oat); }
+  .card .thumb svg { width: 100%; height: 100%; overflow: visible; }
+  .card .body { padding: 16px 18px 14px; display: flex; flex-direction: column; flex: 1; }
+  .card .title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.22;
+    color: var(--slate);
+    margin: 0 0 6px;
+    letter-spacing: -0.008em;
+  }
+  .card .desc {
+    font-size: 13.5px;
+    color: var(--g700);
+    line-height: 1.5;
+    margin: 0 0 14px;
+    flex: 1;
+  }
+  .card .file {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--g500);
+    border-top: 1px solid var(--g100);
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card .file .arrow { transition: transform 150ms ease, color 150ms ease; color: var(--g300); }
+  a.card:hover .file { color: var(--clay); }
+  a.card:hover .file .arrow { transform: translateX(3px); color: var(--clay); }
+
+  /* ───────────────────────────────────────────
+     5) Code
+     ─────────────────────────────────────────── */
+  pre.code {
+    margin: 0;
+    background: var(--g100);
+    border: var(--b-hair);
+    border-radius: var(--r-panel);
+    padding: 16px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--g700);
+    overflow-x: auto;
+  }
+  pre.code .k { color: var(--olive-d); }
+  pre.code .s { color: var(--clay-d); }
+  pre.code .c { color: var(--g500); font-style: italic; }
+  pre.code .v { color: var(--slate); }
+  code.inline {
+    font-family: var(--mono);
+    font-size: 0.92em;
+    background: var(--g100);
+    padding: 1px 6px;
+    border-radius: var(--r-chip);
+    color: var(--g700);
+  }
+  .token-row {
+    display: grid;
+    grid-template-columns: 24px 180px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: var(--b-hair);
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .token-row:last-child { border-bottom: none; }
+  .token-row .sw { width: 18px; height: 18px; border-radius: 4px; border: var(--b-hair); }
+  .token-row .name { color: var(--slate); }
+  .token-row .val { color: var(--g500); }
+
+  /* ───────────────────────────────────────────
+     6) Callouts
+     ─────────────────────────────────────────── */
+  .callout {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--paper);
+    border: var(--b-rule);
+    border-left: 4px solid var(--clay);
+    border-radius: var(--r-panel);
+  }
+  .callout .ico {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--clay);
+  }
+  .callout h4 {
+    margin: 0 0 4px;
+    font: 500 14px var(--sans);
+    color: var(--slate);
+  }
+  .callout p { margin: 0; font-size: 13.5px; color: var(--g700); }
+  .callout-note    { border-left-color: var(--clay); }
+  .callout-success { border-left-color: var(--olive); }
+  .callout-success .ico { color: var(--olive-d); }
+  .callout-warn    { border-left-color: #C49A3F; background: #FFF8EB; }
+  .callout-warn .ico { color: #8C6A1F; }
+
+  /* ───────────────────────────────────────────
+     7) Tables
+     ─────────────────────────────────────────── */
+  table.t {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    font-size: 13.5px;
+  }
+  table.t th, table.t td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: var(--b-hair);
+  }
+  table.t thead th {
+    font: 500 12px var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--g500);
+    background: var(--g100);
+  }
+  table.t tbody tr:last-child td { border-bottom: none; }
+  table.t tbody tr:hover { background: var(--g100); }
+  table.t td.num { font-family: var(--mono); color: var(--g700); }
+
+  /* ───────────────────────────────────────────
+     8) Tabs
+     ─────────────────────────────────────────── */
+  .tabs {
+    border-bottom: var(--b-rule);
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .tabs button {
+    background: none;
+    border: none;
+    padding: 10px 14px;
+    font: 500 13px var(--sans);
+    color: var(--g500);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1.5px;
+    transition: color 120ms, border-color 120ms;
+  }
+  .tabs button:hover { color: var(--slate); }
+  .tabs button.is-active { color: var(--clay); border-bottom-color: var(--clay); }
+  .tab-panel { display: none; }
+  .tab-panel.is-active { display: block; }
+
+  /* ───────────────────────────────────────────
+     9) Lists
+     ─────────────────────────────────────────── */
+  ol.serif-list {
+    list-style: none;
+    counter-reset: serif;
+    padding: 0;
+    margin: 0;
+  }
+  ol.serif-list li {
+    counter-increment: serif;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: var(--b-hair);
+  }
+  ol.serif-list li:last-child { border-bottom: none; }
+  ol.serif-list li::before {
+    content: counter(serif, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--clay);
+    padding-top: 3px;
+  }
+  ul.dot-list { list-style: none; padding: 0; margin: 0; }
+  ul.dot-list li {
+    padding: 8px 0 8px 22px;
+    position: relative;
+    font-size: 14px;
+  }
+  ul.dot-list li::before {
+    content: "";
+    position: absolute; left: 4px; top: 16px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--clay);
+  }
+
+  /* ───────────────────────────────────────────
+     10) Stats / KPI
+     ─────────────────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .kpi {
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .kpi .lbl {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--g500);
+  }
+  .kpi .val {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--slate);
+    letter-spacing: -0.01em;
+  }
+  .kpi .delta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--olive-d);
+  }
+  .kpi .delta.down { color: var(--clay-d); }
+
+  /* ───────────────────────────────────────────
+     11) SVG toolkit
+     ─────────────────────────────────────────── */
+  .svg-frame {
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    padding: 24px;
+  }
+  .svg-frame svg { width: 100%; height: auto; max-height: 280px; display: block; }
+  /* utility classes for SVG illustrations */
+  .st { stroke: var(--g500); fill: none; stroke-width: 2.5; }
+  .fl { fill: var(--g300); }
+  .cl { fill: var(--clay); }
+  .ol { fill: var(--olive); }
+  .oa { fill: var(--oat); stroke: var(--g500); stroke-width: 2.5; }
+  .sl { fill: var(--slate); }
+  .wh { fill: var(--paper); stroke: var(--g500); stroke-width: 2.5; }
+  .ln { stroke: var(--g500); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+  .lc { stroke: var(--clay); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+  .da { stroke-dasharray: 4 4; }
+
+  /* ───────────────────────────────────────────
+     Footer
+     ─────────────────────────────────────────── */
+  footer {
+    margin-top: 120px;
+    border-top: var(--b-rule);
+    padding-top: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--g500);
+  }
+  footer .k { font-family: var(--serif); font-style: italic; color: var(--g700); font-size: 15px; }
+  footer a { color: var(--clay); text-decoration-color: var(--oat); text-underline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================================================
+       Masthead
+       ============================================================ -->
+  <header class="masthead">
+    <div class="eyebrow">Design system reference · v1</div>
+    <h1 class="display">A quiet <em>ivory + clay</em> system for HTML artifacts.</h1>
+    <p class="lead">
+      Single-file design tokens and components for the artifacts Claude generates on Toshi's machines.
+      Inspired by <a href="https://thariqs.github.io/html-effectiveness/">thariqs/html-effectiveness</a>.
+      Copy any <code class="inline">:root</code> block or component below into a new artifact —
+      no external CSS, no build step.
+    </p>
+    <div class="meta">
+      <span><strong>File</strong> claude/skills/html-artifact/design-system.html</span>
+      <span><strong>Tokens</strong> 12 colors · 3 fonts</span>
+      <span><strong>Sections</strong> 11</span>
+    </div>
+    <nav class="toc">
+      <a href="#colors">Colors <span class="n">01</span></a>
+      <a href="#type">Typography <span class="n">02</span></a>
+      <a href="#buttons">Buttons &amp; Pills <span class="n">03</span></a>
+      <a href="#cards">Cards <span class="n">04</span></a>
+      <a href="#code">Code <span class="n">05</span></a>
+      <a href="#callouts">Callouts <span class="n">06</span></a>
+      <a href="#tables">Tables <span class="n">07</span></a>
+      <a href="#tabs">Tabs <span class="n">08</span></a>
+      <a href="#lists">Lists <span class="n">09</span></a>
+      <a href="#kpi">KPI <span class="n">10</span></a>
+      <a href="#svg">SVG kit <span class="n">11</span></a>
+    </nav>
+  </header>
+
+  <!-- ============================== 01 colors ============================== -->
+  <section id="colors">
+    <div class="sec-head"><span class="idx">01</span><h2>Colors</h2><span class="count">12 tokens</span></div>
+    <p class="sec-intro">
+      Anthropic ivory + clay base. Use <code class="inline">--clay</code> sparingly for accent only —
+      it's loud against the warm gray scale. <code class="inline">--olive</code> is the secondary accent
+      (use for success states or "ok / shipped" indicators).
+    </p>
+    <div class="demos">
+      <div class="swatch-grid">
+        <div class="swatch"><div class="chip" style="background: var(--ivory);"></div>
+          <div class="info"><span class="name">--ivory</span><span class="hex">#FAF9F5</span><span>page bg</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--paper); border-bottom: var(--b-hair);"></div>
+          <div class="info"><span class="name">--paper</span><span class="hex">#FFFFFF</span><span>cards / panels</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--slate);"></div>
+          <div class="info"><span class="name">--slate</span><span class="hex">#141413</span><span>text · headings</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--clay);"></div>
+          <div class="info"><span class="name">--clay</span><span class="hex">#D97757</span><span>accent</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--clay-d);"></div>
+          <div class="info"><span class="name">--clay-d</span><span class="hex">#B85C3E</span><span>accent · pressed</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--oat);"></div>
+          <div class="info"><span class="name">--oat</span><span class="hex">#E3DACC</span><span>warm tint</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--olive);"></div>
+          <div class="info"><span class="name">--olive</span><span class="hex">#788C5D</span><span>secondary</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--olive-d);"></div>
+          <div class="info"><span class="name">--olive-d</span><span class="hex">#5C6E45</span><span>secondary · text</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--g100);"></div>
+          <div class="info"><span class="name">--g100</span><span class="hex">#F0EEE6</span><span>code bg</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--g200);"></div>
+          <div class="info"><span class="name">--g200</span><span class="hex">#E6E3DA</span><span>hairline</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--g300);"></div>
+          <div class="info"><span class="name">--g300</span><span class="hex">#D1CFC5</span><span>borders</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--g500);"></div>
+          <div class="info"><span class="name">--g500</span><span class="hex">#87867F</span><span>muted text</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--g700);"></div>
+          <div class="info"><span class="name">--g700</span><span class="hex">#3D3D3A</span><span>body text alt</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 02 type ============================== -->
+  <section id="type">
+    <div class="sec-head"><span class="idx">02</span><h2>Typography</h2><span class="count">3 families · 9 styles</span></div>
+    <p class="sec-intro">
+      <strong>Serif</strong> (display + headings) for editorial weight, <strong>system sans</strong>
+      for body, <strong>mono</strong> for eyebrows / metadata / code. Italics on the serif read as
+      a quiet emphasis — pair with <code class="inline">--clay</code> for the loudest call-out.
+    </p>
+    <div class="demos">
+      <div class="type-row"><span class="label">Display</span><span class="t-display">Quiet but exact.</span></div>
+      <div class="type-row"><span class="label">H1</span><span class="t-h1">Section title in serif</span></div>
+      <div class="type-row"><span class="label">H2</span><span class="t-h2">Subsection title</span></div>
+      <div class="type-row"><span class="label">H3</span><span class="t-h3">Card title or inline header</span></div>
+      <div class="type-row"><span class="label">Lead</span><span class="t-lead">A slightly larger sans paragraph for the first line of a section.</span></div>
+      <div class="type-row"><span class="label">Body</span><span class="t-body">Default body copy. Sans, 15px, line-height 1.55. Reads comfortably at A4 / desktop widths.</span></div>
+      <div class="type-row"><span class="label">Small</span><span class="t-small">Captions, table cells, secondary annotations. 13px, --g700.</span></div>
+      <div class="type-row"><span class="label">Mono</span><span class="t-mono">file_path · token names · timestamps · hex codes</span></div>
+      <div class="type-row"><span class="label">Eyebrow</span><span class="t-eyebrow">Section · 03 · component overview</span></div>
+    </div>
+  </section>
+
+  <!-- ============================== 03 buttons ============================== -->
+  <section id="buttons">
+    <div class="sec-head"><span class="idx">03</span><h2>Buttons &amp; Pills</h2><span class="count">4 + 5 variants</span></div>
+    <p class="sec-intro">
+      Buttons are pill-shaped (<code class="inline">--r-pill</code>). Reserve <em>primary</em> for
+      one action per view. Pills double as status indicators — pair with <code class="inline">.pill-dot</code>
+      for an inline color cue.
+    </p>
+    <div class="demos">
+      <p class="demo-label">Buttons</p>
+      <div class="row">
+        <button class="btn btn-primary">Primary action</button>
+        <button class="btn btn-outline">Secondary</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <a href="#" class="btn-link">Inline link →</a>
+      </div>
+      <p class="demo-label" style="margin-top: 24px;">Pills · tags · status</p>
+      <div class="row">
+        <span class="pill">default</span>
+        <span class="pill pill-clay pill-dot">in progress</span>
+        <span class="pill pill-olive pill-dot">shipped</span>
+        <span class="pill pill-oat">draft</span>
+        <span class="pill pill-slate">v1.2</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 04 cards ============================== -->
+  <section id="cards">
+    <div class="sec-head"><span class="idx">04</span><h2>Cards</h2><span class="count">3 in a grid</span></div>
+    <p class="sec-intro">
+      Cards lift on hover (<code class="inline">translateY(-3px)</code>) and gain a slate border —
+      the warm <code class="inline">--oat</code> bleeds into the thumb to confirm the hover.
+      Always include a <code class="inline">.file</code> footer with the filename so the artifact
+      doubles as a sitemap.
+    </p>
+    <div class="demos">
+      <div class="grid-cards">
+        <a class="card" href="#colors">
+          <div class="thumb">
+            <svg viewBox="0 0 120 80">
+              <rect class="oa" x="10" y="14" width="32" height="52" rx="6"/>
+              <rect class="wh" x="46" y="14" width="32" height="52" rx="6"/>
+              <rect class="cl" x="82" y="14" width="28" height="52" rx="6"/>
+            </svg>
+          </div>
+          <div class="body">
+            <h3 class="title">Color tokens</h3>
+            <p class="desc">Ivory base, clay accent, olive secondary, five-step warm gray ramp.</p>
+            <div class="file"><span>colors.html</span><span class="arrow">→</span></div>
+          </div>
+        </a>
+        <a class="card" href="#type">
+          <div class="thumb">
+            <svg viewBox="0 0 120 80">
+              <text x="10" y="38" font-family="ui-serif, Georgia, serif" font-size="34" font-style="italic" fill="#141413">Aa</text>
+              <text x="60" y="38" font-family="system-ui, sans-serif" font-size="22" fill="#3D3D3A">Aa</text>
+              <text x="92" y="38" font-family="ui-monospace, Menlo, monospace" font-size="18" fill="#87867F">Aa</text>
+              <line class="lc" x1="10" y1="58" x2="50" y2="58"/>
+              <line class="ln" x1="60" y1="58" x2="86" y2="58"/>
+              <line class="ln da" x1="92" y1="58" x2="116" y2="58"/>
+            </svg>
+          </div>
+          <div class="body">
+            <h3 class="title">Typography</h3>
+            <p class="desc">Serif for headings, sans for body, mono for eyebrows and metadata.</p>
+            <div class="file"><span>typography.html</span><span class="arrow">→</span></div>
+          </div>
+        </a>
+        <a class="card" href="#svg">
+          <div class="thumb">
+            <svg viewBox="0 0 120 80">
+              <circle class="wh" cx="32" cy="40" r="18"/>
+              <rect class="oa" x="62" y="22" width="36" height="36" rx="6"/>
+              <line class="lc" x1="50" y1="40" x2="62" y2="40"/>
+              <circle class="cl" cx="32" cy="40" r="5"/>
+            </svg>
+          </div>
+          <div class="body">
+            <h3 class="title">SVG toolkit</h3>
+            <p class="desc">Utility classes for hand-drawn diagrams: <code class="inline">.cl .oa .ln .da</code></p>
+            <div class="file"><span>svg-kit.html</span><span class="arrow">→</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 05 code ============================== -->
+  <section id="code">
+    <div class="sec-head"><span class="idx">05</span><h2>Code</h2><span class="count">3 styles</span></div>
+    <p class="sec-intro">
+      Code blocks sit on the warm <code class="inline">--g100</code> tint (not pure gray) so they
+      stay in the warm ivory family. Inline code uses the same tint with a small radius. The
+      token-row style is for design-system listings or config diffs.
+    </p>
+    <div class="demos">
+      <p class="demo-label">Block</p>
+<pre class="code"><span class="c">// claim a callout color from the design system</span>
+<span class="k">const</span> <span class="v">accent</span> = <span class="s">"var(--clay)"</span>;
+<span class="k">function</span> <span class="v">render</span>(panel) {
+  <span class="k">return</span> <span class="s">`&lt;aside style="border-left: 4px solid </span>${<span class="v">accent</span>}<span class="s">"&gt;`</span>;
+}</pre>
+
+      <p class="demo-label" style="margin-top: 24px;">Inline</p>
+      <p class="t-body">Use <code class="inline">--clay</code> for accents, <code class="inline">--olive</code> for success,
+        and reserve <code class="inline">--slate</code> for body text only.</p>
+
+      <p class="demo-label" style="margin-top: 24px;">Token row</p>
+      <div class="swatch" style="padding: 4px 0;">
+        <div class="token-row"><div class="sw" style="background: var(--ivory);"></div><span class="name">--ivory</span><span class="val">#FAF9F5  ·  page bg</span></div>
+        <div class="token-row"><div class="sw" style="background: var(--clay);"></div><span class="name">--clay</span><span class="val">#D97757  ·  accent only</span></div>
+        <div class="token-row"><div class="sw" style="background: var(--olive);"></div><span class="name">--olive</span><span class="val">#788C5D  ·  secondary accent</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 06 callouts ============================== -->
+  <section id="callouts">
+    <div class="sec-head"><span class="idx">06</span><h2>Callouts</h2><span class="count">3 tones</span></div>
+    <p class="sec-intro">
+      Left-border callouts are the loudest layout move in this system. Reserve them for things
+      the reader must not skim past. The italic serif "ico" is intentional — it reads as a
+      pull-quote, not a UI alert.
+    </p>
+    <div class="demos">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="callout callout-note">
+          <div class="ico">i</div>
+          <div>
+            <h4>Note</h4>
+            <p>Reserve <code class="inline">--clay</code> for accents only. Using it for body text
+              (or large blocks of background) loses its punch.</p>
+          </div>
+        </div>
+        <div class="callout callout-success">
+          <div class="ico">✓</div>
+          <div>
+            <h4>Shipped</h4>
+            <p>Migration completed. Backfill ran clean across all 50M rows; no concurrent-write
+              conflicts observed.</p>
+          </div>
+        </div>
+        <div class="callout callout-warn">
+          <div class="ico">!</div>
+          <div>
+            <h4>Heads up</h4>
+            <p>This artifact is single-file by design. Don't link external stylesheets — Claude
+              should redeclare <code class="inline">:root</code> tokens at the top of every new file.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 07 tables ============================== -->
+  <section id="tables">
+    <div class="sec-head"><span class="idx">07</span><h2>Tables</h2><span class="count">1 style</span></div>
+    <p class="sec-intro">
+      Tables sit on a paper card with a mono-uppercase head row. Use the <code class="inline">.num</code>
+      class on numeric columns so digits align in mono.
+    </p>
+    <div class="demos">
+      <table class="t">
+        <thead>
+          <tr><th>Token</th><th>Hex</th><th>Role</th><th class="num" style="text-align:right;">Used in</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>--ivory</td><td><code class="inline">#FAF9F5</code></td><td>Page background</td><td class="num" style="text-align:right;">11</td></tr>
+          <tr><td>--clay</td><td><code class="inline">#D97757</code></td><td>Primary accent</td><td class="num" style="text-align:right;">23</td></tr>
+          <tr><td>--olive</td><td><code class="inline">#788C5D</code></td><td>Secondary accent</td><td class="num" style="text-align:right;">6</td></tr>
+          <tr><td>--g300</td><td><code class="inline">#D1CFC5</code></td><td>Borders &amp; rules</td><td class="num" style="text-align:right;">17</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================== 08 tabs ============================== -->
+  <section id="tabs">
+    <div class="sec-head"><span class="idx">08</span><h2>Tabs</h2><span class="count">stateless · JS-light</span></div>
+    <p class="sec-intro">
+      Tabs are CSS + a 10-line script. Underline animates with the clay accent. Keep tabs to 3-5 —
+      more than that, prefer a TOC pill row at the top of the document.
+    </p>
+    <div class="demos">
+      <div>
+        <div class="tabs" role="tablist">
+          <button class="is-active" data-tab="rationale">Rationale</button>
+          <button data-tab="impl">Implementation</button>
+          <button data-tab="risk">Risks</button>
+        </div>
+        <div class="tab-panel is-active" data-panel="rationale">
+          <p class="t-body">Why we picked this approach. Short narrative — this should be readable in 30 seconds.</p>
+        </div>
+        <div class="tab-panel" data-panel="impl">
+          <p class="t-body">Code-level detail. Acceptable to inline a short <code class="inline">pre.code</code> block.</p>
+        </div>
+        <div class="tab-panel" data-panel="risk">
+          <p class="t-body">What could break. Be specific — "rate limit on third-party API" beats "performance".</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 09 lists ============================== -->
+  <section id="lists">
+    <div class="sec-head"><span class="idx">09</span><h2>Lists</h2><span class="count">2 patterns</span></div>
+    <p class="sec-intro">
+      Two list flavors: the serif numbered list (for steps / decisions) and the dot list
+      (for short scannable items). Avoid the browser default — they're indistinguishable
+      from markdown rendering.
+    </p>
+    <div class="demos">
+      <p class="demo-label">Serif numbered</p>
+      <ol class="serif-list">
+        <li><div><strong>Brief Claude.</strong> Specify the artifact type (spec / report / mockup / explainer) and the audience.</div></li>
+        <li><div><strong>Point at this design system.</strong> Tell Claude to read <code class="inline">design-system.html</code> first.</div></li>
+        <li><div><strong>Single-file output.</strong> Inline the <code class="inline">:root</code> block; no external CSS, no build step.</div></li>
+        <li><div><strong>Open in browser.</strong> Eyeball it. Iterate verbally.</div></li>
+      </ol>
+
+      <p class="demo-label" style="margin-top: 24px;">Dot list</p>
+      <ul class="dot-list">
+        <li>Use <code class="inline">--clay</code> for accents only — never for body text or large fills.</li>
+        <li>Italics on the serif read as quiet emphasis; pair with clay for loud emphasis.</li>
+        <li>Keep tabs to 3-5; longer needs a TOC pill row instead.</li>
+        <li>Cards always include a mono-styled <code class="inline">.file</code> footer.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================== 10 KPI ============================== -->
+  <section id="kpi">
+    <div class="sec-head"><span class="idx">10</span><h2>Stats &amp; KPI</h2><span class="count">4 in a row</span></div>
+    <p class="sec-intro">
+      KPI tiles use the serif for the value (so digits feel editorial, not dashboard-y).
+      Delta in mono with olive (up) or clay (down) — never red/green.
+    </p>
+    <div class="demos">
+      <div class="kpi-grid">
+        <div class="kpi"><span class="lbl">Artifacts shipped</span><span class="val">42</span><span class="delta">+8 this week</span></div>
+        <div class="kpi"><span class="lbl">Avg. read time</span><span class="val">2:14</span><span class="delta">+0:18 vs last</span></div>
+        <div class="kpi"><span class="lbl">Tokens used</span><span class="val">1.2M</span><span class="delta down">−240k</span></div>
+        <div class="kpi"><span class="lbl">Open threads</span><span class="val">7</span><span class="delta down">−3</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 11 SVG ============================== -->
+  <section id="svg">
+    <div class="sec-head"><span class="idx">11</span><h2>SVG toolkit</h2><span class="count">10 utility classes</span></div>
+    <p class="sec-intro">
+      Hand-drawn-feeling diagrams via a small set of SVG utility classes:
+      <code class="inline">.st</code> stroke, <code class="inline">.fl</code> fill,
+      <code class="inline">.cl</code> clay fill, <code class="inline">.ol</code> olive fill,
+      <code class="inline">.oa</code> oat fill+stroke, <code class="inline">.sl</code> slate fill,
+      <code class="inline">.wh</code> white+stroke, <code class="inline">.ln</code> rounded line,
+      <code class="inline">.lc</code> clay rounded line, <code class="inline">.da</code> dashed.
+    </p>
+    <div class="demos">
+      <div class="svg-frame">
+        <svg viewBox="0 0 600 220" aria-label="Example flow diagram">
+          <!-- nodes -->
+          <rect class="wh" x="20" y="80" width="120" height="60" rx="10"/>
+          <text x="80" y="116" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-size="15" fill="#141413">Prompt</text>
+
+          <rect class="oa" x="200" y="80" width="160" height="60" rx="10"/>
+          <text x="280" y="116" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-size="15" fill="#141413">design-system.html</text>
+
+          <rect class="wh" x="420" y="40" width="160" height="60" rx="10"/>
+          <text x="500" y="76" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-size="15" fill="#141413">Spec</text>
+
+          <rect class="wh" x="420" y="120" width="160" height="60" rx="10"/>
+          <text x="500" y="156" text-anchor="middle" font-family="ui-serif, Georgia, serif" font-size="15" fill="#141413">Report</text>
+
+          <!-- arrows -->
+          <line class="ln" x1="140" y1="110" x2="200" y2="110"/>
+          <polygon class="fl" points="195,105 205,110 195,115"/>
+
+          <line class="lc" x1="360" y1="100" x2="420" y2="70"/>
+          <polygon class="cl" points="416,64 425,68 419,76"/>
+
+          <line class="lc" x1="360" y1="120" x2="420" y2="150"/>
+          <polygon class="cl" points="419,144 425,152 416,156"/>
+
+          <line class="ln da" x1="500" y1="100" x2="500" y2="120"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== Footer ============================== -->
+  <footer>
+    <span class="k">"Quiet but exact."</span>
+    <span>Inspired by <a href="https://thariqs.github.io/html-effectiveness/">thariqs/html-effectiveness</a> · Anthropic ivory + clay</span>
+  </footer>
+
+</div>
+
+<script>
+  // tabs (no framework — just enough)
+  document.querySelectorAll('.tabs').forEach(group => {
+    const buttons = group.querySelectorAll('button');
+    const panels  = group.parentElement.querySelectorAll('.tab-panel');
+    buttons.forEach(btn => btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.toggle('is-active', b === btn));
+      panels.forEach(p => p.classList.toggle('is-active', p.dataset.panel === btn.dataset.tab));
+    }));
+  });
+</script>
+</body>
+</html>

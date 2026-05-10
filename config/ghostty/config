@@ -20,9 +20,12 @@ font-codepoint-map = U+FF00-U+FFEF=Hiragino Sans W3
 # theme = light:Belafonte Day,dark:Kanagawa Dragon
 # theme = light:Alabaster,dark:Kanagawa Dragon
 # theme = light:3024 Day Custom,dark:Solarized Dark Patched
+# theme = light:Claude Day,dark:Kanagawa Dragon
+# theme = Claude Day
 # theme = Solarized Dark Patched
 # theme = 0x96f
-theme = Kanagawa Dragon
+# theme = Kanagawa Dragon
+theme = light:Claude Day,dark:Kanagawa Dragon
 
 # Window appearance
 unfocused-split-opacity = 1

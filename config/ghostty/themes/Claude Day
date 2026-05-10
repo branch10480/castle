@@ -1,0 +1,35 @@
+# Claude Day
+#
+# Anthropic / Claude corporate site inspired light theme.
+# Reference palette: https://thariqs.github.io/html-effectiveness/
+#   --ivory #FAF9F5  --paper #FFFFFF  --slate #141413
+#   --clay  #D97757  --clay-d #B85C3E
+#   --oat   #E3DACC  --olive #788C5D
+#   --g100..g700: #F0EEE6 / #E6E3DA / #D1CFC5 / #87867F / #3D3D3A
+
+# ANSI normal (0-7)
+palette = 0=#141413
+palette = 1=#B04A3F
+palette = 2=#788C5D
+palette = 3=#C78E3F
+palette = 4=#5C7CA3
+palette = 5=#8E5572
+palette = 6=#5F8C82
+palette = 7=#D1CFC5
+
+# ANSI bright (8-15)
+palette = 8=#87867F
+palette = 9=#C7684C
+palette = 10=#A8BC8C
+palette = 11=#C9B98A
+palette = 12=#7A99C2
+palette = 13=#D97757
+palette = 14=#87B0A5
+palette = 15=#FFFFFF
+
+background = #FAF9F5
+foreground = #141413
+cursor-color = #D97757
+cursor-text = #FAF9F5
+selection-background = #E3DACC
+selection-foreground = #141413

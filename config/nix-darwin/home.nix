@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, lib, username, ... }:
 
 {
   home.username = username;
@@ -83,4 +83,24 @@
   # ディレクトリを読み込むので themes/ 配下に固定で配置する。
   home.file."Library/Application Support/MarkdownObserver/themes/user.css".source =
     ./files/markdownobserver/user.css;
+
+  # Xcode カスタムテーマ "Claude Day" を castle 経由で配布する。
+  # ⚠️ Xcode は ~/Library/.../FontAndColorThemes/ 配下の symlink を辿らない
+  # （実ファイルとして配置されたものしか custom theme として認識しない）。
+  # そのため home.file による symlink ではなく、activation script で
+  # 実ファイルとしてコピーする。
+  #
+  # castle 側のファイル名は空白なし (ClaudeDay.xccolortheme) で Nix のパス
+  # リテラルに優しく、配置先のファイル名 ("Claude Day.xccolortheme") は空白
+  # ありで Xcode の Settings → Themes 一覧で「Claude Day」と表示される。
+  # トークンの出所は claude/skills/html-artifact/design-system.html。
+  home.activation.installXcodeThemeClaudeDay =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
+      # 旧 generation の symlink が残っていれば剥がす（home.file 撤去後の保険）
+      $DRY_RUN_CMD rm -f "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/xcode/ClaudeDay.xccolortheme} \
+        "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
+    '';
 }

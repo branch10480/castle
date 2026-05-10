@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Claude Day (Light) — Xcode color theme.
+
+  Hybrid design: editor *chrome* (background, cursor, selection, current line,
+  scrollbar markers, console, markup) follows castle's Claude Day palette
+  (claude/skills/html-artifact/design-system.html). Source-text *syntax colors*
+  adopt Xcode's stock Sunset palette — its warm-ish base (orange comment,
+  terracotta type, deep-blue keyword) sits naturally on Claude Day's ivory
+  background and avoids the all-warm-on-all-warm readability trap that a pure
+  Claude Day syntax has.
+
+  Token reference (RGBA float):
+    ivory   #FAF9F5  0.9804 0.9765 0.9608 1   page background
+    paper   #FFFFFF  1.0000 1.0000 1.0000 1   panels
+    slate   #141413  0.0784 0.0784 0.0745 1   text · plain identifiers
+    clay    #D97757  0.8510 0.4667 0.3412 1   accent · cursor · macro / preprocessor / attribute
+    clay-d  #B85C3E  0.7216 0.3608 0.2431 1   keyword · type · class · link · markup strong
+    oat     #E3DACC  0.8902 0.8549 0.8000 1   selection
+    olive   #788C5D  0.4706 0.5490 0.3647 1   secondary accent
+    olive-d #5C6E45  0.3608 0.4314 0.2706 1   string · function · doc-keyword · stdout
+    mustard #C78E3F  0.7804 0.5569 0.2471 1   number · constant · warning
+    ruby    #B04A3F  0.6902 0.2902 0.2471 1   regex · error · diff conflict
+    g100    #F0EEE6  0.9412 0.9333 0.9020 1   current-line highlight · markup bg
+    g200    #E6E3DA  0.9020 0.8902 0.8549 1   hairline
+    g300    #D1CFC5  0.8196 0.8118 0.7725 1   invisibles · markup border
+    g500    #87867F  0.5294 0.5255 0.4980 1   comment · mark · diff
+    g700    #3D3D3A  0.2392 0.2392 0.2275 1   debugger output · markup inline code · other heading
+
+  Font: JetBrainsMonoNF-Regular - 13.0 (踏襲: 既存の My Classic (Light) と同じ。
+  HTML artifact 側は Mono バリアント (NFM) を採用しているが、Xcode は既存設定との
+  メトリクス互換性を優先して NF のまま揃える。
+-->
+<plist version="1.0">
+<dict>
+	<key>DVTConsoleDebuggerInputTextColor</key>
+	<string>0.0784 0.0784 0.0745 1</string>
+	<key>DVTConsoleDebuggerInputTextFont</key>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<key>DVTConsoleDebuggerOutputTextColor</key>
+	<string>0.2392 0.2392 0.2275 1</string>
+	<key>DVTConsoleDebuggerOutputTextFont</key>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<key>DVTConsoleDebuggerPromptTextColor</key>
+	<string>0.7216 0.3608 0.2431 1</string>
+	<key>DVTConsoleDebuggerPromptTextFont</key>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<key>DVTConsoleExectuableInputTextColor</key>
+	<string>0.0784 0.0784 0.0745 1</string>
+	<key>DVTConsoleExectuableInputTextFont</key>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<key>DVTConsoleExectuableOutputTextColor</key>
+	<string>0.3608 0.4314 0.2706 1</string>
+	<key>DVTConsoleExectuableOutputTextFont</key>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
+	<key>DVTConsoleTextBackgroundColor</key>
+	<string>0.9804 0.9765 0.9608 1</string>
+	<key>DVTConsoleTextInsertionPointColor</key>
+	<string>0.8510 0.4667 0.3412 1</string>
+	<key>DVTConsoleTextSelectionColor</key>
+	<string>0.8902 0.8549 0.8000 1</string>
+	<key>DVTFontAndColorVersion</key>
+	<integer>1</integer>
+	<key>DVTLineSpacing</key>
+	<real>1.1</real>
+	<key>DVTMarkupTextBackgroundColor</key>
+	<string>0.9412 0.9333 0.9020 1</string>
+	<key>DVTMarkupTextBorderColor</key>
+	<string>0.8196 0.8118 0.7725 1</string>
+	<key>DVTMarkupTextCodeFont</key>
+	<string>JetBrainsMonoNF-Regular - 10.0</string>
+	<key>DVTMarkupTextEmphasisColor</key>
+	<string>0.3608 0.4314 0.2706 1</string>
+	<key>DVTMarkupTextEmphasisFont</key>
+	<string>.AppleSystemUIFontItalic - 10.0</string>
+	<key>DVTMarkupTextInlineCodeColor</key>
+	<string>0.2392 0.2392 0.2275 1</string>
+	<key>DVTMarkupTextLinkColor</key>
+	<string>0.7216 0.3608 0.2431 1</string>
+	<key>DVTMarkupTextLinkFont</key>
+	<string>.AppleSystemUIFont - 10.0</string>
+	<key>DVTMarkupTextNormalColor</key>
+	<string>0.0784 0.0784 0.0745 1</string>
+	<key>DVTMarkupTextNormalFont</key>
+	<string>.AppleSystemUIFont - 10.0</string>
+	<key>DVTMarkupTextOtherHeadingColor</key>
+	<string>0.2392 0.2392 0.2275 1</string>
+	<key>DVTMarkupTextOtherHeadingFont</key>
+	<string>.AppleSystemUIFont - 14.0</string>
+	<key>DVTMarkupTextPrimaryHeadingColor</key>
+	<string>0.0784 0.0784 0.0745 1</string>
+	<key>DVTMarkupTextPrimaryHeadingFont</key>
+	<string>.AppleSystemUIFont - 24.0</string>
+	<key>DVTMarkupTextSecondaryHeadingColor</key>
+	<string>0.0784 0.0784 0.0745 1</string>
+	<key>DVTMarkupTextSecondaryHeadingFont</key>
+	<string>.AppleSystemUIFont - 18.0</string>
+	<key>DVTMarkupTextStrongColor</key>
+	<string>0.7216 0.3608 0.2431 1</string>
+	<key>DVTMarkupTextStrongFont</key>
+	<string>.AppleSystemUIFontBold - 10.0</string>
+	<key>DVTScrollbarMarkerAnalyzerColor</key>
+	<string>0.3608 0.4314 0.2706 1</string>
+	<key>DVTScrollbarMarkerBreakpointColor</key>
+	<string>0.8510 0.4667 0.3412 1</string>
+	<key>DVTScrollbarMarkerDiffColor</key>
+	<string>0.5294 0.5255 0.4980 1</string>
+	<key>DVTScrollbarMarkerDiffConflictColor</key>
+	<string>0.6902 0.2902 0.2471 1</string>
+	<key>DVTScrollbarMarkerErrorColor</key>
+	<string>0.6902 0.2902 0.2471 1</string>
+	<key>DVTScrollbarMarkerRuntimeIssueColor</key>
+	<string>0.7804 0.5569 0.2471 1</string>
+	<key>DVTScrollbarMarkerWarningColor</key>
+	<string>0.7804 0.5569 0.2471 1</string>
+	<key>DVTSourceTextBackground</key>
+	<string>0.9804 0.9765 0.9608 1</string>
+	<key>DVTSourceTextBlockDimBackgroundColor</key>
+	<string>0.0784 0.0784 0.0745 0.4</string>
+	<key>DVTSourceTextCurrentLineHighlightColor</key>
+	<string>0.9412 0.9333 0.9020 1</string>
+	<key>DVTSourceTextInsertionPointColor</key>
+	<string>0.8510 0.4667 0.3412 1</string>
+	<key>DVTSourceTextInvisiblesColor</key>
+	<string>0.8196 0.8118 0.7725 1</string>
+	<key>DVTSourceTextSelectionColor</key>
+	<string>0.8902 0.8549 0.8000 1</string>
+	<key>DVTSourceTextSyntaxColors</key>
+	<!--
+	  Syntax colors adopt Xcode's Sunset palette as the base.
+	  Sunset's signature traits, on top of Claude Day's ivory chrome:
+	    - comment   = warm gray g500 (#87867F)  ← overridden from Sunset's
+	                  loud orange to match castle's "muted text = g500" rule
+	                  (markdownobserver's --reader-fg-secondary also uses g500)
+	    - mark / comment.doc.keyword = warm gray g700 (#3D3D3A) ← comment-level
+	                  "headings", one shade darker than comment body
+	    - type/class = deep terracotta (#B44500)  ← almost identical to clay-d
+	    - keyword + number = deep blue (#294277)  ← calm, low-fatigue
+	    - identifier = dusty blue (#476A97)  ← own / system not differentiated
+	    - macro / preprocessor = dusty purple (#646485)
+	    - string    = vivid red (#DF0700)
+	  Claude Day stays expressed via the editor *chrome* (background, cursor,
+	  selection, scrollbar markers, console, markup) above and below this dict.
+	  Regex tokens reuse Sunset hues (string-like = vivid red, identifier-like
+	  = dusty blue, number-like = deep blue) since Sunset itself does not
+	  define them. plain / regex.other use Claude Day's slate (#141413) instead
+	  of Sunset's pure black to match markdownobserver's body text and keep
+	  castle's "body = slate" rule consistent across surfaces.
+	-->
+	<dict>
+		<key>xcode.syntax.attribute</key>
+		<string>0.171 0.197 0.615 1</string>
+		<key>xcode.syntax.character</key>
+		<string>0.161 0.259 0.467 1</string>
+		<key>xcode.syntax.comment</key>
+		<string>0.5294 0.5255 0.4980 1</string>
+		<key>xcode.syntax.comment.doc</key>
+		<string>0.5294 0.5255 0.4980 1</string>
+		<key>xcode.syntax.comment.doc.keyword</key>
+		<string>0.2392 0.2392 0.2275 1</string>
+		<key>xcode.syntax.declaration.other</key>
+		<string>0.0588235 0.407843 0.627451 1</string>
+		<key>xcode.syntax.declaration.type</key>
+		<string>0.0431373 0.309804 0.47451 1</string>
+		<key>xcode.syntax.identifier.class</key>
+		<string>0.706 0.27 0 1</string>
+		<key>xcode.syntax.identifier.class.system</key>
+		<string>0.706 0.27 0 1</string>
+		<key>xcode.syntax.identifier.constant</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.identifier.constant.system</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.identifier.function</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.identifier.function.system</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.identifier.macro</key>
+		<string>0.392 0.391 0.52 1</string>
+		<key>xcode.syntax.identifier.macro.system</key>
+		<string>0.392 0.391 0.52 1</string>
+		<key>xcode.syntax.identifier.type</key>
+		<string>0.706 0.27 0 1</string>
+		<key>xcode.syntax.identifier.type.system</key>
+		<string>0.706 0.27 0 1</string>
+		<key>xcode.syntax.identifier.variable</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.identifier.variable.system</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.keyword</key>
+		<string>0.161 0.259 0.467 1</string>
+		<key>xcode.syntax.mark</key>
+		<string>0.2392 0.2392 0.2275 1</string>
+		<key>xcode.syntax.markup.aside.kind</key>
+		<string>0.607843 0.509161 0.568627 1</string>
+		<key>xcode.syntax.markup.code</key>
+		<string>0.665 0.052 0.569 1</string>
+		<key>xcode.syntax.number</key>
+		<string>0.161 0.259 0.467 1</string>
+		<key>xcode.syntax.plain</key>
+		<string>0.0784 0.0784 0.0745 1</string>
+		<key>xcode.syntax.preprocessor</key>
+		<string>0.392 0.391 0.52 1</string>
+		<key>xcode.syntax.regex</key>
+		<string>0.875 0.027 0 1</string>
+		<key>xcode.syntax.regex.capturename</key>
+		<string>0.278 0.415 0.593 1</string>
+		<key>xcode.syntax.regex.charname</key>
+		<string>0.392 0.391 0.52 1</string>
+		<key>xcode.syntax.regex.number</key>
+		<string>0.161 0.259 0.467 1</string>
+		<key>xcode.syntax.regex.other</key>
+		<string>0.0784 0.0784 0.0745 1</string>
+		<key>xcode.syntax.string</key>
+		<string>0.875 0.027 0 1</string>
+		<key>xcode.syntax.url</key>
+		<string>0.262 0.286 0.673 1</string>
+	</dict>
+	<key>DVTSourceTextSyntaxFonts</key>
+	<dict>
+		<key>xcode.syntax.attribute</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.character</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.comment</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.comment.doc</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.comment.doc.keyword</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.declaration.other</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.declaration.type</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.class</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.class.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.constant</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.constant.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.function</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.function.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.macro</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.macro.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.type</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.type.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.variable</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.identifier.variable.system</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.keyword</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.mark</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.markup.aside.kind</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.markup.code</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.number</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.plain</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.preprocessor</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.regex</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.regex.capturename</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.regex.charname</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.regex.number</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.regex.other</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.string</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+		<key>xcode.syntax.url</key>
+		<string>JetBrainsMonoNF-Regular - 13.0</string>
+	</dict>
+</dict>
+</plist>

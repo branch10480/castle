@@ -11,24 +11,29 @@
      ============================================================ */
   :root {
     /* color */
-    --ivory:  #FAF9F5;
-    --paper:  #FFFFFF;
-    --slate:  #141413;
-    --clay:   #D97757;
-    --clay-d: #B85C3E;
-    --oat:    #E3DACC;
-    --olive:  #788C5D;
-    --olive-d:#5C6E45;
-    --g100:   #F0EEE6;
-    --g200:   #E6E3DA;
-    --g300:   #D1CFC5;
-    --g500:   #87867F;
-    --g700:   #3D3D3A;
+    --ivory:   #FAF9F5;
+    --paper:   #FFFFFF;
+    --slate:   #141413;
+    --clay:    #D97757;
+    --clay-d:  #B85C3E;
+    --oat:     #E3DACC;
+    --olive:   #788C5D;
+    --olive-d: #5C6E45;
+    --mustard: #C78E3F;  /* warnings · edited diffs */
+    --ruby:    #B04A3F;  /* errors · deleted diffs */
+    --g100:    #F0EEE6;
+    --g200:    #E6E3DA;
+    --g300:    #D1CFC5;
+    --g500:    #87867F;
+    --g700:    #3D3D3A;
 
-    /* type */
-    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
-    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    /* type — ASCII / 和文 をコードポイント単位で自動切替（OpenType cmap） */
+    --serif: ui-serif, Georgia, "Hiragino Mincho ProN", "Hiragino Mincho Pro",
+             "YuMincho", "Yu Mincho", "Times New Roman", Times, serif;
+    --sans:  system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+             "YuGothic", "Yu Gothic", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono",
+             ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
     /* radius */
     --r-pill:  999px;
@@ -440,7 +445,7 @@
   .callout-note    { border-left-color: var(--clay); }
   .callout-success { border-left-color: var(--olive); }
   .callout-success .ico { color: var(--olive-d); }
-  .callout-warn    { border-left-color: #C49A3F; background: #FFF8EB; }
+  .callout-warn    { border-left-color: var(--mustard); background: #FFF8EB; }
   .callout-warn .ico { color: #8C6A1F; }
 
   /* ───────────────────────────────────────────
@@ -632,7 +637,7 @@
     </p>
     <div class="meta">
       <span><strong>File</strong> claude/skills/html-artifact/design-system.html</span>
-      <span><strong>Tokens</strong> 12 colors · 3 fonts</span>
+      <span><strong>Tokens</strong> 15 colors · 3 fonts</span>
       <span><strong>Sections</strong> 11</span>
     </div>
     <nav class="toc">
@@ -652,7 +657,7 @@
 
   <!-- ============================== 01 colors ============================== -->
   <section id="colors">
-    <div class="sec-head"><span class="idx">01</span><h2>Colors</h2><span class="count">12 tokens</span></div>
+    <div class="sec-head"><span class="idx">01</span><h2>Colors</h2><span class="count">15 tokens</span></div>
     <p class="sec-intro">
       Anthropic ivory + clay base. Use <code class="inline">--clay</code> sparingly for accent only —
       it's loud against the warm gray scale. <code class="inline">--olive</code> is the secondary accent
@@ -676,6 +681,10 @@
           <div class="info"><span class="name">--olive</span><span class="hex">#788C5D</span><span>secondary</span></div></div>
         <div class="swatch"><div class="chip" style="background: var(--olive-d);"></div>
           <div class="info"><span class="name">--olive-d</span><span class="hex">#5C6E45</span><span>secondary · text</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--mustard);"></div>
+          <div class="info"><span class="name">--mustard</span><span class="hex">#C78E3F</span><span>warnings · edited</span></div></div>
+        <div class="swatch"><div class="chip" style="background: var(--ruby);"></div>
+          <div class="info"><span class="name">--ruby</span><span class="hex">#B04A3F</span><span>errors · deleted</span></div></div>
         <div class="swatch"><div class="chip" style="background: var(--g100);"></div>
           <div class="info"><span class="name">--g100</span><span class="hex">#F0EEE6</span><span>code bg</span></div></div>
         <div class="swatch"><div class="chip" style="background: var(--g200);"></div>

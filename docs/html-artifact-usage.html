@@ -9,23 +9,28 @@
      :root tokens — copied from claude/skills/html-artifact/design-system.html
      ============================================================ */
   :root {
-    --ivory:  #FAF9F5;
-    --paper:  #FFFFFF;
-    --slate:  #141413;
-    --clay:   #D97757;
-    --clay-d: #B85C3E;
-    --oat:    #E3DACC;
-    --olive:  #788C5D;
-    --olive-d:#5C6E45;
-    --g100:   #F0EEE6;
-    --g200:   #E6E3DA;
-    --g300:   #D1CFC5;
-    --g500:   #87867F;
-    --g700:   #3D3D3A;
+    --ivory:   #FAF9F5;
+    --paper:   #FFFFFF;
+    --slate:   #141413;
+    --clay:    #D97757;
+    --clay-d:  #B85C3E;
+    --oat:     #E3DACC;
+    --olive:   #788C5D;
+    --olive-d: #5C6E45;
+    --mustard: #C78E3F;
+    --ruby:    #B04A3F;
+    --g100:    #F0EEE6;
+    --g200:    #E6E3DA;
+    --g300:    #D1CFC5;
+    --g500:    #87867F;
+    --g700:    #3D3D3A;
 
-    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
-    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --serif: ui-serif, Georgia, "Hiragino Mincho ProN", "Hiragino Mincho Pro",
+             "YuMincho", "Yu Mincho", "Times New Roman", Times, serif;
+    --sans:  system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+             "YuGothic", "Yu Gothic", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono",
+             ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
     --r-pill:  999px;
     --r-card:  14px;
@@ -223,7 +228,7 @@
   .callout p  { margin: 0; font-size: 13.5px; color: var(--g700); }
   .callout-success { border-left-color: var(--olive); }
   .callout-success .ico { color: var(--olive-d); }
-  .callout-warn { border-left-color: #C49A3F; background: #FFF8EB; }
+  .callout-warn { border-left-color: var(--mustard); background: #FFF8EB; }
   .callout-warn .ico { color: #8C6A1F; }
 
   /* ── table ── */

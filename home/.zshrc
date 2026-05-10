@@ -198,13 +198,21 @@ fi
 unfunction _zshrc_cd_and_report 2>/dev/null
 unset _SHELL_INIT_PWD
 
-# ── Ghostty: auto-exec tmux ─────────────────────────────
-# Ghostty で新規ペイン/タブ/ウィンドウを開いたら自動で tmux に切り替える。
-# CWD 復元の後で exec するため、tmux は補正後の CWD で起動する。
+# ── Ghostty: auto-attach tmux (session group 方式) ──────────
+# Ghostty で新規ペイン/タブ/ウィンドウを開いたら自動で tmux に入る。
+# - `main` セッションが既にあれば session group として join し、独立 client を
+#   `ghostty-<pid>` 名で作る → 各 ghostty タブで見ている window が独立。
+#   prefix s で同一 session group の window 一覧が見える。
+# - 無ければ `main` を新規作成。
 # - 既に tmux 内 / 非 interactive / NO_AUTO_TMUX が設定されている場合はスキップ
 # - tmux 未インストール時はスキップ（シェルがロックされないように防御）
 # - 一時的に無効化したいときは `NO_AUTO_TMUX=1 exec zsh -l`
+# - has-session の `-t =main` は前方一致ではなく完全一致 (先頭の `=` が必要)
 if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
   && (( $+commands[tmux] )); then
-  exec tmux new-session
+  if tmux has-session -t =main 2>/dev/null; then
+    exec tmux new-session -t main -s "ghostty-$$"
+  else
+    exec tmux new-session -s main
+  fi
 fi

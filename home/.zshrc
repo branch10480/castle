@@ -200,10 +200,14 @@ unset _SHELL_INIT_PWD
 
 # ── Ghostty: auto-attach tmux (session group 方式) ──────────
 # Ghostty で新規ペイン/タブ/ウィンドウを開いたら自動で tmux に入る。
-# - `main` セッションが既にあれば session group として join し、独立 client を
-#   `ghostty-<pid>` 名で作る → 各 ghostty タブで見ている window が独立。
-#   prefix s で同一 session group の window 一覧が見える。
-# - 無ければ `main` を新規作成。
+# 優先順位:
+#   ① 既に "group main" のメンバー (本来の main 本体 or 孤児 ghostty-N)
+#      が 1 つでもあれば、そのメンバーを target にして join する。
+#      → グループ名と session 名がズレた状態 (例: 本来の main が kill され
+#        ghostty-N だけ孤児として残った状態) でもグループに復帰できる。
+#   ② グループ自体は無いが session 名 "main" が単独で存在 → -t main で
+#      join し、結果としてその瞬間からグループが形成される。
+#   ③ どちらも無い (空サーバ) → main を新規作成。
 # - 既に tmux 内 / 非 interactive / NO_AUTO_TMUX が設定されている場合はスキップ
 # - tmux 未インストール時はスキップ（シェルがロックされないように防御）
 # - 一時的に無効化したいときは `NO_AUTO_TMUX=1 exec zsh -l`
@@ -211,9 +215,16 @@ unset _SHELL_INIT_PWD
 # - `=main` はシングルクォート必須: zsh の EQUALS オプション (デフォルト ON) が
 #   `=word` を「word コマンドの絶対パス展開」と解釈し、`main` が見つからず
 #   展開エラーで if 全体が abort する (`zsh: main not found`)
+# - 区切り文字は `|`: tmux の format `-F` は `\t` を literal として解釈
+#   する仕様で TAB にならず awk が分割できない。session 名に `|` を使う
+#   人は稀で、誤分割リスクが極めて低いため採用。
 if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
   && (( $+commands[tmux] )); then
-  if tmux has-session -t '=main' 2>/dev/null; then
+  group_member="$(tmux list-sessions -F '#{session_name}|#{session_group}' \
+                  2>/dev/null | awk -F'|' '$2=="main"{print $1; exit}')"
+  if [[ -n "$group_member" ]]; then
+    exec tmux new-session -t "$group_member" -s "ghostty-$$"
+  elif tmux has-session -t '=main' 2>/dev/null; then
     exec tmux new-session -t main -s "ghostty-$$"
   else
     exec tmux new-session -s main

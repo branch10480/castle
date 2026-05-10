@@ -40,12 +40,16 @@ Ghostty 側のペイン操作キーバインドは **コメントアウト残置
 
 ## 3. session group 方式（雪だるま回避）
 
-`~/.zshrc` の Ghostty 検出ブロックで以下の分岐を実行する。
+`~/.zshrc` の Ghostty 検出ブロックで以下の 3 段階分岐を実行する。
 
 ```zsh
 if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
   && (( $+commands[tmux] )); then
-  if tmux has-session -t '=main' 2>/dev/null; then
+  group_member="$(tmux list-sessions -F '#{session_name}|#{session_group}' \
+                  2>/dev/null | awk -F'|' '$2=="main"{print $1; exit}')"
+  if [[ -n "$group_member" ]]; then
+    exec tmux new-session -t "$group_member" -s "ghostty-$$"
+  elif tmux has-session -t '=main' 2>/dev/null; then
     exec tmux new-session -t main -s "ghostty-$$"
   else
     exec tmux new-session -s main
@@ -53,12 +57,15 @@ if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- 
 fi
 ```
 
-挙動：
+挙動の優先順位：
 
-- 1 つ目の Ghostty タブ → `main` セッションを新規作成
-- 2 つ目以降 → 既存 `main` を **session group として join**、独立 client `ghostty-<pid>` で attach
+| # | 条件 | 動作 |
+|---|---|---|
+| ① | "group main" のメンバー (本来の `main` 本体 or 孤児 `ghostty-N`) が 1 つでもある | そのメンバーを target に join |
+| ② | グループは無いが session 名 `main` だけがある | `-t main` で join → その瞬間にグループ形成 |
+| ③ | 何もない (空サーバ) | `main` を新規作成 |
 
-`tmux ls` の見た目：
+`tmux ls` の見た目（成立時）：
 
 ```
 ghostty-12345: 1 windows (...) (group main) (attached)
@@ -66,6 +73,16 @@ main:          1 windows (...) (group main) (attached)
 ```
 
 `(group main)` が複数行に付いていれば成立。各 Ghostty タブは「同じ session の windows を共有しつつ、自分が見ている active window は独立に切り替えられる」状態になる（`prefix s` でグループ内 window 一覧）。
+
+### なぜ ① のグループ走査が必要か
+
+過去に `main` セッションだけが kill され、`ghostty-N` だけが孤児としてグループに残るケースがある（user が main をホストしている ghostty タブを閉じた等）。この時、旧版 (グループ走査なし、`has-session -t '=main'` だけ) では：
+
+1. session 名 `main` は不在 → has-session が false
+2. else 分岐の `new-session -s main` で **グループに join せず、新しい standalone main を作ってしまう**
+3. 結果: グループ main = 孤児 `ghostty-N` のみ / 別に standalone `main` が浮く、という壊れた二重状態
+
+新版は `tmux list-sessions -F '#{session_name}|#{session_group}'` でグループメンバーを走査し、孤児 `ghostty-N` 経由でも join できる。
 
 `NO_AUTO_TMUX=1 exec zsh -l` で一時的に無効化できる。
 

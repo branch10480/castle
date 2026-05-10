@@ -39,7 +39,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 ### マルチプレクサ (tmux)
 
-- Ghostty 互換キーで運用: ペイン分割 `Ctrl+;` / `Ctrl+'`、移動 `Ctrl+h/j/k/l`（vim-tmux-navigator 経由で nvim と seamless）、リサイズ `Ctrl+Shift+h/j/k/l`、均等化 `Ctrl+Shift+=`、copy mode `Ctrl+Shift+x`
+- Ghostty 互換キーで運用: ペイン分割 `Ctrl+;` / `Ctrl+'`、移動 `Ctrl+h/j/k/l`（vim-tmux-navigator 経由で nvim と seamless）、リサイズ `Ctrl+Shift+h/j/k/l`（横 3 セル / 縦 2 行で視覚的に揃える非対称 step）、均等化 `Ctrl+Shift+=`、copy mode `Ctrl+Shift+x`、ペイン破棄 `Ctrl+x`（即閉、shell の `C-x C-e` を犠牲にしてスピード優先）
 - Ghostty 起動時に **session group 方式**で auto-attach: 1 タブ目は `main` セッション作成、2 タブ目以降は `ghostty-<pid>` として group join → タブ増加で session 雪だるま化しない
 - 設定本体: [`home/.tmux.conf`](home/.tmux.conf) / 起動ロジック: [`home/.zshrc`](home/.zshrc) の "Ghostty: auto-attach tmux" ブロック
 - 詳細・キーマッピング表・移行時の罠（`'C-\;'` シングルクォート / `=main` zsh EQUALS 展開）: [`docs/tmux-setup.md`](docs/tmux-setup.md)

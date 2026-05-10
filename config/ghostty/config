@@ -59,8 +59,9 @@ keybind = ctrl+left_bracket=text:\x1b
 # ─────────────────────────────────────────────────────────────
 # Ghostty は ASCII にマップ可能なキー (Ctrl+Shift+h など) について、
 # 古い経路 (`^H` = 0x08) を優先送信し Shift 修飾を落としてしまう。
-# tmux 側で `bind -n C-S-h resize-pane -L 30` を発火させるには、
-# Ghostty が CSI u 拡張シーケンスで明示的に送る必要がある。
+# tmux 側の `bind -n C-S-h resize-pane -L <N>` 等を発火させるには、
+# Ghostty が CSI u 拡張シーケンスで明示的に送る必要がある（実際の <N> は
+# home/.tmux.conf 参照、ここでは Shift 修飾を tmux に届ける配管が論点）。
 # Modifier 値: 1 + Shift(1) + Alt(2) + Ctrl(4) = Ctrl+Shift は 6
 # ASCII 値: h=104, j=106, k=107, l=108, ==61
 keybind = ctrl+shift+h=csi:104;6u

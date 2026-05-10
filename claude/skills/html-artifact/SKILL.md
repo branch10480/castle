@@ -93,3 +93,16 @@ design-system.html の以下のセクションをそのまま流用する:
 - design-system.html は **コピペ元** として機能させる設計。各 artifact が独立して動くよう、共通 CSS 化はしない
 - トークン名を勝手に変えない（`--g100` を `--gray-100` に書き換えない、など。揺れると参照しづらくなる）
 - 機密情報（API キー / トークン / 個人情報）が artifact に紛れ込まないよう、書き出し前に確認する
+
+## ユーザー向けの使い方ドキュメント
+
+人間（ユーザー）が読むためのプロンプト集と運用ガイドは `docs/html-artifact-usage.html` にある。SKILL.md は Claude が読む設計仕様、`docs/html-artifact-usage.html` は人間が読むチュートリアル、という役割分担。新しいプロンプト例や運用 tips が増えたら `docs/html-artifact-usage.html` 側に追記する。
+
+### 閲覧方法
+
+- **ローカル（推奨）**: `open ~/.homesick/repos/castle/docs/html-artifact-usage.html`
+  - JetBrainsMono Nerd Font 込みでデザインが完璧に再現される
+- **GitHub Web から rendered で見る**: 以下の htmlpreview リンクを使う
+  - `https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html`
+  - GitHub Web で `.html` を直接クリックすると view-source 表示になるため、共有相手にはこの URL を渡す
+- **将来オプション**: HTML doc が複数に増えた場合は GitHub Pages 化（`branch10480.github.io/castle/...`）で短い URL にできる

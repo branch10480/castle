@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>html-artifact スキルの使い方 — castle docs</title>
+<style>
+  /* ============================================================
+     :root tokens — copied from claude/skills/html-artifact/design-system.html
+     ============================================================ */
+  :root {
+    --ivory:  #FAF9F5;
+    --paper:  #FFFFFF;
+    --slate:  #141413;
+    --clay:   #D97757;
+    --clay-d: #B85C3E;
+    --oat:    #E3DACC;
+    --olive:  #788C5D;
+    --olive-d:#5C6E45;
+    --g100:   #F0EEE6;
+    --g200:   #E6E3DA;
+    --g300:   #D1CFC5;
+    --g500:   #87867F;
+    --g700:   #3D3D3A;
+
+    --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  "JetBrainsMono Nerd Font Mono", "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+    --r-pill:  999px;
+    --r-card:  14px;
+    --r-panel: 12px;
+    --r-chip:  6px;
+
+    --b-hair: 1px solid var(--g200);
+    --b-rule: 1.5px solid var(--g300);
+
+    --sh-card: 0 10px 30px rgba(20, 20, 19, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--ivory);
+    color: var(--slate);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px 140px; }
+
+  /* ── masthead ── */
+  header.masthead {
+    padding: 80px 0 48px;
+    border-bottom: var(--b-rule);
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--g500);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 24px; height: 1.5px;
+    background: var(--clay);
+  }
+  h1.display {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(34px, 4.8vw, 54px);
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    margin: 0 0 8px;
+    max-width: 20ch;
+  }
+  h1.display em {
+    font-style: italic;
+    color: var(--clay);
+  }
+  .lead {
+    font-size: 16.5px;
+    color: var(--g700);
+    margin: 22px 0 0;
+    max-width: 640px;
+  }
+  .lead a { color: var(--clay); text-decoration-color: var(--oat); text-underline-offset: 3px; }
+  .lead a:hover { text-decoration-color: var(--clay); }
+  .meta {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--g500);
+  }
+  .meta span strong { color: var(--g700); font-weight: 500; }
+  code.inline {
+    font-family: var(--mono);
+    font-size: 0.92em;
+    background: var(--g100);
+    padding: 1px 6px;
+    border-radius: var(--r-chip);
+    color: var(--g700);
+  }
+
+  /* ── TOC ── */
+  nav.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 26px 0 0;
+  }
+  nav.toc a {
+    font-size: 12.5px;
+    padding: 7px 14px;
+    border: var(--b-rule);
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    color: var(--g700);
+    background: var(--paper);
+    transition: border-color 120ms, color 120ms;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  nav.toc a .n { font-family: var(--mono); font-size: 10px; color: var(--g500); }
+  nav.toc a:hover { border-color: var(--slate); color: var(--slate); }
+  nav.toc a:hover .n { color: var(--clay); }
+
+  /* ── section ── */
+  section { margin-top: 64px; scroll-margin-top: 28px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .sec-head .idx {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--clay);
+    font-weight: 600;
+    width: 34px;
+    flex-shrink: 0;
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: -0.012em;
+  }
+  .sec-intro {
+    font-size: 14.5px;
+    color: var(--g700);
+    max-width: 720px;
+    margin: 0 0 24px 50px;
+  }
+  .demos { margin-left: 50px; display: flex; flex-direction: column; gap: 22px; }
+  @media (max-width: 640px) { .sec-intro, .demos { margin-left: 0 !important; } }
+  .demos h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    margin: 8px 0 0;
+    letter-spacing: -0.008em;
+  }
+  .demos h3 .badge {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--clay);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 8px;
+    vertical-align: 1px;
+  }
+  .demos p { margin: 4px 0 0; color: var(--g700); font-size: 14px; }
+
+  /* ── code block ── */
+  pre.code {
+    margin: 0;
+    background: var(--g100);
+    border: var(--b-hair);
+    border-radius: var(--r-panel);
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--g700);
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  /* ── callouts ── */
+  .callout {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: var(--b-rule);
+    border-left: 4px solid var(--clay);
+    border-radius: var(--r-panel);
+  }
+  .callout .ico {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--clay);
+  }
+  .callout h4 { margin: 0 0 4px; font: 500 14px var(--sans); color: var(--slate); }
+  .callout p  { margin: 0; font-size: 13.5px; color: var(--g700); }
+  .callout-success { border-left-color: var(--olive); }
+  .callout-success .ico { color: var(--olive-d); }
+  .callout-warn { border-left-color: #C49A3F; background: #FFF8EB; }
+  .callout-warn .ico { color: #8C6A1F; }
+
+  /* ── table ── */
+  table.t {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    overflow: hidden;
+    font-size: 13.5px;
+  }
+  table.t th, table.t td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: var(--b-hair);
+    vertical-align: top;
+  }
+  table.t thead th {
+    font: 500 11px var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--g500);
+    background: var(--g100);
+  }
+  table.t tbody tr:last-child td { border-bottom: none; }
+  table.t tbody tr:hover { background: var(--g100); }
+
+  /* ── lists ── */
+  ul.dot-list { list-style: none; padding: 0; margin: 0; }
+  ul.dot-list li {
+    padding: 8px 0 8px 22px;
+    position: relative;
+    font-size: 14px;
+  }
+  ul.dot-list li::before {
+    content: "";
+    position: absolute; left: 4px; top: 16px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--clay);
+  }
+
+  /* ── insight chips (3-up grid for §02) ── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .insight {
+    background: var(--paper);
+    border: var(--b-rule);
+    border-radius: var(--r-panel);
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .insight .lbl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--g500);
+  }
+  .insight .ttl {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--slate);
+    letter-spacing: -0.005em;
+  }
+  .insight p { margin: 4px 0 0; font-size: 13.5px; color: var(--g700); line-height: 1.5; }
+
+  /* ── footer ── */
+  footer {
+    margin-top: 100px;
+    border-top: var(--b-rule);
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--g500);
+  }
+  footer .k { font-family: var(--serif); font-style: italic; color: var(--g700); font-size: 15px; }
+  footer a { color: var(--clay); text-decoration-color: var(--oat); text-underline-offset: 3px; }
+
+  /* ── viewing banner (top) ── */
+  .viewing-banner {
+    margin: 18px 0 0;
+    padding: 10px 14px;
+    background: var(--oat);
+    border-radius: var(--r-chip);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--g700);
+    line-height: 1.5;
+  }
+  .viewing-banner a { color: var(--clay-d); text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">castle / docs · how-to</div>
+    <h1 class="display">Using the <em>html-artifact</em> skill.</h1>
+    <p class="lead">
+      Claude Code 上で HTML 形式の成果物（spec / report / mockup / プロトタイプ /
+      リサーチ / 解説 / カスタムエディタ）を一発で生成するためのスキル。
+      自身もこのドキュメントを生成して dogfooding しています。
+      design system 本体は <code class="inline">claude/skills/html-artifact/design-system.html</code>。
+    </p>
+    <div class="meta">
+      <span><strong>File</strong> docs/html-artifact-usage.html</span>
+      <span><strong>Skill</strong> claude/skills/html-artifact/</span>
+      <span><strong>Inspired by</strong> <a href="https://thariqs.github.io/html-effectiveness/" style="color: inherit;">thariqs/html-effectiveness</a></span>
+    </div>
+
+    <div class="viewing-banner">
+      📖 GitHub Web で見ているならこのリンクで rendered 版に飛べます →
+      <a href="https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html">htmlpreview で開く</a>
+      ・ ローカルなら <code style="font-family: inherit; background: rgba(255,255,255,0.5); padding: 1px 5px; border-radius: 4px;">open ~/.homesick/repos/castle/docs/html-artifact-usage.html</code>
+    </div>
+
+    <nav class="toc">
+      <a href="#what">What it is <span class="n">01</span></a>
+      <a href="#trigger">発火のコツ <span class="n">02</span></a>
+      <a href="#prompts">プロンプト集 <span class="n">03</span></a>
+      <a href="#tweaks">表現の調整 <span class="n">04</span></a>
+      <a href="#skip">使わない場合 <span class="n">05</span></a>
+      <a href="#viewing">閲覧方法 <span class="n">06</span></a>
+    </nav>
+  </header>
+
+  <!-- ============================== 01 ============================== -->
+  <section id="what">
+    <div class="sec-head"><span class="idx">01</span><h2>What it is</h2></div>
+    <p class="sec-intro">
+      <code class="inline">html-artifact</code> は Claude Code が「HTML 形式で何かを作って」と頼まれたときに、
+      castle で定義された ivory + clay デザイントークン（serif 見出し / system sans 本文 / JetBrainsMono Nerd Font）を
+      使って <strong>単一ファイルで完結する HTML</strong> を出力するためのスキル。
+    </p>
+    <div class="demos">
+      <ul class="dot-list">
+        <li><strong>外部 CSS / Web フォント / CDN を使わない</strong>。受け手のマシンで素のブラウザで開けば動く。</li>
+        <li><strong>毎回 <code class="inline">:root</code> ブロックを HTML 冒頭に再宣言する</strong>。design-system.html はコピペ元として機能する設計。</li>
+        <li><strong>色は CSS 変数経由でのみ参照</strong>。リテラル hex を直書きしない。</li>
+        <li><strong>SVG はインライン</strong>。外部画像に依存させない。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================== 02 ============================== -->
+  <section id="trigger">
+    <div class="sec-head"><span class="idx">02</span><h2>発火させる 3 つのコツ</h2></div>
+    <p class="sec-intro">
+      Claude Code のスキルは <code class="inline">description</code> のキーワードマッチで自動発火する。
+      意図せず別のスキルが動いたり、html-artifact が動かなかったりするときは、以下のコツで誘導する。
+    </p>
+    <div class="demos">
+      <div class="insight-grid">
+        <div class="insight">
+          <span class="lbl">Tip 01 · keyword</span>
+          <span class="ttl">「HTMLで」「artifact」「デザインを揃えて」</span>
+          <p>これらの語彙のいずれかを含めると自動発火する。逆に避けたい場合は「Markdown で」を明示する。</p>
+        </div>
+        <div class="insight">
+          <span class="lbl">Tip 02 · who · what</span>
+          <span class="ttl">「誰に何を伝えるか」を書く</span>
+          <p>「モックアップ作って」より「<em>新規ユーザー向け</em>に <em>3 案</em> 横並び比較」の方が design-system のどのコンポーネントを選ぶかの判断材料になる。</p>
+        </div>
+        <div class="insight">
+          <span class="lbl">Tip 03 · output</span>
+          <span class="ttl">出力先と single-file を明示</span>
+          <p><code class="inline">tmp/spec.html に single-file で</code> と書くと、場所決めで迷わず、:root のコピペ運用も自然に維持される。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 03 ============================== -->
+  <section id="prompts">
+    <div class="sec-head"><span class="idx">03</span><h2>用途別プロンプト集</h2></div>
+    <p class="sec-intro">
+      コピペで使えるテンプレ。<code class="inline">@</code> でファイル参照、@<em>path</em> 部分は適宜置き換えて使う。
+    </p>
+    <div class="demos">
+
+      <h3><span class="badge">A</span>仕様書 / 実装プラン</h3>
+<pre class="code">新しい通知センター機能の実装プランを HTML で書いて。
+データフロー図、主要な画面のモックアップ、API のリクエスト/レスポンス例、
+リスクと回避策を 1 ファイルにまとめて tmp/notification-spec.html に保存。
+design-system.html を参照してデザインを揃えて。</pre>
+<pre class="code">@src/auth/ を読んで、現状の認証フローを HTML 図解で説明して。
+SVG でシーケンス図、コードの該当箇所を inline で引用、
+gotchas を最後にコールアウトでまとめて。tmp/auth-explainer.html に。</pre>
+
+      <h3><span class="badge">B</span>探索 / 比較</h3>
+<pre class="code">オンボーディング画面の方向性を 6 案、HTML で並べて比較できるようにして。
+それぞれ tone（formal / playful / minimal）と density（low / high）を
+ばらして、各案の trade-off を mono で添えて。</pre>
+<pre class="code">このバグの修正方法を 3 通り考えて HTML で並べて。
+各案の影響範囲、テスト戦略、ロールバック容易性を pros/cons カードで。
+推奨案には clay の "Recommended" pill をつけて。</pre>
+
+      <h3><span class="badge">C</span>レポート / 振り返り</h3>
+<pre class="code">直近 1 週間の git log を読んで、変更を機能別にカテゴライズした
+週次レポートを HTML で。KPI（commits / PRs / 行数）を上に、
+カテゴリごとのカード一覧をその下に、最後に来週やることを serif-list で。</pre>
+<pre class="code">このコードベースのテスト戦略を HTML で説明して。
+テストの種類（unit / integration / e2e）ごとの位置付けを SVG で図解、
+各 layer の代表的なテストファイルへのリンクを cards で並べて。</pre>
+
+      <h3><span class="badge">D</span>PR レビュー / コード理解</h3>
+<pre class="code">このブランチの差分を HTML で解説。
+変更概要、影響を受けるモジュール、注意すべきレビューポイントを
+セクション分け。重要な diff を pre.code で抜粋、
+気になる箇所には callout-warn でコメント。</pre>
+<pre class="code">@useAuth.ts を読んで、この hook の挙動を HTML で図解して。
+状態遷移図（SVG）、各 state の意味（table）、
+よくある誤用パターン（callout-note）を含める。</pre>
+
+      <h3><span class="badge">E</span>デザイン / プロトタイプ</h3>
+<pre class="code">チェックアウトボタンのアニメーションを 4 パターン、HTML で試作。
+各パターンに sliders（duration / easing / scale）をつけて、
+気に入った値を「copy as JSON」できるボタンも欲しい。</pre>
+<pre class="code">ダッシュボードのカードレイアウト案を、grid の breakpoints を
+切り替えられる HTML で。tablet / desktop / wide の 3 段階で
+プレビューできるように。</pre>
+
+      <h3><span class="badge">F</span>カスタムエディタ / 一回限りツール</h3>
+<pre class="code">この Linear のチケット 30 件を re-prioritize したい。
+Now / Next / Later / Cut の 4 列に drag-and-drop できる
+HTML editor を作って。最後に「copy as markdown」ボタンで
+並び替え結果と各バケットの 1 行 rationale を出力。</pre>
+<pre class="code">このフィーチャーフラグ設定の編集 UI を HTML で作って。
+依存関係（A が ON なら B も ON）を warn で表示、
+変更分だけを diff として「copy diff」できるボタンつきで。</pre>
+
+      <h3><span class="badge">G</span>概念の解説</h3>
+<pre class="code">プロンプトキャッシングの仕組みを HTML explainer で。
+読者は中級エンジニア前提。流れを SVG で図解、
+コード例を 2-3 個、最後に "gotchas" セクション。tmp/prompt-cache-explainer.html に。</pre>
+
+    </div>
+  </section>
+
+  <!-- ============================== 04 ============================== -->
+  <section id="tweaks">
+    <div class="sec-head"><span class="idx">04</span><h2>表現の調整</h2></div>
+    <p class="sec-intro">
+      プロンプトに足す一言で、出力のトーンや構造を調整できる。
+    </p>
+    <div class="demos">
+      <table class="t">
+        <thead>
+          <tr><th>やりたいこと</th><th>足す一言</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>自動発火させたい</td><td><code class="inline">HTMLで</code> / <code class="inline">HTML artifact</code> / <code class="inline">デザインを揃えて</code></td></tr>
+          <tr><td>確実に発火させたい</td><td><code class="inline">/html-artifact</code> を頭につけて明示起動</td></tr>
+          <tr><td>文体を硬くしたい</td><td>「editorial tone で」「日経ビジネス風に」</td></tr>
+          <tr><td>文体を軽くしたい</td><td>「カジュアルなトーンで」「内輪向けの memo として」</td></tr>
+          <tr><td>単一ファイル維持</td><td><code class="inline">single-file で</code> / <code class="inline">外部 CSS なしで</code></td></tr>
+          <tr><td>出力先を固定</td><td><code class="inline">tmp/&lt;name&gt;.html に保存して</code></td></tr>
+          <tr><td>図を多めに</td><td><code class="inline">SVG で図解を最低 2 つ</code> / <code class="inline">flow を絵で</code></td></tr>
+          <tr><td>数字を強調</td><td><code class="inline">KPI で開始</code> / <code class="inline">dashboard 風に</code></td></tr>
+          <tr><td>比較したい</td><td><code class="inline">&lt;n&gt; 案を横並びで</code> / <code class="inline">pros/cons を mono で添えて</code></td></tr>
+          <tr><td>インタラクティブ</td><td><code class="inline">tabs で章立て</code> / <code class="inline">sliders で調整できる</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================== 05 ============================== -->
+  <section id="skip">
+    <div class="sec-head"><span class="idx">05</span><h2>使わない場合（Markdown のままでいい）</h2></div>
+    <p class="sec-intro">
+      逆に Markdown のままでよいケース。HTML 化は overkill になりやすいので、
+      短文や標準フォーマットの成果物では Markdown を選ぶ。
+    </p>
+    <div class="demos">
+      <ul class="dot-list">
+        <li><code class="inline">~/.zshrc</code> 等への 1〜2 行追加レベルの説明</li>
+        <li>README / CHANGELOG / リリースノート — Markdown が標準フォーマットの成果物</li>
+        <li>1 問 1 答の short answer</li>
+        <li>Claude Code 内の short conversation で完結する内容（HTML 化したら共有手段が必要になる）</li>
+        <li>diff レビューを頻繁にする想定のドキュメント（HTML diff はノイジー）</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================== 06 ============================== -->
+  <section id="viewing">
+    <div class="sec-head"><span class="idx">06</span><h2>閲覧方法</h2></div>
+    <p class="sec-intro">
+      castle にコミットされた HTML を見るには 3 通り。共有相手や状況に応じて使い分ける。
+    </p>
+    <div class="demos">
+      <div class="callout">
+        <div class="ico">①</div>
+        <div>
+          <h4>htmlpreview.github.io 経由（GitHub Web からそのまま見たいとき）</h4>
+          <p>URL を <code class="inline">https://htmlpreview.github.io/?</code> で prefix する。第三者サービス経由なので機密情報を含む HTML には使わない。</p>
+<pre class="code" style="margin-top:10px;">https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html</pre>
+        </div>
+      </div>
+
+      <div class="callout callout-success">
+        <div class="ico">②</div>
+        <div>
+          <h4>ローカルで <code class="inline">open</code>（自分で見るとき推奨）</h4>
+          <p>JetBrainsMono Nerd Font が効くので、フォント込みでデザインが完璧に再現される。castle が <code class="inline">homeshick link</code> 済みなら以下で開ける。</p>
+<pre class="code" style="margin-top:10px;">open ~/.homesick/repos/castle/docs/html-artifact-usage.html</pre>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="ico">③</div>
+        <div>
+          <h4>raw 直リンク（GitHub Web で <code class="inline">.html</code> を開く）</h4>
+          <p>これはソースコード表示になるため <strong>rendered されない</strong>。GitHub Web で <code class="inline">.html</code> をクリックしても view-source 状態になるので、共有時は ① か ② を使う。</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="ico">＋</div>
+        <div>
+          <h4>将来オプション · GitHub Pages 化</h4>
+          <p>HTML が増えてきたら <code class="inline">branch10480.github.io/castle/</code> として公開する選択肢もある。短くきれいな URL になる代わり、castle 全体の公開範囲を判断する必要がある。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="k">"Quiet but exact."</span>
+    <span>castle / docs · skill <a href="https://github.com/branch10480/castle/tree/main/claude/skills/html-artifact">html-artifact</a></span>
+  </footer>
+
+</div>
+</body>
+</html>

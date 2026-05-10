@@ -42,9 +42,11 @@ if ! command -v xcrun >/dev/null 2>&1; then
 fi
 
 # Pull metadata first so we fail fast on a misconfigured item before we
-# touch the filesystem.
-KEY_ID="$(op item get "$ITEM" --vault "$VAULT" --fields "key id" 2>/dev/null)"
-ISSUER="$(op item get "$ITEM" --vault "$VAULT" --fields "issuer id" 2>/dev/null)"
+# touch the filesystem. Do NOT redirect stderr to /dev/null: under
+# `set -e` an op failure here aborts immediately, and silenced stderr
+# leaves the user with no clue (no "item not found", no "vault locked").
+KEY_ID="$(op item get "$ITEM" --vault "$VAULT" --fields "key id")"
+ISSUER="$(op item get "$ITEM" --vault "$VAULT" --fields "issuer id")"
 if [[ -z "$KEY_ID" || -z "$ISSUER" ]]; then
   printf 'asc-upload: missing "key id" or "issuer id" field on item: %s/%s\n' "$VAULT" "$ITEM" >&2
   exit 1
@@ -56,12 +58,21 @@ P8_PATH="$P8_DIR/AuthKey_${KEY_ID}.p8"
 mkdir -p "$P8_DIR"
 chmod 700 "$P8_DIR"
 
+# Install the cleanup trap BEFORE writing the .p8: bash's `>` redirection
+# creates the file with O_CREAT|O_TRUNC *before* `op read` writes any
+# byte, so a Ctrl-C / SIGTERM / Touch ID cancel / network drop between
+# create and the trap below would otherwise leave a partial PEM behind.
+cleanup() { rm -f "$P8_PATH"; }
+trap cleanup EXIT INT TERM
+
+# Remove any stale .p8 (e.g. from a previous SIGKILL / power cut that
+# bypassed the trap). bash's `>` preserves the existing file mode, so
+# without this `rm` an old 0644 file would defeat the umask 077 below.
+rm -f "$P8_PATH"
+
 # umask 077 so the key is created 0600 from the start (no readable window).
 # Use a subshell so the umask change does not leak to subsequent commands.
 ( umask 077 && op read "op://$VAULT/$ITEM/credential" > "$P8_PATH" )
-
-cleanup() { rm -f "$P8_PATH"; }
-trap cleanup EXIT INT TERM
 
 xcrun altool --upload-app \
   -f "$IPA" \

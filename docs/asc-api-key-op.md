@@ -21,11 +21,11 @@ App Store Connect (ASC) の API キー（`AuthKey_<KEY_ID>.p8` ファイル + Ke
 | Title | `App Store Connect API Key` | 複数アプリで共通鍵を使うなら 1 つの item で OK。鍵をアプリごとに分けている場合は item を分けて環境変数 `ASC_OP_ITEM` で切り替える |
 | Vault | `Private` | 個人 Mac は `Private`、仕事 Mac は別 vault → `ASC_OP_VAULT` で切替 |
 | Category | API Credential | `username` フィールドに Key ID、`credential` に `.p8` 全文を保管できるテンプレ |
-| `username` | `<KEY_ID>` (例: `56A235P5WM`) | API Credential テンプレの規定フィールド |
+| `username` | `<KEY_ID>` (例: `ABCD1234EF`) | API Credential テンプレの規定フィールド |
 | `credential` | `.p8` の中身（`-----BEGIN PRIVATE KEY-----` 行から `-----END PRIVATE KEY-----` 行まで） | `op item create` の引数で `credential[password]=$(cat AuthKey_*.p8)` で投入 |
 | `key id` (text) | `<KEY_ID>` | 取り出し側で `username` ではなく専用フィールドから読むことで一貫性を保つ |
 | `issuer id` (text) | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` | UUID。ASC の Users and Access → Integrations → App Store Connect API ページ上部に表示 |
-| `team id` (text) | `<TEAM_ID>` (例: `67NJZVUMG3`) | プロジェクト側 build settings の `DEVELOPMENT_TEAM` と一致させる |
+| `team id` (text) | `<TEAM_ID>` (例: `ABCDEFGHIJ`) | プロジェクト側 build settings の `DEVELOPMENT_TEAM` と一致させる |
 
 ### 初回登録（既に `.p8` がローカルにある場合）
 
@@ -98,7 +98,7 @@ ASC_OP_VAULT="Employer" ASC_OP_ITEM="ASC API Key (WorkApp)" \
 
 | 症状 | 原因 | 対策 |
 |---|---|---|
-| `asc-upload: missing "key id" or "issuer id" field` | 1Password item にフィールドが無い / 名前が違う | `op item get "App Store Connect API Key" --vault Private --format json | jq '.fields[].label'` で実際のラベル名を確認。`asc-upload.sh` は `key id` / `issuer id` (lower-case + 半角空白) を期待 |
+| `asc-upload: missing "key id" or "issuer id" field` | 1Password item にフィールドが無い / 名前が違う | `op item get "App Store Connect API Key" --vault Private --format json \| jq '.fields[].label'` で実際のラベル名を確認。`asc-upload.sh` は `key id` / `issuer id` (lower-case + 半角空白) を期待 |
 | `op read` が無言で空を返す | `op` が locked / GUI integration が切れた | `op-status` で確認 → `op signin` で再取得（[`op.zsh`](../home/.zshrc.d/op.zsh) のヘルパ参照） |
 | altool が `Could not find auth key file` | `.p8` が `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8` に書き出されていない | スクリプトの `op read` 行のみを切り出して手動実行 → 出力が空でないか確認。`KEY_ID` と item の `username` が一致しているか確認 |
 | TestFlight 上で「Invalid Signature」 | これは API キーの問題ではなく codesign 設定 | `ExportOptions.plist` の `signingStyle: automatic`、Xcode 側 build settings の `DEVELOPMENT_TEAM` を確認 |

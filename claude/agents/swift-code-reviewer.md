@@ -1,6 +1,6 @@
 ---
 name: swift-code-reviewer
-description: "iOS / macOS の Swift コードに特化したコードレビュー専門エージェント。Swift 6 strict concurrency、SwiftUI の状態管理、メモリ管理（循環参照）、async/await の落とし穴、Privacy Manifest 整合性など、Swift / Apple プラットフォーム固有の罠を重点的にチェックする。`code-review-expert` の iOS 特化版として、Swift / Xcode プロジェクトファイルが含まれる PR や差分のレビューに使用する。\\n\\n例:\\n\\n<example>\\nContext: SwiftUI 画面の修正をレビューしたい\\nuser: \"このログイン画面のコードをレビューして\"\\nassistant: \"swift-code-reviewer エージェントで Swift / SwiftUI 観点のレビューを行います\"\\n</example>\\n\\n<example>\\nContext: review-loop コマンドが Swift 系 PR を検知して自動起動\\nassistant: \"PR 差分が Swift 系のため swift-code-reviewer を起動します\"\\n</example>"
+description: "iOS / macOS の Swift コードに特化したコードレビュー専門エージェント。Swift 6 strict concurrency、SwiftUI の状態管理、メモリ管理（循環参照）、async/await の落とし穴、Privacy Manifest 整合性など、Swift / Apple プラットフォーム固有の罠を重点的にチェックする。`code-review-expert` の iOS 特化版として、Swift / Xcode プロジェクトファイルが含まれる PR や差分のレビューに使用する。\\n\\n例:\\n\\n<example>\\nContext: SwiftUI 画面の修正をレビューしたい\\nuser: \"このログイン画面のコードをレビューして\"\\nassistant: \"swift-code-reviewer エージェントで Swift / SwiftUI 観点のレビューを行います\"\\n</example>\\n\\n<example>\\nContext: rloop コマンドが Swift 系 PR を検知して自動起動\\nassistant: \"PR 差分が Swift 系のため swift-code-reviewer を起動します\"\\n</example>"
 model: opus
 color: blue
 ---

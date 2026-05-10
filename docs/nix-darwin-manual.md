@@ -411,7 +411,7 @@ ls -la ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
 
 - `lib.hm.dag.entryAfter [ "writeBoundary" ]` で `home.file` の symlink 配置 (`writeBoundary`) より後に走らせる
 - `$DRY_RUN_CMD` を前置すると `home-manager build`（dry-run モード）で実行されない
-- `install -m 0644` で **mode を明示**しつつ、必要なら親ディレクトリ作成 (`-D` オプション併用) や既存ファイル上書きも 1 動詞でこなせる。`cp` だと nix store 由来の `0444` (read-only) を引き継いでしまい、**Xcode が theme を再書き換えするシナリオ** (例: Settings → Themes 上で当該テーマを fork して "Duplicate" した時、Xcode は元ファイルへの書き込み属性を期待するため、`0444` 由来のファイルでは UI 操作が失敗する) で詰む
+- `install -m 0644` で **mode を明示**しつつ、必要なら親ディレクトリ作成 (`-D` オプション併用) や既存ファイル上書きも 1 動詞でこなせる。`cp` だと nix store 由来の `0444` (read-only) を引き継いでしまい、**Xcode が theme ファイル自体に書き込みを試みる経路があった場合** (例として、Settings → Themes 上で当該テーマを fork (`Duplicate`) するケースなど。実証はしていないが、Xcode 内部実装に依存した failure mode が起こりうる) に詰む可能性がある。安全側に倒すなら最初から user-writable な mode で配置しておくのが無難
 - `${./files/xcode/MyTheme.xccolortheme}` の Nix path リテラルは flake では **git tracked なファイルのみ**見える（§9 トラブルシューティング表 "not tracked by Git" 行参照）
 
 #### 同種の罠が疑われる挙動を見たら

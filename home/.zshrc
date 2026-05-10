@@ -208,9 +208,12 @@ unset _SHELL_INIT_PWD
 # - tmux 未インストール時はスキップ（シェルがロックされないように防御）
 # - 一時的に無効化したいときは `NO_AUTO_TMUX=1 exec zsh -l`
 # - has-session の `-t =main` は前方一致ではなく完全一致 (先頭の `=` が必要)
+# - `=main` はシングルクォート必須: zsh の EQUALS オプション (デフォルト ON) が
+#   `=word` を「word コマンドの絶対パス展開」と解釈し、`main` が見つからず
+#   展開エラーで if 全体が abort する (`zsh: main not found`)
 if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
   && (( $+commands[tmux] )); then
-  if tmux has-session -t =main 2>/dev/null; then
+  if tmux has-session -t '=main' 2>/dev/null; then
     exec tmux new-session -t main -s "ghostty-$$"
   else
     exec tmux new-session -s main

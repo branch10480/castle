@@ -42,6 +42,7 @@ castle/
 - `/castle` - castleリポジトリの変更をcommit & push（メッセージは差分から英語で自動生成）
 - `/push` - 汎用的なgit add, commit, push
 - `/zama-parking` - イオンモール座間 駐車場空き状況確認
+- `/html-artifact` - HTML 形式で成果物（spec / report / mockup / プロトタイプ / リサーチ / 解説 / カスタムエディタ等）を生成。デザイントークンは `claude/skills/html-artifact/design-system.html`、使い方ガイドは `docs/html-artifact-usage.html`
 - `scripts/scan-secrets.sh` - 既知パターンの API キー / 秘密鍵を grep する軽量スキャナ。`--staged` で git index のみスキャンも可
 
 ## スキル管理

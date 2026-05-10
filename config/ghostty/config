@@ -1,8 +1,13 @@
 # Auto update
 auto-update-channel = tip
 
-# Font settings (from WezTerm config)
+# Font settings.
+# JetBrainsMono Nerd Font Mono を 1 番手にすることでターミナル列の整列が崩れない
+# （Mono バリアントは Nerd Font glyph を強制等幅化）。castle 全体で
+# "コードフォント = NFM" の方針に揃える（design-system.html / Xcode と同じ）。
+# fallback として無印 NF も残し、未導入環境でも破綻しない。
 #font-family = FiraCode Nerd Font
+font-family = JetBrainsMono Nerd Font Mono
 font-family = JetBrainsMono Nerd Font
 font-family = Hiragino Sans W3
 font-style = Light
@@ -25,7 +30,10 @@ font-codepoint-map = U+FF00-U+FFEF=Hiragino Sans W3
 # theme = Solarized Dark Patched
 # theme = 0x96f
 # theme = Kanagawa Dragon
-theme = light:Claude Day,dark:Kanagawa Dragon
+# Both light/dark stay in castle's Claude Day vocabulary now (was: dark side
+# was Kanagawa Dragon — replaced by Claude Day Dark for design-language
+# consistency with html-artifact / markdownobserver / Xcode).
+theme = light:Claude Day,dark:Claude Day Dark
 
 # Window appearance
 unfocused-split-opacity = 1

@@ -1,0 +1,38 @@
+# Claude Day Dark
+#
+# Counterpart to "Claude Day" (light). Borrows its dark palette from
+# castle's MarkdownObserver dark mode (config/nix-darwin/files/markdownobserver/
+# user.css) so that Markdown reader and terminal share the same warm-dark
+# vocabulary on this Mac.
+#
+# Reference (dark):
+#   bg     #131312   fg     #d4cfc1   muted  #6b6862
+#   accent #D97757 (clay; same as light, kept as the brand-anchor color)
+#   selection bg #4a463d (warm dark beige)
+
+# ANSI normal (0-7)
+palette = 0=#131312
+palette = 1=#d97766
+palette = 2=#a8c97f
+palette = 3=#d4a76a
+palette = 4=#7da5d8
+palette = 5=#c4889d
+palette = 6=#82b0a0
+palette = 7=#d4cfc1
+
+# ANSI bright (8-15)
+palette = 8=#6b6862
+palette = 9=#e08576
+palette = 10=#b8df96
+palette = 11=#e0bb7a
+palette = 12=#93b5e0
+palette = 13=#D97757
+palette = 14=#98c4b6
+palette = 15=#ece6d5
+
+background = #131312
+foreground = #d4cfc1
+cursor-color = #D97757
+cursor-text = #131312
+selection-background = #4a463d
+selection-foreground = #d4cfc1

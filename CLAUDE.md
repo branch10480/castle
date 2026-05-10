@@ -199,6 +199,33 @@ Claude Code の `~/.claude.json` の `mcpServers.<name>.env.<KEY>` に**生 API 
 - **env-file は 1 行 = 1 環境変数**: `KEY=op://...` のみ。複数 MCP サーバを共用にしたい場合でも、サーバごとにファイルを分けると依存関係を局所化できる
 - **`--no-masking` は付けない**: Phase 2 の `oprun` ヘルパとは違い、MCP サーバの stdio に対して masking を切る必要は無い（むしろ stderr の意図しない出力が機密扱いになるリスクを減らす）
 
+## Phase 5: ASC API キー (`.p8`) を 1Password 経由で配信時のみ展開する
+
+iOS / macOS アプリを TestFlight / App Store に配信する `xcrun altool --upload-app` 用の API キー（`AuthKey_<KEY_ID>.p8` ＋ Key ID ＋ Issuer ID ＋ Team ID）を 1Password に集約し、配信時だけディスクに展開する運用。詳細・フィールド規約・トラブルシュートは [`docs/asc-api-key-op.md`](docs/asc-api-key-op.md) を参照。
+
+### 構成
+
+- `scripts/asc-upload.sh` — `op read` で `.p8` を `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8` に一時展開し、`xcrun altool --upload-app` を呼び、EXIT トラップで削除（`umask 077` のサブシェル内で 0600 生成、`trap EXIT INT TERM` で正常終了 / 中断 / 失敗のいずれでもクリーンアップ）
+- `home/.zshrc.d/asc.zsh` — 対話 zsh から `asc-upload <ipa>` で呼ぶラッパ関数（中身はスクリプトを叩くだけ）
+- 1Password 側: API Credential テンプレで `username = <KEY_ID>` / `credential = .p8` 全文 / `key id`・`issuer id`・`team id` をテキストフィールドに保管
+
+### Phase 3 (`oprun`) との違い
+
+`xcrun altool` は API キーの値を **環境変数からも `--apiKeyPath` のようなオプションからも受け取らず**、`~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8` という固定パスを scan する仕様。さらに `.p8` は PKCS#8 PEM（複数行・改行・引用符を含む）で dotenv パーサに乗らないため、[`docs/op-env-pattern.md`](docs/op-env-pattern.md) の `oprun --env-file=` 経路では扱えない。Phase 5 はこの 2 つの制約を受けて、**「短時間だけ実体ファイルを置いて、終わったら必ず消す」** という別経路を用意している。
+
+### 環境変数による切替
+
+| 変数 | 既定値 | 用途 |
+|---|---|---|
+| `ASC_OP_ITEM` | `App Store Connect API Key` | 複数アプリ / 複数 Apple ID で鍵を分ける場合に item 名を切替 |
+| `ASC_OP_VAULT` | `Private` | 仕事 Mac で別 vault を使う場合（[`docs/op-env-pattern.md` の machine-local override](docs/op-env-pattern.md) と同じ思想） |
+
+### ポイント
+
+- **`.p8` を永続化しない**: ローカル `~/.appstoreconnect/private_keys/AuthKey_*.p8` は配信実行中の数十秒〜数分のみ存在。永続バックアップは 1Password 側のみ
+- **`scan-secrets.sh` の検出パターン**: ファイル名 `AuthKey_[A-Z0-9]{8,}\.p8` を追加して、`.p8` のパスをスクリプトに hardcode してしまった場合に commit 前に拾う。中身の PKCS#8 PEM は既存の `Private key block` パターン（`(RSA |OPENSSH |EC |PGP )?` の `?` で prefix 無しもマッチ）が拾う
+- **CI での扱い**: 対話 Touch ID は使えないので、Phase 3 と同じく `OP_SERVICE_ACCOUNT_TOKEN` を環境変数に置く運用に切替（[`docs/op-env-pattern.md` の "CI で使う場合"](docs/op-env-pattern.md)）
+
 ## 機密情報の取り扱い（castle / Claude Code 共通ルール）
 
 Phase 4 の副産物として、castle 配下と Claude Code 越しの作業全般に適用する運用ルール。

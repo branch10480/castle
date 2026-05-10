@@ -45,7 +45,7 @@ description: "「自分が分からなかったこと」を HTML 形式の解説
 **必須要素**:
 
 - `<head>` 内に design-system.html の `:root` トークンブロックを再宣言
-- `<head>` 内に以下のメタタグを必ず含める（**順序・スペル厳守**、index 自動生成のソース）:
+- `<head>` 内に以下のメタタグを必ず含める（index 自動生成のソース）:
 
 ```html
 <meta name="learning:title"   content="…">
@@ -54,6 +54,13 @@ description: "「自分が分からなかったこと」を HTML 形式の解説
 <meta name="learning:summary" content="…">
 <meta name="learning:reading-time" content="20">
 ```
+
+  **属性の書き方ルール**（rebuild_index.py が拾うための契約）:
+
+  - **属性順序**: `name` → `content` の順で書く（逆順は対応していない）
+  - **スペル**: `learning:` プレフィクス + 小文字 key（`title`, `date`, `tags`, `summary`, `reading-time`）
+  - **クオート**: ダブルクオート `"` 推奨。content 内にダブルクオートが必要な場合は `&quot;` でエスケープするか、外側をシングルクオートに変える
+  - **content の値**: 改行を含めない 1 行で書く
 
 - 本文は html-artifact スキルの構造に従う:
   - `header.masthead` + eyebrow + serif h1 + lead + meta + TOC pills
@@ -148,3 +155,12 @@ push のタイミングはユーザー判断に委ねる（`git push` か、push
 - **rebuild_index.py が動かない**: Python 3 が必要。スクリプトは標準ライブラリのみ使用
 - **メタタグが拾われない**: `<meta name="learning:*">` のスペルを確認。`learning:` プレフィクス必須
 - **index に出てこない**: ファイルが `entries/` 直下にあるか確認。サブディレクトリは scan しない
+- **rebuild_index.py が `exit 1` を返した**: **絶対に `index.html` を手動編集しないこと**。エラーメッセージ（stderr）を読んで、欠けているメタタグや壊れた HTML を修正してから再実行する。よくある原因:
+  - 必須メタタグ (`title` / `date` / `tags` / `summary`) のいずれかが欠けている
+  - メタタグの content 内のクオートが unescape されていて HTML が壊れている
+  - すべての entry が skip されて結果がゼロ件になった（既存 index を空配列で潰すのを防ぐため意図的に exit 1）
+  - `<head>` タグが見つからない entry が含まれている
+- **exit code の意味**:
+  - `0`: 成功（変更なし or index.html を更新）
+  - `1`: 入力エラー（ディレクトリなし / `<script id="entries-data">` ブロック未検出 / 全 entry skip）
+  - `2`: 引数不正（usage を表示）

@@ -6,7 +6,7 @@ Usage:
     python3 rebuild_index.py <repo_root>
 
 例:
-    python3 ~/.claude/skills/learn/rebuild_index.py ~/Desktop/learnings
+    python3 ~/.claude/skills/learn/rebuild_index.py ~/ghq/github.com/branch10480/learnings
 
 各 entry HTML の <head> から以下のメタタグを抽出する:
     <meta name="learning:title"        content="...">
@@ -29,14 +29,18 @@ import sys
 from html import unescape
 from pathlib import Path
 
+## クオート種別をキャプチャしてバックリファレンス (\1, \3) で終端マッチさせることで、
+## ダブルクオートで囲まれた content の中にシングルクオート (例: "It's") が混じっても
+## 途中で打ち切られないようにする。
 META_RE = re.compile(
-    r'<meta\s+name=["\']learning:([\w-]+)["\']\s+content=["\']([^"\']*)["\']\s*/?>',
+    r'<meta\s+name=(["\'])learning:([\w-]+)\1\s+content=(["\'])(.*?)\3\s*/?>',
     re.IGNORECASE,
 )
 
+## id="entries-data" だけで識別する (type 属性の有無や属性順序に依存しない)。
 ENTRIES_DATA_RE = re.compile(
-    r'(<script\s+type=["\']application/json["\']\s+id=["\']entries-data["\']\s*>)'
-    r'.*?'
+    r'(<script\b[^>]*\bid=["\']entries-data["\'][^>]*>)'
+    r'(.*?)'
     r'(</script>)',
     re.DOTALL | re.IGNORECASE,
 )
@@ -51,12 +55,17 @@ def extract_metadata(html_path: Path) -> dict | None:
         return None
 
     head_match = re.search(r"<head[^>]*>(.*?)</head>", text, re.DOTALL | re.IGNORECASE)
-    head = head_match.group(1) if head_match else text[:8000]
+    if not head_match:
+        ## SKILL.md は learning:* メタタグを <head> 内に置くことを契約している。
+        ## <head> がない HTML は規約違反扱いで skip する (本文中の偽メタタグを誤拾いしない)。
+        print(f"  ! skip {html_path.name}: <head> not found", file=sys.stderr)
+        return None
+    head = head_match.group(1)
 
     meta = {}
     for m in META_RE.finditer(head):
-        key = m.group(1).lower()
-        val = unescape(m.group(2)).strip()
+        key = m.group(2).lower()
+        val = unescape(m.group(4)).strip()
         meta[key] = val
 
     required = ("title", "date", "tags", "summary")
@@ -108,6 +117,11 @@ def main() -> int:
 
     if not entries:
         print("warning: no valid entries collected", file=sys.stderr)
+        if html_files:
+            ## 入力 HTML はあるのに 1 件も拾えていない → 何かが壊れている。
+            ## 既存 index.html を空配列で上書きせず、人間に気付かせるため exit 1。
+            print("error: aborting to protect index.html", file=sys.stderr)
+            return 1
 
     entries.sort(key=lambda e: e["date"], reverse=True)
 
@@ -116,7 +130,9 @@ def main() -> int:
 
     index_text = index_path.read_text(encoding="utf-8")
     new_index, count = ENTRIES_DATA_RE.subn(
-        lambda m: m.group(1) + new_script + m.group(2),
+        ## group(1) = 開き <script ...>, group(3) = </script>
+        ## (group(2) は元の中身でこちらは捨てる)
+        lambda m: m.group(1) + new_script + m.group(3),
         index_text,
         count=1,
     )

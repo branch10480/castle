@@ -13,7 +13,7 @@
 | Ghostty | キー入力・フォント・テーマ・ウィンドウ/タブ管理・OSC 7 (CWD 報告) |
 | tmux | ペイン分割・ナビゲーション・リサイズ・コピーモード・セッション管理 |
 | zsh (`~/.zshrc`) | Ghostty 起動時に tmux に自動 attach（後述の session group 方式） |
-| nvim (Phase 4 = 別 PR) | tmux と協調する `vim-tmux-navigator` を導入予定 |
+| nvim | tmux と協調する `vim-tmux-navigator` 同梱 → §7 |
 
 Ghostty 側のペイン操作キーバインドは **コメントアウト残置** ([`config/ghostty/config`](../config/ghostty/config))。tmux に同等キーが移植されているので二重発火しないように無効化したまま、ロールバック容易性のために履歴は残す。
 
@@ -182,13 +182,45 @@ tmux list-keys -T root | grep -E "select-pane|is_vim" | head
 | プラグイン管理 (TPM) | `~/.tmux/plugins/tpm/`（user 領域、castle 追跡外） |
 | Ghostty CWD 問題のワークアラウンド | [`ghostty-cwd-workaround.md`](ghostty-cwd-workaround.md) |
 
-## 7. 残タスク（Phase 4 = 別 PR）
+## 7. nvim 側 vim-tmux-navigator (Phase 4 = 完了)
 
-nvim 側でも `vim-tmux-navigator` を導入して、本物の seamless 移動を完成させる：
+tmux 側の `vim-tmux-navigator` だけだと「nvim にフォーカスがある時の `Ctrl+h/j/k/l` が nvim window 移動として消費されない」ため、nvim 側にも同名 plugin を入れて両端で is_vim 判定を成立させる。
 
-1. `config/nvim/lua/plugins/vim-tmux-navigator.lua` を新規作成
-   ```lua
-   return { "christoomey/vim-tmux-navigator", lazy = false }
-   ```
-2. `config/nvim/lua/config/keymaps.lua` の `<C-w>h/j/k/l` 直接マップを撤去（プラグインに任せる）
-3. `:checkhealth vim-tmux-navigator` で連携確認
+### 設定本体
+
+[`config/nvim/lua/plugins/vim-tmux-navigator.lua`](../config/nvim/lua/plugins/vim-tmux-navigator.lua) で lazy.nvim の `cmd + keys` パターンを採用：
+
+```lua
+return {
+  "christoomey/vim-tmux-navigator",
+  cmd = { "TmuxNavigateLeft", "TmuxNavigateDown", ... },
+  keys = {
+    { "<C-h>", "<cmd><C-U>TmuxNavigateLeft<CR>", desc = "..." },
+    -- ...
+  },
+}
+```
+
+`keys` は (a) lazy-load トリガー (b) which-key で「割当済み」と認識させる役割。実際の発火後は plugin 本体の [`plugin/tmux_navigator.vim`](https://github.com/christoomey/vim-tmux-navigator/blob/master/plugin/tmux_navigator.vim) が `<C-h>` 等を自前で再登録するため、初回押下後は `:verbose nmap <C-h>` の出典がプラグインに切り替わる。
+
+### keymaps.lua からの撤去
+
+[`config/nvim/lua/config/keymaps.lua`](../config/nvim/lua/config/keymaps.lua) の `<C-h>` → `<C-w>h` 等の直接マップを撤去（プラグインに任せる）。残すと plugin 本体の auto-register と二重定義になり、is_vim 判定が壊れる可能性があるため必須の手当て。
+
+### 動作確認
+
+```bash
+# 起動時は lazy stub が見えれば OK
+nvim --headless '+verbose nmap <C-h>' +qa
+# → n  <C-H>  * <Lua 105: ~/.local/share/nvim/lazy/lazy.nvim/lua/lazy/core/handler/keys.lua:121>
+
+# checkhealth が WARN 無しで完走
+nvim --headless '+checkhealth vim-tmux-navigator' +qa
+
+# 強制ロード後は plugin 本体由来になる
+nvim --headless '+Lazy load vim-tmux-navigator' '+verbose nmap <C-h>' +qa
+# → n  <C-H>  * :<C-U>TmuxNavigateLeft<CR>
+#     Last set from ~/.local/share/nvim/lazy/vim-tmux-navigator/plugin/tmux_navigator.vim line 18
+```
+
+これで `Ctrl+h/j/k/l` が nvim ↔ tmux pane を seamless に跨いで移動するようになる。`prefix [` の copy-mode や `Ctrl+\` での previous pane も同時に有効。

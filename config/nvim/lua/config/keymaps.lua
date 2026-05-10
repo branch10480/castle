@@ -12,11 +12,10 @@ keymap({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- ノーマルモード
 
--- ウィンドウ移動
-keymap("n", "<C-h>", "<C-w>h", { desc = "左のウィンドウに移動" })
-keymap("n", "<C-j>", "<C-w>j", { desc = "下のウィンドウに移動" })
-keymap("n", "<C-k>", "<C-w>k", { desc = "上のウィンドウに移動" })
-keymap("n", "<C-l>", "<C-w>l", { desc = "右のウィンドウに移動" })
+-- ウィンドウ移動 (C-h/j/k/l) は vim-tmux-navigator が
+-- plugins/vim-tmux-navigator.lua で登録する。tmux pane と nvim window を
+-- 跨いでシームレスに移動できるよう、ここでは直接マップしない。
+-- 詳細: docs/tmux-setup.md
 
 -- ウィンドウリサイズ
 keymap("n", "<C-Up>", ":resize +2<CR>", { desc = "ウィンドウ高さを増やす" })

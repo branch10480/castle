@@ -181,7 +181,7 @@ tmux で `prefix c` で windows を増やせば、同じターミナルセッシ
 
 1. ghostty 起動時、tmux に exec する直前に `op-warm-mcp` (Phase 2 ヘルパ) を呼ぶ
 2. `op-warm-mcp` は `~/.config/op/*.env`（op:// URI を含む env-file）を `op run -- bash -c '...'` で resolve し、`/tmp/op-mcp-<basename>` に literal 値で書き出す（mode 0600）
-3. `~/.claude.json` の `mcpServers.perplexity.args[--env-file=...]` を `/tmp/op-mcp-perplexity.env` に向け直す（[`scripts/setup-claude-mcp-perplexity.sh`](../scripts/setup-claude-mcp-perplexity.sh) で jq 自動編集）
+3. `~/.claude.json` の `mcpServers.perplexity.args[--env-file=...]` を `/tmp/op-mcp-perplexity.env` に向け直す（**nix-darwin の `home.activation.patchClaudeMcpPerplexity` で `darwin-rebuild switch` ごとに自動適用**。手動実行用の同等 script は [`scripts/setup-claude-mcp-perplexity.sh`](../scripts/setup-claude-mcp-perplexity.sh)。両者とも idempotent + Claude Code CLI 起動中は skip）
 4. tmux ペイン内で `claude` 起動 → MCP の `op run --env-file=/tmp/op-mcp-perplexity.env -- npx ...` が走る
 5. `/tmp` 側のファイルには op:// が無い (= literal 値のみ) ので、`op run` は 1Password に問い合わせず env を素通しで spawn → **Touch ID 不要**
 
@@ -201,7 +201,7 @@ tmux で `prefix c` で windows を増やせば、同じターミナルセッシ
 | Secret の所在 | `/tmp/op-mcp-*.env` に session 中存在（OS 再起動でクリア） |
 | 多重 ghostty | 各 ghostty が op-warm-mcp を独立に走らせ、最後の 1 つが /tmp を上書き。Touch ID は ghostty インスタンスごとに 1 回 |
 | 鍵 rotate | `rm /tmp/op-mcp-*.env` してから ghostty 再起動 |
-| ~/.claude.json 編集 | 新マシンで 1 度だけ `scripts/setup-claude-mcp-perplexity.sh` 実行（Phase 4 の jq セットアップの延長） |
+| ~/.claude.json 編集 | nix-darwin の `home.activation.patchClaudeMcpPerplexity` で `darwin-rebuild switch` 時に自動適用。手動実行用に `scripts/setup-claude-mcp-perplexity.sh` も残してある |
 | `op-warm-mcp` 失敗時 | 旧 `~/.config/op/*.env` (op:// URI) を読まないので perplexity MCP がそのフェーズで動かない。再 warm or fall back に手動対応 |
 
 ### 採用しなかった案の備忘

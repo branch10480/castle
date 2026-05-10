@@ -103,4 +103,63 @@
         ${./files/xcode/ClaudeDay.xccolortheme} \
         "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
     '';
+
+  # Claude Code の ~/.claude.json (動的 state file) で perplexity MCP の
+  # `--env-file` を /tmp/op-mcp-perplexity.env に向け直す jq 局所書換え。
+  # tmux ペイン分割時の per-pane Touch ID 回避用 (A.2 ハイブリッド対策)。
+  # 詳細: docs/op-touchid-investigation.md / scripts/setup-claude-mcp-perplexity.sh
+  #
+  # ⚠️ ~/.claude.json は Claude Code が動的に書き換える state file。
+  # CLI 起動中に編集すると終了時に巻き戻されるため、`pgrep -x claude` で
+  # 検出して skip + 警告。Desktop app は "Claude" (大文字) なのでマッチしない。
+  #
+  # 例外時 (~/.claude.json 未存在 / perplexity 未設定 / 既に正しい) は
+  # 静かに skip するので fresh Mac でも安全に走る。opt-out したい場合は
+  # この activation block を nix config から削除すれば良い (script 自体は
+  # scripts/setup-claude-mcp-perplexity.sh で常に手動実行可能)。
+  home.activation.patchClaudeMcpPerplexity =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      claude_json="$HOME/.claude.json"
+      target="/tmp/op-mcp-perplexity.env"
+
+      # 0) 前提チェック
+      if [ ! -f "$claude_json" ]; then
+        echo "patchClaudeMcpPerplexity: skip (~/.claude.json not found, run claude once to initialize)"
+        exit 0
+      fi
+      if ! ${pkgs.jq}/bin/jq -e '.mcpServers.perplexity' "$claude_json" \
+           >/dev/null 2>&1; then
+        echo "patchClaudeMcpPerplexity: skip (.mcpServers.perplexity not configured, complete Phase 4 first)"
+        exit 0
+      fi
+
+      # 1) 既に正しければ no-op
+      current=$(${pkgs.jq}/bin/jq -r '.mcpServers.perplexity.args[]?
+                  | select(startswith("--env-file="))
+                  | sub("--env-file="; "")' "$claude_json" 2>/dev/null || true)
+      if [ "$current" = "$target" ]; then
+        exit 0
+      fi
+
+      # 2) Claude Code CLI 起動中なら触らない (state file 競合防止)
+      if pgrep -x "claude" >/dev/null 2>&1; then
+        echo "patchClaudeMcpPerplexity: warn — Claude Code CLI is running, skipping"
+        echo "  quit claude then re-run: darwin-rebuild switch --flake ~/.config/nix-darwin"
+        exit 0
+      fi
+
+      # 3) バックアップ + 局所書換え
+      $DRY_RUN_CMD cp "$claude_json" \
+        "$claude_json.bak.$(date +%Y%m%d-%H%M%S)"
+      tmp=$(mktemp)
+      $DRY_RUN_CMD ${pkgs.jq}/bin/jq --arg t "--env-file=$target" '
+        .mcpServers.perplexity.args = (
+          .mcpServers.perplexity.args | map(
+            if startswith("--env-file=") then $t else . end
+          )
+        )
+      ' "$claude_json" > "$tmp" \
+        && $DRY_RUN_CMD mv "$tmp" "$claude_json"
+      echo "patchClaudeMcpPerplexity: patched ~/.claude.json mcpServers.perplexity --env-file -> $target"
+    '';
 }

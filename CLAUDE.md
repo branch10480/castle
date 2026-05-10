@@ -209,6 +209,10 @@ Claude Code の `~/.claude.json` の `mcpServers.<name>.env.<KEY>` に**生 API 
 
 **対策 (A.2 ハイブリッド)**: ghostty 起動時に `op-warm-mcp` (Phase 2 ヘルパ) で `op://` を一度 resolve → `/tmp/op-mcp-perplexity.env` に literal 保存。`~/.claude.json` の `--env-file` をそこへ向け直すと、tmux 内のすべての `op run` が 1Password 呼び出しを skip する。
 
+`~/.claude.json` の書換えは `darwin-rebuild switch` 時に **nix-darwin の `home.activation.patchClaudeMcpPerplexity` で自動適用**される（`config/nix-darwin/home.nix`）。Claude Code CLI 起動中は `pgrep -x claude` で検出して skip + 警告するので state file の競合は回避。例外時 (`~/.claude.json` 未存在 / perplexity 未設定 / 既に正しい) は静かに skip。
+
+手動で実行したい場合（CI / 別 OS / 確認用）は同等の jq 操作を行うスクリプトが残っている:
+
 ```bash
 # Claude Code を一旦終了してから:
 bash ~/.homesick/repos/castle/scripts/setup-claude-mcp-perplexity.sh

@@ -28,7 +28,7 @@ Ghostty 側のペイン操作キーバインドは **コメントアウト残置
 | 右に分割 | `Ctrl+;` | `bind -n C-\; split-window -h -c "#{pane_current_path}"` |
 | 下に分割 | `Ctrl+'` | `bind -n "C-'" split-window -v -c "#{pane_current_path}"` |
 | ペイン移動（左 / 下 / 上 / 右） | `Ctrl+h/j/k/l` | `vim-tmux-navigator` 経由で nvim と seamless |
-| リサイズ（左 / 下 / 上 / 右、5 セル / 連打可） | `Ctrl+Shift+h/j/k/l` | `bind -n C-S-h resize-pane -L 5` 等 |
+| リサイズ（左 / 下 / 上 / 右、3 セル / 連打可） | `Ctrl+Shift+h/j/k/l` | `bind -n C-S-h resize-pane -L 3` 等 |
 | ペイン均等化 | `Ctrl+Shift+=` | `bind -n C-S-= select-layout -E` |
 | Copy mode 開始 | `Ctrl+Shift+x` | `bind -n C-S-x copy-mode` |
 | Copy mode 内 (vi mode) | `j/k/g/G/n/N` (デフォルト) `u/d` (half page) `y` (pbcopy) `q` (cancel) | `setw -g mode-keys vi` ＋ 個別 `bind -T copy-mode-vi` |

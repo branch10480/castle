@@ -55,6 +55,21 @@ shell-integration-features = no-cursor,sudo,title
 keybind = ctrl+left_bracket=text:\x1b
 
 # ─────────────────────────────────────────────────────────────
+# Force CSI u (fixterms) for Ctrl+Shift+<letter>
+# ─────────────────────────────────────────────────────────────
+# Ghostty は ASCII にマップ可能なキー (Ctrl+Shift+h など) について、
+# 古い経路 (`^H` = 0x08) を優先送信し Shift 修飾を落としてしまう。
+# tmux 側で `bind -n C-S-h resize-pane -L 30` を発火させるには、
+# Ghostty が CSI u 拡張シーケンスで明示的に送る必要がある。
+# Modifier 値: 1 + Shift(1) + Alt(2) + Ctrl(4) = Ctrl+Shift は 6
+# ASCII 値: h=104, j=106, k=107, l=108, ==61
+keybind = ctrl+shift+h=csi:104;6u
+keybind = ctrl+shift+j=csi:106;6u
+keybind = ctrl+shift+k=csi:107;6u
+keybind = ctrl+shift+l=csi:108;6u
+keybind = ctrl+shift+equal=csi:61;6u
+
+# ─────────────────────────────────────────────────────────────
 # Multiplexer 操作は tmux に移譲済み（home/.tmux.conf 参照）。
 # 以下の旧 ghostty 側キーバインドはロールバック用にコメントアウト残置。
 # tmux 側の bind -n と二重に発火させないために必ず無効のままにする。

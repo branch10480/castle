@@ -14,8 +14,9 @@ castle/
 │   ├── .config -> ../config
 │   ├── .hammerspoon -> ../hammerspoon
 │   ├── .codex/skills/<skill-name> -> ../../../codex/skills/<skill-name>
-│   ├── .zshrc      # zsh 起動スクリプト本体
-│   └── .zshrc.d/   # 機能別 zsh snippet（op.zsh など）— ~/.zshrc から自動 source
+│   ├── .zshrc      # zsh 起動スクリプト本体（Ghostty 起動時 auto-attach tmux も含む）
+│   ├── .zshrc.d/   # 機能別 zsh snippet（op.zsh など）— ~/.zshrc から自動 source
+│   └── .tmux.conf  # tmux 設定（Ghostty 互換キーバインド・session group・vim-tmux-navigator）
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── ghostty/    # Ghostty ターミナル設定（Claude Day light/dark テーマ含む）
@@ -63,6 +64,13 @@ zsh使用。主要ツール:
 - starship（プロンプト）
 - zoxide（ディレクトリジャンプ、`j`コマンド）
 - fzf + ghq（リポジトリ選択、`Ctrl+]`）
+
+## ターミナル / マルチプレクサ
+
+- **Ghostty**（ターミナル）と **tmux**（マルチプレクサ）を組み合わせ。Ghostty はキー入力・表示・タブ管理に専念し、ペイン分割/移動/リサイズ/コピーモードは tmux 側に集約
+- `home/.tmux.conf` で Ghostty 互換キー (`Ctrl+;` 分割 / `Ctrl+h/j/k/l` 移動 / `Ctrl+Shift+...` リサイズ / `Ctrl+Shift+x` copy mode) を `bind -n` で再現
+- `home/.zshrc` の "Ghostty: auto-attach tmux" ブロックで **session group 方式**を採用: 1 タブ目は `main` セッション作成、2 タブ目以降は `ghostty-<pid>` として join — タブを増やしても session が雪だるま化しない
+- 詳細・キーマッピング表・移行時の罠（`'C-\;'` シングルクォート / `=main` zsh EQUALS 展開）は [`docs/tmux-setup.md`](docs/tmux-setup.md)
 
 ## homeshick操作
 

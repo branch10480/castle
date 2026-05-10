@@ -365,9 +365,72 @@ Error: It seems there is already a Binary at '/opt/homebrew/bin/codex'.
 **実例**: `codex` は OpenAI Codex CLI で、cask 版と npm 版 `@openai/codex` の両方が存在する。本リポジトリでは npm 管理を選択して cask 宣言から外している（`darwin.nix` の `casks` リスト直前のコメント参照）。
 
 > [!TIP]
-> ログの末尾には `Using wezterm@nightly` のように **失敗とは無関係の "Using" 表示**が
+> ログの末尾には `Using ghostty 1.x.x` のように **失敗とは無関係の "Using" 表示**が
 > 続くことがある。`brew bundle` は失敗 1 件でも処理を継続して残りを `Using` として
 > 列挙するため、エラー本体は **`failed to install` の前**を `grep` する必要がある。
+
+### 5.10 アプリ別 symlink 非対応の罠（Xcode テーマ等）
+
+Home Manager の `home.file` は **store path への symlink** をホーム配下に貼る方式で、ほとんどのアプリはこれを正しく解決する（`~/.zshrc`、`~/.config/<app>/config` など）。**しかし Xcode のカスタムテーマだけは、symlink ではなく実ファイルでないと認識されない**。
+
+#### 症状
+
+`config/nix-darwin/files/xcode/MyTheme.xccolortheme` を `home.file."Library/Developer/Xcode/UserData/FontAndColorThemes/MyTheme.xccolortheme".source = ...;` で配布すると:
+
+```bash
+ls -la ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+# → MyTheme.xccolortheme -> /nix/store/.../MyTheme.xccolortheme  (symlink として作成成功)
+
+# しかし Xcode の Settings → Themes には MyTheme が出てこない
+```
+
+同じディレクトリに **`cp -L` で実ファイルとして配置**すると Themes 一覧に現れる。Xcode が theme 検出時に `realpath` 経由で symlink を辿らない実装になっている疑い。
+
+#### 対処パターン: `home.activation` で `install -m 0644`
+
+`home.file`（symlink）ではなく、`home.activation` で実ファイルとしてコピーする：
+
+```nix
+{ pkgs, lib, username, ... }:
+{
+  home.activation.installXcodeThemeClaudeDay =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
+      # 旧 generation の symlink が残っていれば剥がす（home.file 撤去後の保険）
+      $DRY_RUN_CMD rm -f "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/xcode/ClaudeDay.xccolortheme} \
+        "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
+    '';
+}
+```
+
+ポイント：
+
+- `lib.hm.dag.entryAfter [ "writeBoundary" ]` で `home.file` の symlink 配置 (`writeBoundary`) より後に走らせる
+- `$DRY_RUN_CMD` を前置すると `home-manager build`（dry-run モード）で実行されない
+- `install -m 0644` で **mode 付きで copy** （`cp` だと nix store 由来の `0444` を引き継ぐため、後で編集ができない / 書き換えるアプリがあった場合に動作不能になる可能性がある）
+- `${./files/xcode/MyTheme.xccolortheme}` の Nix path リテラルは flake では **git tracked なファイルのみ**見える（§9 トラブルシューティング表 "not tracked by Git" 行参照）
+
+#### 同種の罠が疑われる挙動を見たら
+
+「`home.file` で symlink を貼ったが、アプリの設定 UI に出てこない / 機能しない」場合、まず symlink を実ファイルに置き換えて確認する：
+
+```bash
+TARGET="$HOME/Library/.../<app>/<file>"
+cp -L "$TARGET" "${TARGET%.${TARGET##*.}}.real.${TARGET##*.}"
+# → アプリで .real.<ext> 側だけ認識されたら、symlink 非対応確定
+```
+
+実ファイル必須が確定したら、当該ファイルだけ `home.activation` 経路に切り替える。`home.file` で済むファイルは積極的に symlink を維持する（store path の世代追従が効くメリット）。
+
+#### MarkdownObserver のような対称的な例
+
+同じ `~/Library/Application Support/` 配下でも **MarkdownObserver は symlink を尊重する**。アプリ実装次第なので、「`~/Library/` 配下は全部 activation 経路」のような過剰反応はせず、**罠が確認できたファイルだけ activation に切り替える**のがミニマル。
+
+#### 実装
+
+`config/nix-darwin/home.nix` の `home.activation.installXcodeThemeClaudeDay` を参照。同じ Xcode テーマでも MarkdownObserver の `user.css` は `home.file` のままで動いている対比も含めて読むと意図が掴める。
 
 ---
 

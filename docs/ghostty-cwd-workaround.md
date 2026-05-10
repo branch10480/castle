@@ -157,7 +157,7 @@ Case 2: OK  else 分岐に入る
 → $HOME にフォールバック！
 ```
 
-`GHOSTTY_RESOURCES_DIR` は Ghostty が自動的に設定する環境変数。これでスコープを限定することで、WezTerm 等で意図的に `cd ~/.homesick/repos/castle` して作業するケースには影響しない。
+`GHOSTTY_RESOURCES_DIR` は Ghostty が自動的に設定する環境変数。これでスコープを限定することで、Ghostty 以外（tmux 単独セッション / 他のターミナルエミュレータ）で意図的に `cd ~/.homesick/repos/castle` して作業するケースには影響しない。
 
 ## 5.1. 削除された Case B（cmux ワークスペース間 CWD 継承対策）
 

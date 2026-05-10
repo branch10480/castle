@@ -28,7 +28,7 @@ Ghostty 側のペイン操作キーバインドは **コメントアウト残置
 | 右に分割 | `Ctrl+;` | `bind -n C-\; split-window -h -c "#{pane_current_path}"` |
 | 下に分割 | `Ctrl+'` | `bind -n "C-'" split-window -v -c "#{pane_current_path}"` |
 | ペイン移動（左 / 下 / 上 / 右） | `Ctrl+h/j/k/l` | `vim-tmux-navigator` 経由で nvim と seamless |
-| リサイズ（左 / 下 / 上 / 右、3 セル / 連打可） | `Ctrl+Shift+h/j/k/l` | `bind -n C-S-h resize-pane -L 3` 等 |
+| リサイズ（左右 = 3 セル / 上下 = 2 行、連打可） | `Ctrl+Shift+h/j/k/l` | `bind -n C-S-h resize-pane -L 3` (横) / `bind -n C-S-j resize-pane -D 2` (縦) 等 |
 | ペイン均等化 | `Ctrl+Shift+=` | `bind -n C-S-= select-layout -E` |
 | Copy mode 開始 | `Ctrl+Shift+x` | `bind -n C-S-x copy-mode` |
 | Copy mode 内 (vi mode) | `j/k/g/G/n/N` (デフォルト) `u/d` (half page) `y` (pbcopy) `q` (cancel) | `setw -g mode-keys vi` ＋ 個別 `bind -T copy-mode-vi` |
@@ -133,7 +133,7 @@ keybind = ctrl+shift+l=csi:108;6u
 keybind = ctrl+shift+equal=csi:61;6u
 ```
 
-Ghostty 側でこれを敷くと CSI u シーケンスが強制送信され、tmux 側の `bind -n C-S-h resize-pane -L 30` が正しく発火する。
+Ghostty 側でこれを敷くと CSI u シーケンスが強制送信され、tmux 側の `bind -n C-S-h resize-pane -L <N>` が正しく発火する（実際の `<N>` は §2 表参照、ここでは Shift 修飾を tmux に届ける配管そのものが論点）。
 
 > 一般化: **ASCII Ctrl にマップできるキー組み合わせを修飾子付きで使いたい場合、Ghostty 側で `keybind = ...=csi:<ascii>;<mod>u` を明示すること**。これは Ghostty に限らず多くのターミナルで起きる古典的な fixterms 移行問題。
 

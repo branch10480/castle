@@ -50,6 +50,52 @@ oprun() {
   op run --env-file="$env_file" --no-masking -- "$@"
 }
 
+# ── op-warm: pre-populate daemon cache to dodge per-pane Touch ID ──
+# Each tmux pane that runs `claude` spawns Claude Code → spawns its
+# configured MCP servers → those wrapped in `op run` (e.g. perplexity)
+# trigger biometric unlock if the op-daemon's cache is cold. The cache
+# IS shared across processes (tested: 3 parallel `op run` after a warm
+# cache complete in ~1.5s with no prompt), but its TTL is bounded by
+# the 1Password GUI app's "Lock after" setting (Settings → Security).
+# Past that window every call goes cold again, so splitting panes
+# minutes apart re-prompts every time.
+#
+# This helper warms the cache once so a burst of subsequent `op run`
+# (across N panes) costs at most one Touch ID instead of N.
+#
+# Usage:
+#   op-warm                       # warms every ~/.config/op/*.env file
+#   op-warm path/to/file.env ...  # warms specific files only
+#
+# Mechanics: `op run --env-file=<f> -- true` performs the same auth +
+# secret resolution path as the real MCP launch but spawns a no-op.
+# The daemon then holds the unlock until GUI auto-lock kicks in.
+#
+# Trade-off: this helper does NOT extend the cache window — only fills
+# it. To stretch the window itself, lift the GUI's "Lock after" timer.
+op-warm() {
+  local -a files
+  if (( $# > 0 )); then
+    files=("$@")
+  else
+    files=(~/.config/op/*.env(N))
+  fi
+  if (( ${#files} == 0 )); then
+    print -r -- "op-warm: no env files to warm (looked in ~/.config/op/*.env)" >&2
+    return 1
+  fi
+  local f rc=0
+  for f in "${files[@]}"; do
+    if op run --env-file="$f" -- true >/dev/null 2>&1; then
+      print -r -- "warmed: $f"
+    else
+      print -r -- "failed: $f" >&2
+      rc=1
+    fi
+  done
+  return $rc
+}
+
 # ── 1Password Shell Plugins ──────────────────────────────
 # `op plugin init <cli>` is interactive and per-machine (it writes a
 # config under ~/.config/op/ and appends aliases to plugins.sh). Source

@@ -114,6 +114,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin
 
 - `op-status` — `op whoami` のラッパ。lock 状態なら non-zero を返してヒント文を出す
 - `oprun [--env-file=<path>] -- <command...>` — `op run --env-file=<path> --no-masking -- <command>` のショートカット。env-file は省略時 `./.env.op`（Phase 3 の `.env` テンプレ運用で使う規約 → [`docs/op-env-pattern.md`](docs/op-env-pattern.md)）
+- `op-warm [<env-file>...]` — `~/.config/op/*.env` (引数省略時) を `op run -- true` で空叩きして daemon cache を温める。複数 tmux ペインで `claude` を同時起動するときに事前に 1 回呼べば Touch ID プロンプトを N → 1 に削減できる（詳細は Phase 4 のポイント節）
 
 ### Shell Plugins（`gh`, `aws` 等）
 
@@ -206,6 +207,7 @@ Claude Code の `~/.claude.json` の `mcpServers.<name>.env.<KEY>` に**生 API 
 - **Claude Code 自体は op:// を解釈しない**: `command` 階層で `op run` を噛ませることで、Claude Code には透過に見せる
 - **env-file は 1 行 = 1 環境変数**: `KEY=op://...` のみ。複数 MCP サーバを共用にしたい場合でも、サーバごとにファイルを分けると依存関係を局所化できる
 - **`--no-masking` は付けない**: Phase 2 の `oprun` ヘルパとは違い、MCP サーバの stdio に対して masking を切る必要は無い（むしろ stderr の意図しない出力が機密扱いになるリスクを減らす）
+- **複数ペイン同時 `claude` 起動で Touch ID 連発になる場合**: `op-warm` (Phase 2 の `op.zsh` で提供) を 1 回叩いてから分割すれば、cache が温まっている間は N ペイン分の `op run` がプロンプト無しで通る。`op-warm` は `~/.config/op/*.env` 全部を pre-fetch する。cache TTL 自体は 1Password GUI の Settings → Security → "Lock after" に従うので、長時間の作業でも温存したい場合はそこを延ばす
 
 ## Phase 5: ASC API キー (`.p8`) を 1Password 経由で配信時のみ展開する
 

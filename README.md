@@ -75,6 +75,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 | 対話 zsh から API キーを注入 | `oprun -- <cmd>` | [CLAUDE.md Phase 2](CLAUDE.md) |
 | MCP サーバの API キー隠匿 | `~/.claude.json` の `mcpServers.<name>` を `op run` でラップ | [CLAUDE.md Phase 4](CLAUDE.md) |
 | プロジェクトの `.env` を `op://` 化 | `.env.op` (commit OK) + `.env.op.local` (ignore) | [`docs/op-env-pattern.md`](docs/op-env-pattern.md) |
+| ASC API キー (`.p8`) を配信時のみ展開 | `asc-upload <ipa>` で 1P から取得 → altool → trap で削除 | [`docs/asc-api-key-op.md`](docs/asc-api-key-op.md) |
 
 ### nix-darwin + Home Manager
 

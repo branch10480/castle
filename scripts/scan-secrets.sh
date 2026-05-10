@@ -47,6 +47,7 @@ patterns=(
   "Google API key|AIza[0-9A-Za-z_-]{35}"
   "JWT-shape token|eyJ[A-Za-z0-9_=-]{20,}\\.eyJ[A-Za-z0-9_=-]{20,}\\.[A-Za-z0-9_.+/=-]{20,}"
   "Private key block|-----BEGIN (RSA |OPENSSH |EC |PGP )?PRIVATE KEY-----"
+  "ASC API key filename|AuthKey_[A-Z0-9]{8,}\\.p8"
 )
 
 # Decide which file set to scan.

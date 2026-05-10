@@ -5,7 +5,7 @@ PR `$ARGUMENTS` に対して、`code-review-expert` または `swift-code-review
 ## 起動方法
 
 ```
-/review-loop [<PR番号 or PR URL>]
+/rloop [<PR番号 or PR URL>]
 ```
 
 引数が省略された場合は、現在のブランチに紐づく PR を `gh pr view --json number` で特定する。特定できなければユーザーに確認する。

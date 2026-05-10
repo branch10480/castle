@@ -13,3 +13,9 @@
 !skills/**
 !statusline.py
 !CLAUDE.md
+
+# Python bytecode cache (skills/ 配下の Python スクリプトが import 時に生成)
+# ルート .gitignore の `**/__pycache__/` は `!skills/**` で打ち消されるため、
+# この階層で再除外する必要がある。
+__pycache__/
+*.pyc

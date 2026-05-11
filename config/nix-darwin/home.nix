@@ -104,6 +104,25 @@
         "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
     '';
 
+  # 1Password CLI (~/.config/op) と SSH client (~/.config/ssh) は
+  # group/other に read bit があると op / ssh が起動を拒否するため
+  # 0700 を強制する。git はディレクトリ mode を追跡しないので、
+  # homeshick link 後や新規 clone 後にここで毎回当て直す。
+  # 詳細: docs/op-touchid-investigation.md / SSH セットアップ手順 (CLAUDE.md)
+  home.activation.fixSensitiveConfigPermissions =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      for d in "$HOME/.config/op" "$HOME/.config/ssh"; do
+        if [ -d "$d" ]; then
+          $DRY_RUN_CMD chmod 700 "$d"
+        fi
+      done
+      # ~/.config/ssh/config も 600 を強制（git は file mode を追跡するが、
+      # 新規 clone 直後に 644 になっていることがあるため保険）。
+      if [ -f "$HOME/.config/ssh/config" ]; then
+        $DRY_RUN_CMD chmod 600 "$HOME/.config/ssh/config"
+      fi
+    '';
+
   # Claude Code の ~/.claude.json (動的 state file) で perplexity MCP の
   # `--env-file` を /tmp/op-mcp-perplexity.env に向け直す jq 局所書換え。
   # tmux ペイン分割時の per-pane Touch ID 回避用 (A.2 ハイブリッド対策)。

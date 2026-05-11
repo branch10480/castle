@@ -78,6 +78,20 @@
   home.file.".local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh".source =
     "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
 
+  # tmux プラグインを Nix で provisioning する。TPM (~/.tmux/plugins/tpm/)
+  # を使わず、`pkgs.tmuxPlugins.<name>.rtp` (= `<store>/share/tmux-plugins/
+  # <name>/<name>.tmux` への passthru パス) を `run-shell` で直接ロードする。
+  # `.tmux.conf` 側は末尾の `source-file ~/.tmux/plugins.conf` でこれを取り込む。
+  #
+  # 利点: `prefix + I` 不要 / store hash で再現性確保 / 新規 Mac で homeshick
+  # link 直後から C-h/j/k/l のペイン移動が機能する。
+  # トレードオフ: バージョンは nixpkgs channel に追従。プラグイン更新には
+  # `nix flake update` が必要。
+  home.file.".tmux/plugins.conf".text = ''
+    run-shell ${pkgs.tmuxPlugins.sensible.rtp}
+    run-shell ${pkgs.tmuxPlugins.vim-tmux-navigator.rtp}
+  '';
+
   # MarkdownObserver(fork) のユーザー CSS をマシン横断で同期する。
   # 組み込みテーマの上に重ねて当たるカラーパレット調整。アプリ側がこの
   # ディレクトリを読み込むので themes/ 配下に固定で配置する。

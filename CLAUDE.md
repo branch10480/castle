@@ -16,7 +16,7 @@ castle/
 │   ├── .codex/skills/<skill-name> -> ../../../codex/skills/<skill-name>
 │   ├── .zshrc      # zsh 起動スクリプト本体（Ghostty 起動時 auto-attach tmux も含む）
 │   ├── .zshrc.d/   # 機能別 zsh snippet（op.zsh など）— ~/.zshrc から自動 source
-│   └── .tmux.conf  # tmux 設定（Ghostty 互換キーバインド・session group・vim-tmux-navigator）
+│   └── .tmux.conf  # tmux 設定（Ghostty 互換キーバインド・session group・プラグインは Nix 配布 → home.nix の home.file.".tmux/plugins.conf"）
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── ghostty/    # Ghostty ターミナル設定（Claude Day light/dark テーマ含む）

@@ -161,6 +161,8 @@ Ghostty 側でこれを敷くと CSI u シーケンスが強制送信され、tm
 
 新規 Mac か、tmux 設定を大きく変えた後の手順：
 
+> **前提**: `darwin-rebuild switch --flake ~/.config/nix-darwin` を実行済みであること。プラグイン (`tmux-sensible` / `vim-tmux-navigator`) は Home Manager の `home.file.".tmux/plugins.conf"` 経由で nix store から symlink される。これが無いと `source-file ~/.tmux/plugins.conf` が空振りして `Ctrl+h/j/k/l` が ASCII Backspace (`^H`) として shell に届く。
+
 ```bash
 # 1. tmux server を落とす（既存 session 全破棄）
 tmux kill-server
@@ -177,16 +179,32 @@ tmux ls
 #   ghostty-XXXXX: 1 windows (...) (group main) (attached)
 #   main:          1 windows (...) (group main) (attached)
 
-# 5. tpm の plugin install (vim-tmux-navigator)
-#    tmux 内で C-a (prefix) → Shift+I (大文字 I)
-ls ~/.tmux/plugins/  # tpm / tmux-sensible / vim-tmux-navigator
+# 5. プラグインは Nix が provisioning するので install 操作不要
+#    `darwin-rebuild switch` 後に `~/.tmux/plugins.conf` が生成される
+ls -l ~/.tmux/plugins.conf  # nix store への symlink
+cat ~/.tmux/plugins.conf    # run-shell <store>/share/tmux-plugins/... 2 行
 
 # 6. キー登録の確認
 tmux list-keys -T root | grep -E 'C-S-|C-;|C-'\''
 # 期待: split×2, resize×4, equalize, copy-mode の 8 行
-tmux list-keys -T root | grep -E "select-pane|is_vim" | head
+tmux list-keys -T root | grep -E '^bind-key -T root C-(h|j|k|l|\\\\)'
 # 期待: vim-tmux-navigator の C-h/j/k/l/\\ 5 行
+# (各行に `if-shell "ps -o state= ... grep -iqE 'vim|fzf'..."` が埋まっている。
+#  最新版は bind 発行時に変数展開するので "is_vim" の文字列は出ない)
 ```
+
+### TPM 時代から移行する場合の cleanup（任意）
+
+旧構成で `prefix + I` 経由で TPM をインストールしていた Mac では `~/.tmux/plugins/` 配下に user 領域の clone が残っている。Nix 移行後は不要なので削除して構わない：
+
+```bash
+ls ~/.tmux/plugins/   # tpm / tmux-sensible / vim-tmux-navigator が残っているか確認
+rm -rf ~/.tmux/plugins/
+# ~/.tmux/plugins.conf は Home Manager 管理の symlink なので消さない
+ls -l ~/.tmux/plugins.conf   # → /nix/store/... を指す symlink が残っていれば正常
+```
+
+残しておいても tmux は `source-file ~/.tmux/plugins.conf` 経由で nix store の `.tmux` を読むので副作用は無い（旧 TPM 経路は `.tmux.conf` から削除済みなので発火しない）。
 
 ---
 
@@ -197,7 +215,7 @@ tmux list-keys -T root | grep -E "select-pane|is_vim" | head
 | tmux 設定本体 | [`home/.tmux.conf`](../home/.tmux.conf) |
 | Ghostty 設定（multiplexer keybind は無効化済み） | [`config/ghostty/config`](../config/ghostty/config) |
 | Ghostty 起動時 auto-attach | [`home/.zshrc`](../home/.zshrc)（"Ghostty: auto-attach tmux" ブロック） |
-| プラグイン管理 (TPM) | `~/.tmux/plugins/tpm/`（user 領域、castle 追跡外） |
+| プラグイン本体 (Nix provisioning) | [`config/nix-darwin/home.nix`](../config/nix-darwin/home.nix) の `home.file.".tmux/plugins.conf"` で `pkgs.tmuxPlugins.<name>.rtp` を `run-shell` 経由でロード |
 | Ghostty CWD 問題のワークアラウンド | [`ghostty-cwd-workaround.md`](ghostty-cwd-workaround.md) |
 
 ## 7. nvim 側 vim-tmux-navigator (Phase 4 = 完了)

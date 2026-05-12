@@ -110,7 +110,31 @@ alias nrs='sudo darwin-rebuild switch --flake ~/.config/nix-darwin'
 alias nrb='darwin-rebuild --rollback'
 alias nrl='darwin-rebuild --list-generations'
 # nix flake: update inputs (nixpkgs 等を最新化) → switch で反映
-alias nru='nix flake update --flake ~/.config/nix-darwin'
+# Phase 9: `op run` 経由で GitHub 認証トークンを Nix に渡し、匿名 IP の
+# 60 req/hr ではなく認証ユーザーあたり 5000 req/hr で flake input を
+# 取得する。`~/.config/op/github.env.local` (gitignore 済の machine-
+# local override、Phase 3 と同思想) が存在すれば castle 追跡側の
+# `~/.config/op/github.env` より優先する。`op` 未起動 / env-file 無し
+# のマシンでは匿名 fetch にフォールバックするので、fresh Mac でも
+# そのまま動く。
+nru() {
+  local env_file=""
+  for candidate in "$HOME/.config/op/github.env.local" "$HOME/.config/op/github.env"; do
+    if [ -f "$candidate" ]; then
+      env_file="$candidate"
+      break
+    fi
+  done
+
+  if command -v op >/dev/null 2>&1 && [ -n "$env_file" ]; then
+    op run --env-file="$env_file" -- bash -c '
+      NIX_CONFIG="access-tokens = github.com=$GITHUB_TOKEN" \
+        nix flake update --flake ~/.config/nix-darwin
+    '
+  else
+    nix flake update --flake ~/.config/nix-darwin
+  fi
+}
 # nrgc: system / user 両 profile の "14日より古い" 世代を削除（rollback 余地を保つ）
 nrgc() {
   sudo nix-collect-garbage --delete-older-than 14d

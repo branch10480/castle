@@ -91,6 +91,7 @@
       # cleanup = "zap" により次回 switch で Cask 側の残骸が自動削除される。
       "ghostty"
       "hammerspoon"
+      "proxyman"
       "raycast"
       "vlc"
     ];

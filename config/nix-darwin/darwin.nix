@@ -83,8 +83,8 @@
       # 1Password GUI: Touch ID 解錠 / SSH agent / op-ssh-sign を提供。
       # CLI 本体 (`op`) は home.nix の _1password-cli (Nix) で供給する。
       "1password"
-      # codex (CLI) は npm 版 @openai/codex を使うため Nix 宣言から除外。
-      # Caskroom の codex-app (GUI) はそのまま残す。
+      # codex (CLI) は home.nix の home.packages で Nix 管理（phase 8）。
+      # Caskroom の codex-app (GUI) は Nix 配布が無いため brew cask で継続。
       "codex-app"
       "drawio"
       # font-* casks は fonts.packages (Nix) に移行済み。

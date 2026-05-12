@@ -72,6 +72,14 @@
     # SSH agent・op-ssh-sign は GUI 側が供給するため、本パッケージは `op`
     # バイナリのみを Nix で提供する責務に絞る。
     _1password-cli
+
+    # Re-managed via Nix (phase 8: AI coding agent CLI)
+    # OpenAI Codex CLI (Rust binary). 過去は Homebrew cask → 撤去 → npm の
+    # `@openai/codex` を global install で運用していたが、nixpkgs に同じ
+    # Rust 本体パッケージが入ったため declarative 化。`ripgrep` のみ依存。
+    # GUI 版 (codex-app cask) は Nix 配布が無いため darwin.nix の casks で継続。
+    # state file (~/.codex/config.toml 等) はバイナリ更新に追従する。
+    codex
   ];
 
   # zsh-syntax-highlighting の本体スクリプトを安定パスへ露出させる。

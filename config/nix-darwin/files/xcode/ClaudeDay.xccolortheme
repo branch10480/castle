@@ -5,7 +5,7 @@
 
   Hybrid design: editor *chrome* (background, cursor, selection, current line,
   scrollbar markers, console, markup) follows castle's Claude Day palette
-  (claude/skills/html-artifact/design-system.html). Source-text *syntax colors*
+  (claude/skills/htmla/design-system.html). Source-text *syntax colors*
   adopt Xcode's stock Sunset palette — its warm-ish base (orange comment,
   terracotta type, deep-blue keyword) sits naturally on Claude Day's ivory
   background and avoids the all-warm-on-all-warm readability trap that a pure
@@ -29,7 +29,7 @@
     g700    #3D3D3A  0.2392 0.2392 0.2275 1   debugger output · markup inline code · other heading
 
   Font: JetBrainsMonoNF-Regular - 13.0 (踏襲: 既存の My Classic (Light) と同じ。
-  HTML artifact 側は Mono バリアント (NFM) を採用しているが、Xcode は既存設定との
+  htmla 側は Mono バリアント (NFM) を採用しているが、Xcode は既存設定との
   メトリクス互換性を優先して NF のまま揃える。
 -->
 <plist version="1.0">

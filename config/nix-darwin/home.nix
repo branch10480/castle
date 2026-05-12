@@ -107,7 +107,7 @@
   # castle 側のファイル名は空白なし (ClaudeDay.xccolortheme) で Nix のパス
   # リテラルに優しく、配置先のファイル名 ("Claude Day.xccolortheme") は空白
   # ありで Xcode の Settings → Themes 一覧で「Claude Day」と表示される。
-  # トークンの出所は claude/skills/html-artifact/design-system.html。
+  # トークンの出所は claude/skills/htmla/design-system.html。
   home.activation.installXcodeThemeClaudeDay =
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"

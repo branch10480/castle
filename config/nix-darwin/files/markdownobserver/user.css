@@ -1,7 +1,7 @@
 /* Personal color tweaks — Claude Day inspired.
    Applied on top of whichever built-in theme is selected.
 
-   Aligned with claude/skills/html-artifact/design-system.html (castle's single
+   Aligned with claude/skills/htmla/design-system.html (castle's single
    design-language source for HTML artifacts). Tokens carry the `--c-` prefix
    here so they don't clash with the reader/built-in theme namespace.
 
@@ -93,7 +93,7 @@
   text-decoration-color: var(--reader-link);
 }
 
-/* Blockquote: align with html-artifact's callout pattern (warm left rail + soft tint).
+/* Blockquote: align with htmla's callout pattern (warm left rail + soft tint).
    Drives bg/fg/accent from reader vars so dark mode adapts automatically. */
 .markdown-body blockquote {
   background: var(--reader-blockquote-bg);

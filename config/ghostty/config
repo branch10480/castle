@@ -32,7 +32,7 @@ font-codepoint-map = U+FF00-U+FFEF=Hiragino Sans W3
 # theme = Kanagawa Dragon
 # Both light/dark stay in castle's Claude Day vocabulary now (was: dark side
 # was Kanagawa Dragon — replaced by Claude Day Dark for design-language
-# consistency with html-artifact / markdownobserver / Xcode).
+# consistency with htmla / markdownobserver / Xcode).
 theme = light:Claude Day,dark:Claude Day Dark
 
 # Window appearance

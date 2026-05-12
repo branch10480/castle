@@ -43,7 +43,7 @@ castle/
 - `/castle` - castleリポジトリの変更をcommit & push（メッセージは差分から英語で自動生成）
 - `/push` - 汎用的なgit add, commit, push
 - `/zama-parking` - イオンモール座間 駐車場空き状況確認
-- `/html-artifact` - HTML 形式で成果物（spec / report / mockup / プロトタイプ / リサーチ / 解説 / カスタムエディタ等）を生成。デザイントークンは `claude/skills/html-artifact/design-system.html`、使い方ガイドは `docs/html-artifact-usage.html`
+- `/htmla` - HTML 形式で成果物（spec / report / mockup / プロトタイプ / リサーチ / 解説 / カスタムエディタ等）を生成。デザイントークンは `claude/skills/htmla/design-system.html`、使い方ガイドは `docs/htmla-usage.html`
 - `scripts/scan-secrets.sh` - 既知パターンの API キー / 秘密鍵を grep する軽量スキャナ。`--staged` で git index のみスキャンも可
 - `scripts/setup-claude-mcp-perplexity.sh` - `~/.claude.json` の `mcpServers.perplexity.--env-file` を `/tmp/op-mcp-perplexity.env` に向け直す jq 書換え（tmux ペイン単位の Touch ID 回避用、Phase 4 + `op-warm-mcp` と組）
 

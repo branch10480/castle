@@ -1,10 +1,10 @@
 ---
-name: html-artifact
+name: htmla
 description: "HTML ファイルとして成果物（spec / report / mockup / プロトタイプ / リサーチ / 解説 / ダッシュボード / カスタムエディタ）を生成する。`HTMLで作って` `HTML artifact` `HTMLファイルにまとめて` `デザインを揃えて` と言われたとき、また Markdown では伝わりにくいリッチな表現（カラーパレット、SVG ダイアグラム、KPI、テーブル、対話 UI）が必要なときに使用する。`design-system.html` を参照してトークンとコンポーネントを再利用する。"
 disable-model-invocation: false
 ---
 
-# html-artifact
+# htmla
 
 Claude が HTML 形式で artifact を生成するときに参照するスキル。`design-system.html` に集約された ivory + clay デザイントークンとコンポーネントパターンを使い、**単一ファイルで完結する HTML** を出力する。
 
@@ -96,13 +96,13 @@ design-system.html の以下のセクションをそのまま流用する:
 
 ## ユーザー向けの使い方ドキュメント
 
-人間（ユーザー）が読むためのプロンプト集と運用ガイドは `docs/html-artifact-usage.html` にある。SKILL.md は Claude が読む設計仕様、`docs/html-artifact-usage.html` は人間が読むチュートリアル、という役割分担。新しいプロンプト例や運用 tips が増えたら `docs/html-artifact-usage.html` 側に追記する。
+人間（ユーザー）が読むためのプロンプト集と運用ガイドは `docs/htmla-usage.html` にある。SKILL.md は Claude が読む設計仕様、`docs/htmla-usage.html` は人間が読むチュートリアル、という役割分担。新しいプロンプト例や運用 tips が増えたら `docs/htmla-usage.html` 側に追記する。
 
 ### 閲覧方法
 
-- **ローカル（推奨）**: `open ~/.homesick/repos/castle/docs/html-artifact-usage.html`
+- **ローカル（推奨）**: `open ~/.homesick/repos/castle/docs/htmla-usage.html`
   - JetBrainsMono Nerd Font 込みでデザインが完璧に再現される
 - **GitHub Web から rendered で見る**: 以下の htmlpreview リンクを使う
-  - `https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html`
+  - `https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/htmla-usage.html`
   - GitHub Web で `.html` を直接クリックすると view-source 表示になるため、共有相手にはこの URL を渡す
 - **将来オプション**: HTML doc が複数に増えた場合は GitHub Pages 化（`branch10480.github.io/castle/...`）で短い URL にできる

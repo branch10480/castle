@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>html-artifact スキルの使い方 — castle docs</title>
+<title>htmla スキルの使い方 — castle docs</title>
 <style>
   /* ============================================================
-     :root tokens — copied from claude/skills/html-artifact/design-system.html
+     :root tokens — copied from claude/skills/htmla/design-system.html
      ============================================================ */
   :root {
     --ivory:   #FAF9F5;
@@ -339,23 +339,23 @@
 
   <header class="masthead">
     <div class="eyebrow">castle / docs · how-to</div>
-    <h1 class="display">Using the <em>html-artifact</em> skill.</h1>
+    <h1 class="display">Using the <em>htmla</em> skill.</h1>
     <p class="lead">
       Claude Code 上で HTML 形式の成果物（spec / report / mockup / プロトタイプ /
       リサーチ / 解説 / カスタムエディタ）を一発で生成するためのスキル。
       自身もこのドキュメントを生成して dogfooding しています。
-      design system 本体は <code class="inline">claude/skills/html-artifact/design-system.html</code>。
+      design system 本体は <code class="inline">claude/skills/htmla/design-system.html</code>。
     </p>
     <div class="meta">
-      <span><strong>File</strong> docs/html-artifact-usage.html</span>
-      <span><strong>Skill</strong> claude/skills/html-artifact/</span>
+      <span><strong>File</strong> docs/htmla-usage.html</span>
+      <span><strong>Skill</strong> claude/skills/htmla/</span>
       <span><strong>Inspired by</strong> <a href="https://thariqs.github.io/html-effectiveness/" style="color: inherit;">thariqs/html-effectiveness</a></span>
     </div>
 
     <div class="viewing-banner">
       📖 GitHub Web で見ているならこのリンクで rendered 版に飛べます →
-      <a href="https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html">htmlpreview で開く</a>
-      ・ ローカルなら <code style="font-family: inherit; background: rgba(255,255,255,0.5); padding: 1px 5px; border-radius: 4px;">open ~/.homesick/repos/castle/docs/html-artifact-usage.html</code>
+      <a href="https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/htmla-usage.html">htmlpreview で開く</a>
+      ・ ローカルなら <code style="font-family: inherit; background: rgba(255,255,255,0.5); padding: 1px 5px; border-radius: 4px;">open ~/.homesick/repos/castle/docs/htmla-usage.html</code>
     </div>
 
     <nav class="toc">
@@ -372,7 +372,7 @@
   <section id="what">
     <div class="sec-head"><span class="idx">01</span><h2>What it is</h2></div>
     <p class="sec-intro">
-      <code class="inline">html-artifact</code> は Claude Code が「HTML 形式で何かを作って」と頼まれたときに、
+      <code class="inline">htmla</code> は Claude Code が「HTML 形式で何かを作って」と頼まれたときに、
       castle で定義された ivory + clay デザイントークン（serif 見出し / system sans 本文 / JetBrainsMono Nerd Font）を
       使って <strong>単一ファイルで完結する HTML</strong> を出力するためのスキル。
     </p>
@@ -391,7 +391,7 @@
     <div class="sec-head"><span class="idx">02</span><h2>発火させる 3 つのコツ</h2></div>
     <p class="sec-intro">
       Claude Code のスキルは <code class="inline">description</code> のキーワードマッチで自動発火する。
-      意図せず別のスキルが動いたり、html-artifact が動かなかったりするときは、以下のコツで誘導する。
+      意図せず別のスキルが動いたり、htmla が動かなかったりするときは、以下のコツで誘導する。
     </p>
     <div class="demos">
       <div class="insight-grid">
@@ -494,7 +494,7 @@ HTML editor を作って。最後に「copy as markdown」ボタンで
         </thead>
         <tbody>
           <tr><td>自動発火させたい</td><td><code class="inline">HTMLで</code> / <code class="inline">HTML artifact</code> / <code class="inline">デザインを揃えて</code></td></tr>
-          <tr><td>確実に発火させたい</td><td><code class="inline">/html-artifact</code> を頭につけて明示起動</td></tr>
+          <tr><td>確実に発火させたい</td><td><code class="inline">/htmla</code> を頭につけて明示起動</td></tr>
           <tr><td>文体を硬くしたい</td><td>「editorial tone で」「日経ビジネス風に」</td></tr>
           <tr><td>文体を軽くしたい</td><td>「カジュアルなトーンで」「内輪向けの memo として」</td></tr>
           <tr><td>単一ファイル維持</td><td><code class="inline">single-file で</code> / <code class="inline">外部 CSS なしで</code></td></tr>
@@ -538,7 +538,7 @@ HTML editor を作って。最後に「copy as markdown」ボタンで
         <div>
           <h4>htmlpreview.github.io 経由（GitHub Web からそのまま見たいとき）</h4>
           <p>URL を <code class="inline">https://htmlpreview.github.io/?</code> で prefix する。第三者サービス経由なので機密情報を含む HTML には使わない。</p>
-<pre class="code" style="margin-top:10px;">https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/html-artifact-usage.html</pre>
+<pre class="code" style="margin-top:10px;">https://htmlpreview.github.io/?https://github.com/branch10480/castle/blob/main/docs/htmla-usage.html</pre>
         </div>
       </div>
 
@@ -547,7 +547,7 @@ HTML editor を作って。最後に「copy as markdown」ボタンで
         <div>
           <h4>ローカルで <code class="inline">open</code>（自分で見るとき推奨）</h4>
           <p>JetBrainsMono Nerd Font が効くので、フォント込みでデザインが完璧に再現される。castle が <code class="inline">homeshick link</code> 済みなら以下で開ける。</p>
-<pre class="code" style="margin-top:10px;">open ~/.homesick/repos/castle/docs/html-artifact-usage.html</pre>
+<pre class="code" style="margin-top:10px;">open ~/.homesick/repos/castle/docs/htmla-usage.html</pre>
         </div>
       </div>
 
@@ -571,7 +571,7 @@ HTML editor を作って。最後に「copy as markdown」ボタンで
 
   <footer>
     <span class="k">"Quiet but exact."</span>
-    <span>castle / docs · skill <a href="https://github.com/branch10480/castle/tree/main/claude/skills/html-artifact">html-artifact</a></span>
+    <span>castle / docs · skill <a href="https://github.com/branch10480/castle/tree/main/claude/skills/htmla">htmla</a></span>
   </footer>
 
 </div>

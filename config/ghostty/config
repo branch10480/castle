@@ -10,7 +10,7 @@ auto-update-channel = tip
 font-family = JetBrainsMono Nerd Font Mono
 font-family = JetBrainsMono Nerd Font
 font-family = Hiragino Sans W3
-font-style = Light
+font-style = Regular
 font-size = 14
 
 # Force JP code points to Hiragino Sans (gothic) so CJK fallback is explicit

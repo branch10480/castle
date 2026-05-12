@@ -71,6 +71,25 @@ keybind = ctrl+shift+l=csi:108;6u
 keybind = ctrl+shift+equal=csi:61;6u
 
 # ─────────────────────────────────────────────────────────────
+# HHKB: Ctrl+b/f/p/n を矢印キーに翻訳（emacs/readline 互換）
+# ─────────────────────────────────────────────────────────────
+# Claude Code (Ink TextInput) は readline スタイルの cursor 移動を
+# サポートしておらず、~/.claude/keybindings.json でも cursor:* に相当する
+# action が公開されていない。HHKB は矢印が Fn+[;'/.] の 2 キー入力で
+# ホームポジションから遠いので、Ghostty 層で C-b/f/p/n を矢印エスケープに
+# 書き換えて下流（tmux → shell → Claude Code 等）に流す。
+#
+# 副作用の許容範囲:
+# - zsh emacs モード: C-b/f/p/n と矢印は等価バインドなので挙動不変
+# - vim/nvim: ユーザは hjkl のみ使用するため C-b/f (ページスクロール) /
+#   C-p/n (insert 補完) を失っても無痛
+# - less / tmux copy-mode-vi: C-b/f のページ移動が 1 行スクロールに劣化
+keybind = ctrl+b=csi:D
+keybind = ctrl+f=csi:C
+keybind = ctrl+p=csi:A
+keybind = ctrl+n=csi:B
+
+# ─────────────────────────────────────────────────────────────
 # Multiplexer 操作は tmux に移譲済み（home/.tmux.conf 参照）。
 # 以下の旧 ghostty 側キーバインドはロールバック用にコメントアウト残置。
 # tmux 側の bind -n と二重に発火させないために必ず無効のままにする。

@@ -127,6 +127,7 @@ _cc()  { claude --dangerously-skip-permissions "$@"; }
 _ccp() { claude --print "$@"; }
 
 cc()   { claude "$@"; }
+ca()   { claude agents "$@"; }
 ccc()  { claude --continue "$@"; }
 cch()  { _cc --model "$CLAUDE_MODEL_HAIKU" "$@"; }
 ccs()  { _cc --effort medium --model "$CLAUDE_MODEL_SONNET" "$@"; }

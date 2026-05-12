@@ -176,6 +176,8 @@ oprun --env-file=.env.op.local -- npm run dev
 
 `.env.op` 自体は個人と共通で commit されたまま。仕事 Mac だけ `.env.op.local` を使う、という機械別差分。
 
+castle 内の Phase 9 (`nru` 認証 fetch) も同じ思想で運用する。castle 追跡側の `config/op/github.env`（個人 Mac の Private vault 想定）は触らず、仕事 Mac では `~/.config/op/github.env.local` を作って `op://Employee/GitHub Public PAT/credential` で上書き。`home/.zshrc` の `nru` 関数は `.local` が存在すればそちらを優先する。詳細は [`CLAUDE.md` の Phase 9 章](../CLAUDE.md#phase-9-nru-で-flake-update-を認証付き-fetch-にする)。
+
 ### 8. 動作確認
 
 | 確認項目 | コマンド | 期待結果 |
@@ -186,6 +188,7 @@ oprun --env-file=.env.op.local -- npm run dev
 | Git signing | `git -C <work repo> commit --allow-empty -m "test signing"` → `git log --show-signature -1` | `Good "git" signature for <work email>` |
 | MCP（Claude Code） | `claude mcp list` | `perplexity ✓ Connected`（仕事側 vault でも） |
 | プロジェクト env | プロジェクトディレクトリで `oprun --env-file=.env.op.local -- env \| grep OPENAI_API_KEY` | `OPENAI_API_KEY=<値>` が **生で表示される**（`oprun` は常に `--no-masking` 付きで `op run` を呼ぶため）。マスキングを効かせて確認したいときは生 `op run --env-file=.env.op.local -- env \| grep OPENAI_API_KEY` を直接呼ぶ |
+| Phase 9 認証 fetch | `op run --env-file=~/.config/op/github.env.local -- bash -c '[ -n "$GITHUB_TOKEN" ] && echo ok'` | Touch ID 1 回 → `ok`（env-file が Employer vault から解決できれば成功）。本番動作は `nru` 実行時に `using cached version` フォールバックが出ないことで確認 |
 
 ## トラブルシュート（仕事 Mac 特有）
 

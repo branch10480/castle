@@ -33,3 +33,12 @@ cursor-color = #D97757
 cursor-text = #FAF9F5
 selection-background = #E3DACC
 selection-foreground = #141413
+
+# Light は本体 config の font-size = 14 を明示的に -1pt 上書きする。
+# Dark (Claude Day Dark) 側は 14pt のまま、Light は 13pt。明背景はコントラスト
+# が強く文字の輪郭が見えやすいので 1pt 縮めても可読性が落ちず、画面密度を稼げる。
+# Xcode 側の Claude Day (13pt) / Claude Day Dark (14pt) と同じ +1pt ルールを
+# Ghostty にも持ち込み、castle 内のテーマ運用「Light vs Dark = 1pt 差」を統一する。
+# Ghostty のテーマファイルは color 以外の任意 option を設定可能 (ghostty +show-config
+# --docs の `theme` 項を参照)。
+font-size = 13

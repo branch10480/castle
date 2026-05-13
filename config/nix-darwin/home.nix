@@ -126,6 +126,21 @@
         "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day.xccolortheme"
     '';
 
+  # Xcode カスタムテーマ "Claude Day Dark" を配布する。
+  # ハイブリッド設計 (editor chrome = Claude Day Dark パレット / syntax =
+  # Sunset Dark 化) の Light 版カウンターパート。dark vocabulary は
+  # config/ghostty/themes/Claude Day Dark および
+  # config/nix-darwin/files/markdownobserver/user.css の dark mode と共有。
+  # Light 版と同じ理由で symlink ではなく activation script で実体コピー。
+  home.activation.installXcodeThemeClaudeDayDark =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
+      $DRY_RUN_CMD rm -f "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day Dark.xccolortheme"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/xcode/ClaudeDayDark.xccolortheme} \
+        "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day Dark.xccolortheme"
+    '';
+
   # 1Password CLI (~/.config/op) と SSH client (~/.config/ssh) は
   # group/other に read bit があると op / ssh が起動を拒否するため
   # 0700 を強制する。git はディレクトリ mode を追跡しないので、

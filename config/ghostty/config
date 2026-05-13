@@ -11,6 +11,10 @@ font-family = JetBrainsMono Nerd Font Mono
 font-family = JetBrainsMono Nerd Font
 font-family = Hiragino Sans W3
 font-style = Medium
+# font-size は実運用ではテーマファイル側 (themes/Claude Day = 13pt,
+# themes/Claude Day Dark = 14pt) で上書きされる。ここの 14 は theme 未指定で
+# 起動した場合の fallback。Dark テーマと同値にしておくことで "テーマ無効化時も
+# 大きい側に倒れる" (= 小さくなって戸惑わない) 挙動になる。
 font-size = 14
 
 # Force JP code points to Hiragino Sans (gothic) so CJK fallback is explicit

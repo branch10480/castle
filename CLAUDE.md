@@ -73,6 +73,33 @@ zsh使用。主要ツール:
 - `home/.zshrc` の "Ghostty: auto-attach tmux" ブロックで **session group 方式**を採用: 1 タブ目は `main` セッション作成、2 タブ目以降は `ghostty-<pid>` として join — タブを増やしても session が雪だるま化しない
 - 詳細・キーマッピング表・移行時の罠（`'C-\;'` シングルクォート / `=main` zsh EQUALS 展開）は [`docs/tmux-setup.md`](docs/tmux-setup.md)
 
+## テーマ運用ルール（Light/Dark = 1pt 差）
+
+castle が配布する Light/Dark ペアテーマには **「Dark のフォントサイズを Light よりちょうど 1pt 大きく取る」** という共通契約を置く。アプリ横断で揃えることで、OS の appearance 切替時に「色だけでなくフォントサイズも自動でついてくる」体験を作る。
+
+### ルール
+
+- **Light が基準（小さい側）/ Dark がそれより +1pt（大きい側）**
+- 既存配布物の対応:
+  | アプリ | Light | Dark | 場所 |
+  |---|---|---|---|
+  | Xcode | 13pt (`ClaudeDay.xccolortheme`) | 14pt (`ClaudeDayDark.xccolortheme`) | `config/nix-darwin/files/xcode/` |
+  | Ghostty | 13pt (`Claude Day`) | 14pt (`Claude Day Dark`) | `config/ghostty/themes/` |
+- 例外を作る場合（特定アプリの仕様で 1pt 差が破綻する等）は、該当テーマファイルのヘッダコメントに **理由を明記** してから外す
+
+### 根拠（Why）
+
+- 暗背景は明背景に比べてコントラスト感が低く、**同じ pt でも筆画が細く感じる**。Dark を 1pt 持ち上げることで Light と視覚的な「重み」を揃え、テーマ切替時に脳が疲れない
+- Xcode 側で Light 13pt → Dark 14pt にした際の使用感が良かったため、Ghostty も同じ契約に揃えた
+
+### 新規テーマを追加するときの指針（How to apply）
+
+- Light/Dark ペアで作る場合は、**テーマファイル側で font-size を明示**する（外部 config の値に依存しない self-contained な定義にする）
+  - Ghostty のテーマファイルは `theme` / `config-file` 以外の任意 option を持てる（`ghostty +show-config --docs` の `theme` 項参照）
+  - Xcode の `.xccolortheme` は `JetBrainsMonoNF-Regular - <pt>` のような文字列値で全 syntax / console / markup フォントを定義
+- フォントサイズを変えるときは **大きいサイズから降順で置換** すること。`13→14, 14→15` の順で実行すると元 13 のものが二重シフトされて 15 になる事故が起きる
+- 本体 config (Ghostty の `config/ghostty/config` 等) に `font-size` を残す場合は **Dark と同値**にして、テーマ未指定 fallback 時に小さい側に倒れない設計にする
+
 ## homeshick操作
 
 ```bash

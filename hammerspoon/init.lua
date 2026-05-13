@@ -111,3 +111,82 @@ ghosttyAppearanceWatcher = hs.distributednotifications.new(function()
     syncGhosttyFontSize()
 end, "AppleInterfaceThemeChangedNotification")
 ghosttyAppearanceWatcher:start()
+
+-- ─────────────────────────────────────────────────────────────
+-- 時刻ベースで OS appearance を自動切替 (Hammerspoon を source of truth に)
+-- ─────────────────────────────────────────────────────────────
+-- macOS の純正「自動」モードは日の出/日の入りベース固定で時刻指定不可。
+-- そこで Hammerspoon 側で時刻トリガーを持ち、appearance を切り替える。
+-- 切替後は AppleInterfaceThemeChangedNotification が飛び、上記の
+-- syncGhosttyFontSize() が自動追従するため、ここでは Ghostty を直接
+-- 触らない (= 疎結合: 時刻トリガー層は OS appearance だけ動かす)。
+--
+-- 必要権限: hs.osascript.applescript で System Events を呼ぶには
+-- Automation 権限 (System Settings → Privacy & Security → Automation
+-- → Hammerspoon → System Events を ON) が必要。Accessibility とは別枠で、
+-- 初回実行時に macOS のダイアログが出る。承認後は永続的に有効。
+--
+-- 動作:
+--   1. 07:00 に Light、14:00 に Dark を hs.timer.doAt で 1 日周期で発火
+--   2. cold start (Hammerspoon 起動 / hs.reload()) 時にも 1 度、現在時刻
+--      に対する期待状態へ強制同期。「再ログイン後に時刻外れの状態で固まる」
+--      事故を避ける (= 手動 override より時刻ルールを優先する設計判断)
+--   3. timer はグローバル変数で保持。watcher と同様に GC で破棄されない
+--      ようにするため
+
+local APPEARANCE_LIGHT_HOUR = 7   -- 07:00 に Light へ
+local APPEARANCE_DARK_HOUR = 14   -- 14:00 に Dark へ
+
+-- System Events 経由で OS の appearance を直接切替。Ventura 以降も有効な
+-- 公式 AppleScript API。失敗時 (Automation 未承認等) は通知で自己申告する。
+local function setInterfaceStyle(dark)
+    local script = string.format([[
+        tell application "System Events"
+            tell appearance preferences
+                set dark mode to %s
+            end tell
+        end tell
+    ]], dark and "true" or "false")
+    local ok, _, err = hs.osascript.applescript(script)
+    if not ok then
+        hs.notify.new({
+            title = "Hammerspoon: appearance 切替に失敗",
+            subTitle = "Automation 権限を確認してください",
+            informativeText = "System Settings → Privacy & Security → Automation → Hammerspoon → System Events を ON にしてください",
+            autoWithdraw = false,
+        }):send()
+    end
+end
+
+-- 現在時刻が "Dark の時間帯" かを返す。
+-- LIGHT_HOUR <= h < DARK_HOUR を Light、それ以外を Dark とする
+-- (= 本設定だと 07:00–13:59 が Light、14:00–06:59 が Dark)
+local function shouldBeDarkNow()
+    local h = tonumber(os.date("%H"))
+    return not (h >= APPEARANCE_LIGHT_HOUR and h < APPEARANCE_DARK_HOUR)
+end
+
+-- 現在の OS appearance が期待値と違う場合のみ切替を発火。
+-- 既に正しい状態なら notification を発生させず、Ghostty 再 reload も避ける。
+local function applyExpectedAppearance()
+    local wantDark = shouldBeDarkNow()
+    local currentDark = currentInterfaceStyle() == "Dark"
+    if wantDark ~= currentDark then
+        setInterfaceStyle(wantDark)
+    end
+end
+
+appearanceLightTimer = hs.timer.doAt(
+    string.format("%02d:00", APPEARANCE_LIGHT_HOUR),
+    "1d",
+    function() setInterfaceStyle(false) end
+)
+appearanceDarkTimer = hs.timer.doAt(
+    string.format("%02d:00", APPEARANCE_DARK_HOUR),
+    "1d",
+    function() setInterfaceStyle(true) end
+)
+
+-- cold start で現在時刻に対する期待状態へ同期。Ghostty 側 sync は
+-- 切替に伴う notification 経由で自動的に再発火する。
+applyExpectedAppearance()

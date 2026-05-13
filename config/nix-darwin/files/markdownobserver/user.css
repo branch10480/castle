@@ -102,19 +102,24 @@
 }
 
 /* ===== Dark mode override ===== */
+/* warm-lifted layered gray: tier 0 page bg (#1a1916) を下敷きに、
+   その上に乗る elevated surface (code / blockquote = tier 1 #26241f),
+   table panels (tier 2 #2e2c27), inline chip (tier 3 #36332d) を
+   段階的に明度差で重ねる。castle Light の ivory (#FAF9F5) と対称的に
+   warm tint を維持。詳細は CLAUDE.md「テーマ運用ルール」セクション。 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --reader-bg: #131312;
+    --reader-bg: #1a1916;
     --reader-fg: #d4cfc1;
     --reader-fg-secondary: #9a958a;
 
-    --reader-code-bg: #1a1916;
-    --reader-code-inline-bg: #232220;
+    --reader-code-bg: #26241f;
+    --reader-code-inline-bg: #36332d;
     --reader-code-fg: #ece6d5;
-    --reader-border: #2a2a28;
+    --reader-border: #3a3833;
     --reader-link: #d4a76a;
 
-    --reader-blockquote-bg: #1a1a18;
+    --reader-blockquote-bg: #26241f;
     --reader-blockquote-fg: #c8c2b3;
     --reader-blockquote-accent: #4a463d;
 
@@ -128,11 +133,12 @@
     --reader-h3: #cdc7b6;
   }
 
-  /* Re-tint table rows / dl for dark base. */
+  /* Re-tint table rows / dl for dark base. tier 2 (panel) = #2e2c27。
+     code/blockquote (tier 1 #26241f) より +0.05 持ち上げて表セルが浮く。 */
   .markdown-body thead th,
   .markdown-body tbody tr:nth-child(even) td,
   .markdown-body dl {
-    background: #1f1e1c;
+    background: #2e2c27;
   }
 
   /* Subtle inner edge for dark code blocks. Inline code color is overridden too. */

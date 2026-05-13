@@ -11,13 +11,15 @@
   揃え、syntax colors は Light 版が採用した Xcode Sunset パレットを
   「明度だけ反転」した Dark 版相当に置換している。
 
-  Dark トークン参照 (RGBA float):
-    slate-d   #131312  0.0745 0.0745 0.0706 1   page background
+  Dark トークン参照 (RGBA float) — warm-lifted layered gray:
+    slate-d   #1a1916  0.1020 0.0980 0.0863 1   page background (tier 0, lift +0.03)
     fg-d      #d4cfc1  0.8314 0.8118 0.7569 1   text · plain identifiers
     clay      #D97757  0.8510 0.4667 0.3412 1   accent · cursor (Light と共通)
     clay-d    #B85C3E  0.7216 0.3608 0.2431 1   reserved (link-d 系では未使用)
     selection #4a463d  0.2902 0.2745 0.2392 1   selection (warm dark beige)
-    g100-d    #1d1c1a  0.1137 0.1098 0.1020 1   current-line highlight · markup bg
+    g100-d    #26241f  0.1490 0.1412 0.1216 1   tier 1: current-line highlight · markup bg
+                                                 (markdownobserver の --reader-code-bg /
+                                                 --reader-blockquote-bg と同値で共有)
     g300-d    #3a3833  0.2275 0.2196 0.2000 1   invisibles · markup border
     g500      #87867F  0.5294 0.5255 0.4980 1   comment (Light と共通の warm gray)
     g700-d    #a8a59f  0.6588 0.6471 0.6235 1   debugger output · markup inline · mark
@@ -31,15 +33,21 @@
     lavender  #b0a0d0  0.6902 0.6275 0.8157 1   macro · preprocessor (Light の dusty purple)
     pink-d    #c4889d  0.7686 0.5333 0.6157 1   markup code · aside kind
 
-  Font: JetBrainsMonoNF-Regular - 14.0 (Light 版より一律 +1pt)。暗背景は
+  Font: JetBrainsMonoNF-Regular - 13.5 (Light 版より一律 +0.5pt)。暗背景は
   明背景に対してコントラストが弱まりがちで、同じ pt でも筆画が細く感じる
-  ため、source / markup の全フォントを 1pt ずつ持ち上げて視認性を揃える。
+  ため、source / markup の全フォントを 0.5pt ずつ持ち上げて視認性を揃える。
+  以前は +1pt 差を採用していたが、Light/Dark 切替時の「ガクッと大きさが変わる」
+  違和感が強かったため +0.5pt の中庸に倒した (2026-05 方針転換)。
   Light は source/markup-code/markup-other-heading/markup-secondary/markup-primary
-  = 13/10/14/18/24、Dark は 14/11/15/19/25。
+  = 13/10/14/18/24、Dark は 13.5/10.5/14.5/18.5/24.5。
   Console (debug area) のみは別ルール: Light/Dark とも「Source Editor から
-  -1pt」に固定する (Light: 13 → 12 / Dark: 14 → 13)。本文よりやや細かい
+  -1pt」に固定する (Light: 13 → 12 / Dark: 13.5 → 12.5)。本文よりやや細かい
   ピッチで「ソースとログ」を縮尺で分離する設計 (詳細は下の Console
   セクションのコメント参照)。
+
+  Line spacing: DVTLineSpacing = 1.0 (tight)。Light 版と共通ルール。
+  Xcode 内蔵 Default は 1.1 相当だが、castle では 1.0 に詰めて 1 画面
+  あたりの行数を稼ぐ (1.0 = フォントメトリクスそのまま、追加 line gap 0)。
 
   Light 版との関係:
     - comment / comment.doc は両テーマで #87867F (g500) を共有 — 暖色 muted
@@ -62,7 +70,7 @@
 <dict>
 	<!--
 	  Console (debug area) — Light 版と同じく、debugger 出力は階層化で読ませる。
-	  Font size は Source Editor から -1pt = 13.0pt (Light/Dark 共通ルール)。
+	  Font size は Source Editor から -1pt = 12.5pt (Light/Dark 共通ルール)。
 	  本文よりやや細かいピッチで「ソースではなくログ」であることを縮尺で示し、
 	  source ↔ console を視線がジャンプしても階層が崩れないようにする。
 
@@ -71,32 +79,32 @@
 	    DebuggerPrompt       link-d (#e08576)  the "(lldb)" accent itself
 	    ExectuableInput      fg-d   (#d4cfc1)  stdin from interactive runs
 	    ExectuableOutput     fg-d   (#d4cfc1)  stdout = primary tier, body text と同色
-	    TextBackground       slate-d(#131312)  same ground as source editor
+	    TextBackground       slate-d(#1a1916)  same ground as source editor (tier 0)
 	    TextInsertionPoint   clay   (#D97757)  cursor accent (Light と共通)
 	    TextSelection        selection(#4a463d) warm-dark selection
 	-->
 	<key>DVTConsoleDebuggerInputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleDebuggerInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.5</string>
 	<key>DVTConsoleDebuggerOutputTextColor</key>
 	<string>0.6588 0.6471 0.6235 1</string>
 	<key>DVTConsoleDebuggerOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.5</string>
 	<key>DVTConsoleDebuggerPromptTextColor</key>
 	<string>0.8784 0.5216 0.4627 1</string>
 	<key>DVTConsoleDebuggerPromptTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.5</string>
 	<key>DVTConsoleExectuableInputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleExectuableInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.5</string>
 	<key>DVTConsoleExectuableOutputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleExectuableOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.5</string>
 	<key>DVTConsoleTextBackgroundColor</key>
-	<string>0.0745 0.0745 0.0706 1</string>
+	<string>0.1020 0.0980 0.0863 1</string>
 	<key>DVTConsoleTextInsertionPointColor</key>
 	<string>0.8510 0.4667 0.3412 1</string>
 	<key>DVTConsoleTextSelectionColor</key>
@@ -104,43 +112,43 @@
 	<key>DVTFontAndColorVersion</key>
 	<integer>1</integer>
 	<key>DVTLineSpacing</key>
-	<real>1.1</real>
+	<real>1.0</real>
 	<key>DVTMarkupTextBackgroundColor</key>
-	<string>0.1137 0.1098 0.1020 1</string>
+	<string>0.1490 0.1412 0.1216 1</string>
 	<key>DVTMarkupTextBorderColor</key>
 	<string>0.2275 0.2196 0.2000 1</string>
 	<key>DVTMarkupTextCodeFont</key>
-	<string>JetBrainsMonoNF-Regular - 11.0</string>
+	<string>JetBrainsMonoNF-Regular - 10.5</string>
 	<key>DVTMarkupTextEmphasisColor</key>
 	<string>0.7216 0.8745 0.5882 1</string>
 	<key>DVTMarkupTextEmphasisFont</key>
-	<string>.AppleSystemUIFontItalic - 11.0</string>
+	<string>.AppleSystemUIFontItalic - 10.5</string>
 	<key>DVTMarkupTextInlineCodeColor</key>
 	<string>0.6588 0.6471 0.6235 1</string>
 	<key>DVTMarkupTextLinkColor</key>
 	<string>0.8784 0.5216 0.4627 1</string>
 	<key>DVTMarkupTextLinkFont</key>
-	<string>.AppleSystemUIFont - 11.0</string>
+	<string>.AppleSystemUIFont - 10.5</string>
 	<key>DVTMarkupTextNormalColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTMarkupTextNormalFont</key>
-	<string>.AppleSystemUIFont - 11.0</string>
+	<string>.AppleSystemUIFont - 10.5</string>
 	<key>DVTMarkupTextOtherHeadingColor</key>
 	<string>0.6588 0.6471 0.6235 1</string>
 	<key>DVTMarkupTextOtherHeadingFont</key>
-	<string>.AppleSystemUIFont - 15.0</string>
+	<string>.AppleSystemUIFont - 14.5</string>
 	<key>DVTMarkupTextPrimaryHeadingColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTMarkupTextPrimaryHeadingFont</key>
-	<string>.AppleSystemUIFont - 25.0</string>
+	<string>.AppleSystemUIFont - 24.5</string>
 	<key>DVTMarkupTextSecondaryHeadingColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTMarkupTextSecondaryHeadingFont</key>
-	<string>.AppleSystemUIFont - 19.0</string>
+	<string>.AppleSystemUIFont - 18.5</string>
 	<key>DVTMarkupTextStrongColor</key>
 	<string>0.8784 0.5216 0.4627 1</string>
 	<key>DVTMarkupTextStrongFont</key>
-	<string>.AppleSystemUIFontBold - 11.0</string>
+	<string>.AppleSystemUIFontBold - 10.5</string>
 	<key>DVTScrollbarMarkerAnalyzerColor</key>
 	<string>0.6588 0.7882 0.4980 1</string>
 	<key>DVTScrollbarMarkerBreakpointColor</key>
@@ -156,11 +164,11 @@
 	<key>DVTScrollbarMarkerWarningColor</key>
 	<string>0.8784 0.7333 0.4784 1</string>
 	<key>DVTSourceTextBackground</key>
-	<string>0.0745 0.0745 0.0706 1</string>
+	<string>0.1020 0.0980 0.0863 1</string>
 	<key>DVTSourceTextBlockDimBackgroundColor</key>
 	<string>0.8314 0.8118 0.7569 0.4</string>
 	<key>DVTSourceTextCurrentLineHighlightColor</key>
-	<string>0.1137 0.1098 0.1020 1</string>
+	<string>0.1490 0.1412 0.1216 1</string>
 	<key>DVTSourceTextInsertionPointColor</key>
 	<string>0.8510 0.4667 0.3412 1</string>
 	<key>DVTSourceTextInvisiblesColor</key>
@@ -259,71 +267,71 @@
 	<key>DVTSourceTextSyntaxFonts</key>
 	<dict>
 		<key>xcode.syntax.attribute</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.character</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.comment</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.comment.doc</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.comment.doc.keyword</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.declaration.other</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.declaration.type</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.class</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.class.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.constant</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.constant.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.function</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.function.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.macro</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.macro.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.type</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.type.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.variable</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.identifier.variable.system</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.keyword</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.mark</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.markup.aside.kind</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.markup.code</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.number</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.plain</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.preprocessor</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.regex</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.regex.capturename</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.regex.charname</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.regex.number</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.regex.other</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.string</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 		<key>xcode.syntax.url</key>
-		<string>JetBrainsMonoNF-Regular - 14.0</string>
+		<string>JetBrainsMonoNF-Regular - 13.5</string>
 	</dict>
 </dict>
 </plist>

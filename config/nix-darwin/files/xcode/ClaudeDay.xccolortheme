@@ -34,6 +34,11 @@
   Console (debug area) は Light/Dark 共通ルールとして Source Editor から
   -1pt = 12.0pt に設定。本文との情報密度の違いを縮尺で出すための意図的な
   ずらし (詳細は下の Console セクションのコメント参照)。
+
+  Line spacing: DVTLineSpacing = 1.0 (tight)。Xcode はこの key を
+  line-height multiplier として解釈し、内蔵 Default は 1.1 相当だが、
+  castle では Light/Dark 共通で 1.0 に詰めて 1 画面あたりの行数を稼ぐ
+  方針 (1.0 = フォントメトリクスそのまま、追加 line gap 0)。
 -->
 <plist version="1.0">
 <dict>
@@ -43,7 +48,7 @@
 	  source editor. Output text inherits the markup palette (slate / g700 /
 	  olive-d / clay-d) so prose-style logs read like the rest of the theme,
 	  not like a third-party widget. Font size は Source Editor から -1pt
-	  (Light: 13pt → 12pt / Dark: 14pt → 13pt) — コンソールは大量のログを
+	  (Light: 13pt → 12pt / Dark: 13.5pt → 12.5pt) — コンソールは大量のログを
 	  一望する surface なので、本文よりやや細かいピッチで「これはソースでは
 	  なくログ」という情報密度の違いを縮尺で示し、視点が source ↔ console を
 	  ジャンプしても階層が崩れないようにする (旧版では source と同 pt に
@@ -101,7 +106,7 @@
 	<key>DVTFontAndColorVersion</key>
 	<integer>1</integer>
 	<key>DVTLineSpacing</key>
-	<real>1.1</real>
+	<real>1.0</real>
 	<key>DVTMarkupTextBackgroundColor</key>
 	<string>0.9412 0.9333 0.9020 1</string>
 	<key>DVTMarkupTextBorderColor</key>

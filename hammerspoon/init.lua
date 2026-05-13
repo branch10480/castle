@@ -139,6 +139,29 @@ ghosttyAppearanceWatcher:start()
 local APPEARANCE_LIGHT_HOUR = 7   -- 07:00 に Light へ
 local APPEARANCE_DARK_HOUR = 14   -- 14:00 に Dark へ
 
+-- 時刻ベース appearance 自動切替の machine-local OFF スイッチ。
+-- このファイルが存在する間は時刻トリガー (timer / cold-start sync) を
+-- 早期 return で無効化する。Ghostty font-size 連動 (= appearance 変更
+-- 通知の購読) は別系統なので、手動で OS appearance を切り替えれば
+-- font-size はそのまま追従する。
+--
+-- 運用:
+--   touch ~/.hammerspoon/appearance-auto.disabled   # OFF
+--   rm    ~/.hammerspoon/appearance-auto.disabled   # ON に戻す
+--   hs -c 'hs.reload()'                             # 即時反映
+--
+-- ~/.hammerspoon は homeshick で castle/hammerspoon/ への symlink な
+-- ため flag ファイルは castle 配下に着地するが、.gitignore で
+-- `hammerspoon/*.disabled` を無視しているので追跡されない。
+local APPEARANCE_AUTO_DISABLE_FLAG = os.getenv("HOME")
+    .. "/.hammerspoon/appearance-auto.disabled"
+
+local function isAppearanceAutoDisabled()
+    local f = io.open(APPEARANCE_AUTO_DISABLE_FLAG, "r")
+    if f then f:close(); return true end
+    return false
+end
+
 -- System Events 経由で OS の appearance を直接切替。Ventura 以降も有効な
 -- 公式 AppleScript API。失敗時 (Automation 未承認等) は通知で自己申告する。
 local function setInterfaceStyle(dark)
@@ -170,7 +193,18 @@ end
 
 -- 現在の OS appearance が期待値と違う場合のみ切替を発火。
 -- 既に正しい状態なら notification を発生させず、Ghostty 再 reload も避ける。
+-- flag file 存在時は cold-start 同期を skip し、現在の OS appearance を尊重する
+-- (= ユーザーが手動で固定した状態を勝手に上書きしない)。状態が分かりにくいので
+-- 短時間 alert で OFF 中であることを自己申告する。
 local function applyExpectedAppearance()
+    if isAppearanceAutoDisabled() then
+        hs.alert.show(
+            "⏸ appearance auto-switch is OFF\n"
+                .. "(rm ~/.hammerspoon/appearance-auto.disabled to re-enable)",
+            4
+        )
+        return
+    end
     local wantDark = shouldBeDarkNow()
     local currentDark = currentInterfaceStyle() == "Dark"
     if wantDark ~= currentDark then
@@ -181,12 +215,18 @@ end
 appearanceLightTimer = hs.timer.doAt(
     string.format("%02d:00", APPEARANCE_LIGHT_HOUR),
     "1d",
-    function() setInterfaceStyle(false) end
+    function()
+        if isAppearanceAutoDisabled() then return end
+        setInterfaceStyle(false)
+    end
 )
 appearanceDarkTimer = hs.timer.doAt(
     string.format("%02d:00", APPEARANCE_DARK_HOUR),
     "1d",
-    function() setInterfaceStyle(true) end
+    function()
+        if isAppearanceAutoDisabled() then return end
+        setInterfaceStyle(true)
+    end
 )
 
 -- cold start で現在時刻に対する期待状態へ同期。Ghostty 側 sync は

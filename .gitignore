@@ -39,3 +39,10 @@ config/op/*
 # `config-file = ?config.local` で optional include され、ファイルが
 # 無い環境でも壊れない。詳細はテーマ運用ルール (CLAUDE.md) 参照。
 config/ghostty/config.local
+
+# Hammerspoon の machine-local OFF スイッチ。
+# hammerspoon/init.lua は ~/.hammerspoon/appearance-auto.disabled が存在
+# するとき時刻ベース appearance 自動切替を無効化する。~/.hammerspoon は
+# homeshick の symlink 越しに castle/hammerspoon/ を指すため、flag を
+# 作るとここに着地する。machine ごとの一時 OFF 状態なので追跡しない。
+hammerspoon/*.disabled

@@ -11,11 +11,15 @@ font-family = JetBrainsMono Nerd Font Mono
 font-family = JetBrainsMono Nerd Font
 font-family = Hiragino Sans W3
 font-style = Medium
-# font-size は実運用ではテーマファイル側 (themes/Claude Day = 13pt,
-# themes/Claude Day Dark = 14pt) で上書きされる。ここの 14 は theme 未指定で
-# 起動した場合の fallback。Dark テーマと同値にしておくことで "テーマ無効化時も
-# 大きい側に倒れる" (= 小さくなって戸惑わない) 挙動になる。
-font-size = 14
+# font-size は machine-local override (config.local) で上書きされる。
+# hammerspoon/init.lua が OS appearance を watch して config.local に
+# `font-size = 13` (Light) / `font-size = 14` (Dark) を書き出す。
+# ここの 14 は config.local が無い環境 (Hammerspoon 未起動 / 別 Mac 等) の
+# fallback 値。Dark と同値にしておくことで「フォールバック時は大きい側」に
+# 倒れる (＝小さくなって戸惑わない) 挙動になる。
+# 注: Ghostty の theme file は font-size を silently ignore するため
+# テーマファイル側で 1pt 差を実現することはできない (検証済み)。
+font-size = 13
 
 # Force JP code points to Hiragino Sans (gothic) so CJK fallback is explicit
 font-codepoint-map = U+3000-U+303F=Hiragino Sans W3
@@ -131,4 +135,15 @@ keybind = ctrl+n=csi:B
 # keybind = copy/escape=deactivate_key_table
 # keybind = copy/q=deactivate_key_table
 # keybind = copy/catch_all=ignore
+
+# ─────────────────────────────────────────────────────────────
+# Machine-local override (font-size の Light/Dark 追従)
+# ─────────────────────────────────────────────────────────────
+# config.local は hammerspoon/init.lua が生成・更新する動的ファイル。
+# OS appearance に応じて `font-size = 13` (Light) / `font-size = 14` (Dark) を
+# 書き出すだけの単純な include。`?` は optional 修飾子で、ファイルが
+# 無くてもエラーにならない (Hammerspoon 未起動 / 別 Mac でも config が壊れない)。
+# 末尾に置くのは Ghostty 仕様: config-file は本体を読み終えた後に上書き適用される。
+# 詳細は CLAUDE.md「テーマ運用ルール」セクション。
+config-file = ?config.local
 

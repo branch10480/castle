@@ -37,10 +37,7 @@ cursor-text = #131312
 selection-background = #4a463d
 selection-foreground = #d4cfc1
 
-# Dark は 14pt を明示。本体 config の font-size = 14 と同値なので一見冗長だが、
-# Light 側 (Claude Day = 13pt) との対比で「テーマ定義が完結している」ことを
-# 表すために両側で宣言する。castle 共通の運用ルール「Light vs Dark = 1pt 差」
-# を Xcode (Claude Day = 13pt / Claude Day Dark = 14pt) と Ghostty で揃える。
-# Ghostty のテーマファイルは color 以外の任意 option を設定可能 (ghostty +show-config
-# --docs の `theme` 項を参照)。
-font-size = 14
+# 注: font-size を含むフォント関連オプションは Ghostty の theme file 内では
+# silently ignore される (`+show-config` で検証済み)。Dark モードの 14pt
+# 化は hammerspoon/init.lua が ~/.config/ghostty/config.local を書き換える
+# ことで実現する。詳細は CLAUDE.md「テーマ運用ルール」セクション。

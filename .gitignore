@@ -33,3 +33,9 @@ config/op/*
 # ディレクトリ。中身は別ブランチの作業コピーで machine-local かつ短命な
 # ため、castle 側では追跡しない。
 .claude/worktrees/
+
+# Ghostty の machine-local override (hammerspoon/init.lua が OS appearance
+# に応じて font-size を書き換える動的ファイル)。本体 config からは
+# `config-file = ?config.local` で optional include され、ファイルが
+# 無い環境でも壊れない。詳細はテーマ運用ルール (CLAUDE.md) 参照。
+config/ghostty/config.local

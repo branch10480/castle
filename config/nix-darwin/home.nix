@@ -218,4 +218,64 @@
         && $DRY_RUN_CMD mv "$tmp" "$claude_json"
       echo "patchClaudeMcpPerplexity: patched ~/.claude.json mcpServers.perplexity --env-file -> $target"
     '';
+
+  # Claude Code の ~/.claude/settings.json に castle 起源の hooks セクションを
+  # 流し込む。settings.json は `extraKnownMarketplaces` の絶対パスや
+  # `enabledPlugins` などマシン固有の値を含む machine-local ファイルなので
+  # 丸ごと symlink せず、**`.hooks` キーだけ**を jq で部分上書きする。
+  #
+  # 真実の源は下の `desired=...` ブロック (heredoc)。ここを編集して
+  # darwin-rebuild switch すれば全 Mac の `~/.claude/settings.json` に
+  # 同じ hooks が反映される。手動同期スクリプトは不要。
+  #
+  # 現状の hooks:
+  #   - Stop / SubagentStop で tmux pane-border override を unset
+  #     (scripts/tmux-clear-pane-border-overrides.sh)
+  #
+  # ⚠️ ~/.claude/settings.json は ~/.claude.json ほど頻繁ではないが
+  # Claude Code が GUI 経由などで書き換える可能性がある。安全側で
+  # `pgrep -x claude` で CLI 起動中は skip。バックアップは patchClaudeMcpPerplexity
+  # と同じ命名規則 (.bak.YYYYMMDD-HHMMSS)。
+  home.activation.patchClaudeHooks =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      settings_json="$HOME/.claude/settings.json"
+      cleanup_script="$HOME/.homesick/repos/castle/scripts/tmux-clear-pane-border-overrides.sh"
+
+      # castle 起源の hooks JSON。これを編集して darwin-rebuild switch すれば
+      # 全 Mac に同期される。
+      desired=$(${pkgs.jq}/bin/jq -n --arg cmd "$cleanup_script" '{
+        Stop:         [{ hooks: [{ type: "command", command: $cmd }] }],
+        SubagentStop: [{ hooks: [{ type: "command", command: $cmd }] }]
+      }')
+
+      # 0) 前提チェック
+      if [ ! -f "$settings_json" ]; then
+        echo "patchClaudeHooks: skip (~/.claude/settings.json not found, run claude once to initialize)"
+        exit 0
+      fi
+
+      # 1) 既に正しければ no-op (キー順を揃えて比較するため -S)
+      current=$(${pkgs.jq}/bin/jq -S -c '.hooks // {}' "$settings_json" 2>/dev/null || echo '{}')
+      expected=$(echo "$desired" | ${pkgs.jq}/bin/jq -S -c .)
+      if [ "$current" = "$expected" ]; then
+        exit 0
+      fi
+
+      # 2) Claude Code CLI 起動中なら触らない
+      if pgrep -x "claude" >/dev/null 2>&1; then
+        echo "patchClaudeHooks: warn — Claude Code CLI is running, skipping"
+        echo "  quit claude then re-run: darwin-rebuild switch --flake ~/.config/nix-darwin"
+        exit 0
+      fi
+
+      # 3) バックアップ + 局所書換え
+      $DRY_RUN_CMD cp "$settings_json" \
+        "$settings_json.bak.$(date +%Y%m%d-%H%M%S)"
+      tmp=$(mktemp)
+      $DRY_RUN_CMD ${pkgs.jq}/bin/jq --argjson hooks "$desired" '
+        .hooks = $hooks
+      ' "$settings_json" > "$tmp" \
+        && $DRY_RUN_CMD mv "$tmp" "$settings_json"
+      echo "patchClaudeHooks: patched ~/.claude/settings.json .hooks"
+    '';
 }

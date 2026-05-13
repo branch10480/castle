@@ -31,6 +31,9 @@
   Font: JetBrainsMonoNF-Regular - 13.0 (踏襲: 既存の My Classic (Light) と同じ。
   htmla 側は Mono バリアント (NFM) を採用しているが、Xcode は既存設定との
   メトリクス互換性を優先して NF のまま揃える。
+  Console (debug area) は Light/Dark 共通ルールとして Source Editor から
+  -1pt = 12.0pt に設定。本文との情報密度の違いを縮尺で出すための意図的な
+  ずらし (詳細は下の Console セクションのコメント参照)。
 -->
 <plist version="1.0">
 <dict>
@@ -39,9 +42,13 @@
 	  Background, cursor, selection use the same Claude Day chrome as the
 	  source editor. Output text inherits the markup palette (slate / g700 /
 	  olive-d / clay-d) so prose-style logs read like the rest of the theme,
-	  not like a third-party widget. Font size matches DVTSourceTextSyntaxFonts
-	  (13.0pt) — earlier 12.0pt left the console feeling like a different
-	  surface even when the colors were aligned.
+	  not like a third-party widget. Font size は Source Editor から -1pt
+	  (Light: 13pt → 12pt / Dark: 14pt → 13pt) — コンソールは大量のログを
+	  一望する surface なので、本文よりやや細かいピッチで「これはソースでは
+	  なくログ」という情報密度の違いを縮尺で示し、視点が source ↔ console を
+	  ジャンプしても階層が崩れないようにする (旧版では source と同 pt に
+	  揃えていたが、視覚的に source と log が混ざって見える副作用があり、
+	  逆方向の "意図的に分離" へ方針転換した)。
 
 	    DebuggerInput        slate    (#141413)  user input at (lldb) prompt
 	    DebuggerOutput       g700     (#3D3D3A)  LLDB chatter (secondary tier)
@@ -68,23 +75,23 @@
 	<key>DVTConsoleDebuggerInputTextColor</key>
 	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleDebuggerInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
 	<key>DVTConsoleDebuggerOutputTextColor</key>
 	<string>0.2392 0.2392 0.2275 1</string>
 	<key>DVTConsoleDebuggerOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
 	<key>DVTConsoleDebuggerPromptTextColor</key>
 	<string>0.7216 0.3608 0.2431 1</string>
 	<key>DVTConsoleDebuggerPromptTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
 	<key>DVTConsoleExectuableInputTextColor</key>
 	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleExectuableInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
 	<key>DVTConsoleExectuableOutputTextColor</key>
 	<string>0.0784 0.0784 0.0745 1</string>
 	<key>DVTConsoleExectuableOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 13.0</string>
+	<string>JetBrainsMonoNF-Regular - 12.0</string>
 	<key>DVTConsoleTextBackgroundColor</key>
 	<string>0.9804 0.9765 0.9608 1</string>
 	<key>DVTConsoleTextInsertionPointColor</key>

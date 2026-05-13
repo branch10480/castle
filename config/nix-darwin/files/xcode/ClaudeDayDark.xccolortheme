@@ -33,8 +33,13 @@
 
   Font: JetBrainsMonoNF-Regular - 14.0 (Light 版より一律 +1pt)。暗背景は
   明背景に対してコントラストが弱まりがちで、同じ pt でも筆画が細く感じる
-  ため、source / console / markup の全フォントを 1pt ずつ持ち上げて
-  視認性を揃える。Light は 13/10/14/18/24、Dark は 14/11/15/19/25。
+  ため、source / markup の全フォントを 1pt ずつ持ち上げて視認性を揃える。
+  Light は source/markup-code/markup-other-heading/markup-secondary/markup-primary
+  = 13/10/14/18/24、Dark は 14/11/15/19/25。
+  Console (debug area) のみは別ルール: Light/Dark とも「Source Editor から
+  -1pt」に固定する (Light: 13 → 12 / Dark: 14 → 13)。本文よりやや細かい
+  ピッチで「ソースとログ」を縮尺で分離する設計 (詳細は下の Console
+  セクションのコメント参照)。
 
   Light 版との関係:
     - comment / comment.doc は両テーマで #87867F (g500) を共有 — 暖色 muted
@@ -57,6 +62,9 @@
 <dict>
 	<!--
 	  Console (debug area) — Light 版と同じく、debugger 出力は階層化で読ませる。
+	  Font size は Source Editor から -1pt = 13.0pt (Light/Dark 共通ルール)。
+	  本文よりやや細かいピッチで「ソースではなくログ」であることを縮尺で示し、
+	  source ↔ console を視線がジャンプしても階層が崩れないようにする。
 
 	    DebuggerInput        fg-d   (#d4cfc1)  user input at (lldb) prompt
 	    DebuggerOutput       g700-d (#a8a59f)  LLDB chatter (secondary tier)
@@ -70,23 +78,23 @@
 	<key>DVTConsoleDebuggerInputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleDebuggerInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 14.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleDebuggerOutputTextColor</key>
 	<string>0.6588 0.6471 0.6235 1</string>
 	<key>DVTConsoleDebuggerOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 14.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleDebuggerPromptTextColor</key>
 	<string>0.8784 0.5216 0.4627 1</string>
 	<key>DVTConsoleDebuggerPromptTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 14.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleExectuableInputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleExectuableInputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 14.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleExectuableOutputTextColor</key>
 	<string>0.8314 0.8118 0.7569 1</string>
 	<key>DVTConsoleExectuableOutputTextFont</key>
-	<string>JetBrainsMonoNF-Regular - 14.0</string>
+	<string>JetBrainsMonoNF-Regular - 13.0</string>
 	<key>DVTConsoleTextBackgroundColor</key>
 	<string>0.0745 0.0745 0.0706 1</string>
 	<key>DVTConsoleTextInsertionPointColor</key>

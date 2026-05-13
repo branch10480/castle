@@ -47,6 +47,24 @@ end)
 -- 必須条件: Hammerspoon に Accessibility 権限が無いと selectMenuItem が
 -- silently fail する。System Settings → Privacy & Security → Accessibility
 -- で Hammerspoon を許可する必要がある。
+-- 新 Mac セットアップ時に忘れがちなので、起動時に hs.accessibilityState()
+-- でチェックし、不足していれば通知 + アラートで自己申告する (下記参照)。
+
+-- 起動時に Accessibility 権限をセルフチェック。castle の新 Mac セットアップ時
+-- に「homeshick link は通ったが Hammerspoon が selectMenuItem できず、Ghostty
+-- の font-size 切替だけ無言で死ぬ」という事故を防ぐための safeguard。
+-- 通知センターと画面中央アラートの両方を出すことで、通知を見落とすユーザー
+-- にも届くようにする。
+if not hs.accessibilityState() then
+    hs.notify.new({
+        title = "Hammerspoon: Accessibility 権限が必要",
+        subTitle = "Ghostty テーマ連動 font-size が動作しません",
+        informativeText = "System Settings → Privacy & Security → Accessibility で Hammerspoon を許可してください (castle の Ghostty Light/Dark 連動に必要)",
+        autoWithdraw = false,
+        hasActionButton = false,
+    }):send()
+    hs.alert.show("⚠️ Hammerspoon に Accessibility 権限を付与してください\n(System Settings → Privacy & Security)", 10)
+end
 
 local FONT_SIZE_LIGHT = 13
 local FONT_SIZE_DARK = 14

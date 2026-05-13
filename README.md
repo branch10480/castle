@@ -98,6 +98,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 - **Karabiner-Elements** — CapsLock→Control、日本語キーボードカスタマイズ
 - **Hammerspoon** — `Ctrl+Space` でターミナル (Ghostty) にフォーカス / OS appearance 変更を watch して Ghostty の font-size を 1pt 差で自動切替 + Reload Configuration を発火（[`docs/font-strategy.md`](docs/font-strategy.md) §3.1）
+  - ⚠️ **新 Mac セットアップ時は Accessibility 権限の付与が必要** (System Settings → Privacy & Security → Accessibility)。権限が無いと Hammerspoon 起動時に通知 + 画面中央アラートで自己申告するため、通知が出たら付与する
 - **BetterTouchTool** — カスタムジェスチャー
 - **Raycast** — ランチャー設定 (`config/raycast/`)
 

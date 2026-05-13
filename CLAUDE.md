@@ -67,6 +67,42 @@ zsh使用。主要ツール:
 - zoxide（ディレクトリジャンプ、`j`コマンド）
 - fzf + ghq（リポジトリ選択、`Ctrl+]`）
 
+### `~/.zshrc.d/` の auto-source と新規 snippet 追加時の落とし穴
+
+`home/.zshrc` の末尾近くに以下のループがあり、起動時に `~/.zshrc.d/*.zsh` を全て source する（glob qualifier `(N)` = NULL_GLOB なので、マッチしなければ silent skip）:
+
+```zsh
+if [[ -d ~/.zshrc.d ]]; then
+  for _f in ~/.zshrc.d/*.zsh(N); do
+    source $_f
+  done
+fi
+```
+
+**落とし穴**: zsh は起動時に rc を **1 度だけ** source する。castle 側に新しい snippet (`home/.zshrc.d/<x>.zsh`) を追加して `homeshick link castle` で symlink を貼っても、**既に起動している zsh プロセスには反映されない**。Ghostty + tmux の session group 方式（[ターミナル / マルチプレクサ](#ターミナル--マルチプレクサ) 参照）下では tmux session が生きている限り中の zsh プロセスも生き続けるため、長期セッションだとこのドリフトが蓄積する。
+
+典型的な症状:
+
+```bash
+$ which apauto
+apauto not found     # ← snippet 追加前に起動した古い zsh では関数が読まれていない
+```
+
+**新規 snippet を追加 / 更新した直後の反映**:
+
+```bash
+# 関数定義の追加なら、既存セッションでも source だけで十分
+source ~/.zshrc.d/<新スニペット>.zsh
+
+# alias の再定義や PATH の差し戻しなど rc 全体を読み直したい場合
+exec zsh
+
+# tmux 内で複数 pane に居る場合は各 pane で個別に上記を実行
+# (もしくは新規 Ghostty タブを開いて新規 ghostty-<pid> セッションを作る)
+```
+
+`(N)` qualifier の挙動上、symlink が無いときはエラーにならず silent skip なので、症状が「コマンドが存在しない」だけになって原因に気付きにくい。新規 snippet を足したら `exec zsh` を癖にすると安全。
+
 ## ターミナル / マルチプレクサ
 
 - **Ghostty**（ターミナル）と **tmux**（マルチプレクサ）を組み合わせ。Ghostty はキー入力・表示・タブ管理に専念し、ペイン分割/移動/リサイズ/コピーモードは tmux 側に集約

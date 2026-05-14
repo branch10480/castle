@@ -141,6 +141,43 @@
         "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day Dark.xccolortheme"
     '';
 
+  # Kaleidoscope カスタムテーマ "Claude Day" を配布する。
+  # Kaleidoscope 4 は ~/Library/Application Support/Kaleidoscope/Highlighting/
+  # 配下の highlight.js 互換 CSS をテーマ一覧に拾い、`<basename>-light.css` /
+  # `<basename>-dark.css` のペアを OS appearance に追従して自動切替する。
+  # トークン辞書は Xcode ClaudeDay.xccolortheme と markdownobserver/user.css
+  # と共通 (3 surface 横断で同じ意味のコードトークンに同じ色)。
+  #
+  # symlink ではなく実ファイルコピー方式を採用する: Kaleidoscope は symlink
+  # 越しの CSS でも動くと推測されるが、castle のテーマ配布パターン (Xcode 系
+  # と) を一貫させ、将来 app 側の制約が変わっても全体が同時に揃って動くよう
+  # にする保険的設計。
+  #
+  # castle 側ファイル名はスペースなし (ClaudeDay-light.css) で Nix path
+  # リテラルに優しく、配置先ファイル名はスペースあり ("Claude Day-light.css")
+  # で Kaleidoscope のテーマ一覧で「Claude Day」と表示される
+  # (KSCore 内蔵テーマの "Atom One-light.css" → "Atom One" 表示と同様)。
+  home.activation.installKaleidoscopeThemeClaudeDayLight =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Application Support/Kaleidoscope/Highlighting"
+      $DRY_RUN_CMD rm -f "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-light.css"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/kaleidoscope/ClaudeDay-light.css} \
+        "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-light.css"
+    '';
+
+  # Kaleidoscope カスタムテーマ "Claude Day Dark" 用 CSS を配布する。
+  # Light 版とペアになり、OS appearance = Dark のときに自動で適用される。
+  # Light 版と同じ理由で実ファイルコピー方式。
+  home.activation.installKaleidoscopeThemeClaudeDayDark =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Application Support/Kaleidoscope/Highlighting"
+      $DRY_RUN_CMD rm -f "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-dark.css"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/kaleidoscope/ClaudeDay-dark.css} \
+        "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-dark.css"
+    '';
+
   # 1Password CLI (~/.config/op) と SSH client (~/.config/ssh) は
   # group/other に read bit があると op / ssh が起動を拒否するため
   # 0700 を強制する。git はディレクトリ mode を追跡しないので、

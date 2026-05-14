@@ -1,0 +1,144 @@
+/*!
+  Theme: Claude Day Dark — Kaleidoscope syntax highlight theme.
+
+  Light 版 (ClaudeDay-light.css) のカウンターパート。`<basename>-light.css` /
+  `<basename>-dark.css` 命名規約により、Kaleidoscope は OS appearance に
+  追従して自動でこちらに切り替える。
+
+  warm-lifted layered gray (CLAUDE.md「テーマ運用ルール」参照) のうち、
+  Kaleidoscope の syntax view は single-surface なので tier 0 のみ採用:
+
+    tier 0  #1a1916  page bg
+    fg-d    #d4cfc1  本文 (plain identifiers · punctuation)
+    g500    #87867F  comment (Light と共通の warm muted gray)
+    g700-d  #a8a59f  mark · doctag (Dark での "明るい secondary")
+    sel-d   #4a463d  selection (warm dark beige)
+
+  Syntax 配色は Xcode ClaudeDayDark.xccolortheme と同じマッピング:
+  Light 版の Sunset palette を「明度だけ反転」した Dark 版相当。
+
+    keyword + number   = blue-1   #7da5d8  ← Light の deep blue #294277
+    string + regex     = ruby-d   #d97766  ← Light の vivid red #DF0700
+    type / class       = link-d   #e08576  ← Light の terracotta #B44500
+                                              clay 系の最も明るい派生で
+                                              markdownobserver dark link 色とも揃う
+    identifier         = blue-2   #93b5e0  ← Light の dusty blue #476A97
+    macro / meta       = lavender #b0a0d0  ← Light の dusty purple #646485
+    markup.code        = pink-d   #c4889d  ← Light の magenta #AA0D91
+
+  本文 (plain) は ターミナル / markdownobserver の dark 本文と同色 (#d4cfc1)
+  に揃え、3 surface 横断で「本文 = fg-d」のルールを維持する。
+
+  font-size 非適用は Light 版と同じ理由 (KSTextScopeFontInfoUserDefaultsKey
+  が真実の源)。castle の +0.5pt 差ルールは Kaleidoscope には適用しない。
+*/
+
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px; }
+
+.hljs {
+  color: #d4cfc1;
+  background: #1a1916;
+}
+.hljs ::selection,
+.hljs::selection {
+  background-color: #4a463d;
+  color: #d4cfc1;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #87867F;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-mark {
+  color: #a8a59f;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in {
+  color: #7da5d8;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-meta,
+.hljs-link,
+.hljs-literal {
+  color: #7da5d8;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: #d97766;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-tag,
+.hljs-type,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-class .hljs-title {
+  color: #e08576;
+}
+
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-pseudo {
+  color: #93b5e0;
+}
+
+.hljs-deletion {
+  color: #d97766;
+}
+
+.hljs-subst,
+.hljs-punctuation,
+.hljs-operator {
+  color: #d4cfc1;
+}
+
+.hljs-params {
+  color: #d4cfc1;
+}
+
+.hljs-property {
+  color: #93b5e0;
+}
+
+.hljs-function .hljs-title,
+.hljs-title.function_ {
+  color: #93b5e0;
+}
+
+.hljs-keyword.hljs-atrule,
+.hljs-meta .hljs-keyword,
+.hljs-meta-keyword {
+  color: #b0a0d0;
+}
+
+.hljs-formula,
+.hljs-code {
+  color: #c4889d;
+}
+
+.hljs-strong {
+  font-weight: 700;
+  color: #e08576;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+  color: #b8df96;
+}

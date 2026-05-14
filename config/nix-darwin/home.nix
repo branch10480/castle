@@ -141,6 +141,51 @@
         "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Claude Day Dark.xccolortheme"
     '';
 
+  # Kaleidoscope カスタムテーマ "Claude Day" を castle 経由で配布する。
+  # Kaleidoscope 4 (6.7+) は ~/Library/Application Support/Kaleidoscope/Highlighting/
+  # 配下の highlight.js 互換 CSS をテーマ一覧に拾う (undocumented; 公式 docs
+  # には記載なし、KSCore 同梱の Highlighting/ と同等経路として実機検証で確定)。
+  # `<basename>-light.css` / `<basename>-dark.css` のペアは **1 つのテーマ**
+  # として Settings → Highlight Theme に並び、OS appearance に追従して自動切替。
+  #
+  # CSS 設計 (前回試行 = commit a08ca48 の revert b7e7795 からの学び):
+  #   - KSCore 同梱の Solarized-{light,dark}.css と **完全同一のセレクタ集合・
+  #     ルール構造**を保持し、各役割グループに Claude Day トークンを置換する形
+  #   - `.hljs { color, background }` は維持するが、chrome (diff view 本体の
+  #     背景・本文色) は Kaleidoscope app appearance に任せる前提。CSS は
+  #     `.hljs-*` token color のみ責任を持つ。前回試行で `.hljs { ... }` の
+  #     background が無視され、暗い token color が暗い背景に溶けて "真っ白"
+  #     現象が起きたので、chrome 上書きを期待する設計をやめた
+  #   - Solarized 互換構造により Kaleidoscope 6.7 の preview re-layout バグ
+  #     (前回 `EXC_BREAKPOINT`) を発火させない (本家動作仕様への寄せ)
+  #
+  # symlink ではなく実ファイルコピー方式は Xcode 配布と同じ理由 (castle のテーマ
+  # 配布パターン一貫性、将来の app 仕様変更への保険)。castle 側ファイル名は
+  # スペースなし (ClaudeDay-light.css) で Nix path リテラルに優しく、配置先
+  # ファイル名はスペースあり ("Claude Day-light.css") で Kaleidoscope の
+  # テーマ一覧に「Claude Day」として表示される (KSCore 内蔵 "Atom One-light.css"
+  # → "Atom One" 表示と同じ慣習)。
+  home.activation.installKaleidoscopeThemeClaudeDayLight =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Application Support/Kaleidoscope/Highlighting"
+      $DRY_RUN_CMD rm -f "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-light.css"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/kaleidoscope/ClaudeDay-light.css} \
+        "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-light.css"
+    '';
+
+  # Kaleidoscope カスタムテーマ "Claude Day" の Dark variant を配布する。
+  # Light 版とペアで OS appearance Dark のときに自動適用される。
+  # 設計の詳細は Light 版コメント参照。
+  home.activation.installKaleidoscopeThemeClaudeDayDark =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "$HOME/Library/Application Support/Kaleidoscope/Highlighting"
+      $DRY_RUN_CMD rm -f "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-dark.css"
+      $DRY_RUN_CMD install -m 0644 \
+        ${./files/kaleidoscope/ClaudeDay-dark.css} \
+        "$HOME/Library/Application Support/Kaleidoscope/Highlighting/Claude Day-dark.css"
+    '';
+
   # 1Password CLI (~/.config/op) と SSH client (~/.config/ssh) は
   # group/other に read bit があると op / ssh が起動を拒否するため
   # 0700 を強制する。git はディレクトリ mode を追跡しないので、

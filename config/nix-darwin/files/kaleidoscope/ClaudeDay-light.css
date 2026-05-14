@@ -1,0 +1,61 @@
+/*!
+  Theme: Claude Day (Kaleidoscope Light variant)
+
+  Kaleidoscope 4 の syntax highlight 機構は KSCore 同梱の Highlightr ベース。
+  `~/Library/Application Support/Kaleidoscope/Highlighting/` 配下に CSS を置くと
+  Settings → Text → Highlight Theme 一覧に拾われる (undocumented; 公式 docs
+  には記載なし、KSCore 内蔵テーマと同等の挙動として観測)。
+
+  本ファイルは KSCore 同梱の Solarized-light.css と **完全同一のセレクタ集合・
+  ルール構造**を保持し、各グループの色だけを castle の Claude Day トークンに
+  置換した「最小化版」。Solarized が動いている前提を保ったままで、Kaleidoscope
+  6.7 (build 10249) の preview re-layout クラッシュ (前回試行で `EXC_BREAKPOINT`
+  発火) を回避するための保険的設計。
+
+  ## 設計判断
+
+  - **`.hljs { color, background }` は維持** するが、chrome (diff view 本体の
+    背景・本文色) は Kaleidoscope app appearance に追従する前提で、本 CSS は
+    `.hljs-*` の token color のみ責任を持つ。前回試行で「Light CSS の本文色を
+    Kaleidoscope 本体が拾わず、結果として "白文字 on 白背景" に見えた」現象の
+    根治策。
+  - **Solarized グルーピングを保持** = highlight.js の各 token を Solarized
+    オリジナルが分類した役割グループのまま扱う。castle Xcode (Sunset 流用) の
+    配色とは部分的に乖離する (例: `.hljs-variable` グループは Solarized の
+    "red = alert系" 意図に従って ruby #B04A3F、castle Xcode の dusty blue
+    #476A97 ではない)。これは Kaleidoscope の undocumented 経路を使う上での
+    本家挙動への寄せ。
+
+  ## Light トークンマッピング (Solarized 役割グループ → Claude Day)
+
+    .hljs base color / bg    slate #141413 / ivory #FAF9F5 (chrome に上書きされる想定)
+    .hljs ::selection        oat #E3DACC + slate
+    comment / tag            g500 #87867F (Solarized "muted" 意図)
+    operator/punct/subst     slate #141413 (body 同色)
+    variable group           ruby #B04A3F  (Solarized red = alert)
+    number group             mustard #C78E3F (Solarized orange = warm warning)
+    class/title + strong     terracotta #B44500 (Solarized yellow = type accent)
+    string group             olive #788C5D (Solarized green = calm literal)
+    built_in/regexp/doctag   g700 #3D3D3A (Solarized teal = secondary calm)
+    attribute/function/sect  dusty blue #476A97 (Solarized blue = identifier)
+    keyword/type             deep blue #294277 (Solarized violet = primary keyword)
+    emphasis (italic)        olive-d #5C6E45 (Solarized violet italic)
+    meta group               dusty purple #646485 (Solarized magenta = special)
+*/
+.hljs{color:#141413;background:#FAF9F5}
+.hljs ::selection,.hljs::selection{background-color:#E3DACC;color:#141413}
+.hljs-comment{color:#87867F}
+.hljs-tag{color:#87867F}
+.hljs-operator,.hljs-punctuation,.hljs-subst{color:#141413}
+.hljs-operator{opacity:.7}
+.hljs-bullet,.hljs-deletion,.hljs-name,.hljs-selector-tag,.hljs-template-variable,.hljs-variable{color:#B04A3F}
+.hljs-attr,.hljs-link,.hljs-literal,.hljs-number,.hljs-symbol,.hljs-variable.constant_{color:#C78E3F}
+.hljs-class .hljs-title,.hljs-title,.hljs-title.class_{color:#B44500}
+.hljs-strong{font-weight:700;color:#B44500}
+.hljs-addition,.hljs-code,.hljs-string,.hljs-title.class_.inherited__{color:#788C5D}
+.hljs-built_in,.hljs-doctag,.hljs-keyword.hljs-atrule,.hljs-quote,.hljs-regexp{color:#3D3D3A}
+.hljs-attribute,.hljs-function .hljs-title,.hljs-section,.hljs-title.function_,.ruby .hljs-property{color:#476A97}
+.diff .hljs-meta,.hljs-keyword,.hljs-template-tag,.hljs-type{color:#294277}
+.hljs-emphasis{color:#5C6E45;font-style:italic}
+.hljs-meta,.hljs-meta .hljs-keyword,.hljs-meta .hljs-string{color:#646485}
+.hljs-meta .hljs-keyword,.hljs-meta-keyword{font-weight:700}

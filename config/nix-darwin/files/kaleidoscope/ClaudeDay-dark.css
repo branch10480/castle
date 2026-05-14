@@ -1,0 +1,48 @@
+/*!
+  Theme: Claude Day (Kaleidoscope Dark variant)
+
+  Light 版 (ClaudeDay-light.css) の Dark カウンターパート。同じ Solarized 互換
+  構造 (KSCore 同梱の Solarized-dark.css と同一のセレクタ集合・ルール構造) を
+  保持し、各グループに Claude Day Dark トークンを当てる。
+
+  ## Dark トークンマッピング (Solarized 役割グループ → Claude Day Dark)
+
+    .hljs base color / bg    fg-d #d4cfc1 / slate-d #1a1916 (chrome に上書きされる想定)
+    .hljs ::selection        selection-d #4a463d + fg-d
+    comment / tag            g500 #87867F (Light と共通の warm muted gray)
+    operator/punct/subst     fg-d #d4cfc1 (body 同色)
+    variable group           ruby-d #d97766 (Light の ruby #B04A3F 対応)
+    number group             mustard-d #e0bb7a (Light の mustard #C78E3F 対応)
+    class/title + strong     link-d #e08576 (Light の terracotta #B44500 対応)
+    string group             olive-b #b8df96 (Light の olive #788C5D 対応)
+    built_in/regexp/doctag   g700-d #a8a59f (Light の g700 #3D3D3A 対応)
+    attribute/function/sect  blue-2 #93b5e0 (Light の dusty blue #476A97 対応)
+    keyword/type             blue-1 #7da5d8 (Light の deep blue #294277 対応)
+    emphasis (italic)        olive-b #b8df96 (Light の olive-d #5C6E45 対応)
+    meta group               lavender #b0a0d0 (Light の dusty purple #646485 対応)
+
+  Light 版と同じ理由で `.hljs { color, background }` は chrome に上書きされる
+  前提で書く (Kaleidoscope app appearance が Dark mode なら本体側で warm-dark
+  寄りの背景が描画されるはずで、CSS の値は念のため挿入)。
+
+  Note: emphasis と string が両方 olive-b になっているが、highlight.js では
+  `.hljs-emphasis` と `.hljs-string` が同要素に同時にかかることがなく実害なし。
+  italic 修飾の有無で区別できる。
+*/
+.hljs{color:#d4cfc1;background:#1a1916}
+.hljs ::selection,.hljs::selection{background-color:#4a463d;color:#d4cfc1}
+.hljs-comment{color:#87867F}
+.hljs-tag{color:#87867F}
+.hljs-operator,.hljs-punctuation,.hljs-subst{color:#d4cfc1}
+.hljs-operator{opacity:.7}
+.hljs-bullet,.hljs-deletion,.hljs-name,.hljs-selector-tag,.hljs-template-variable,.hljs-variable{color:#d97766}
+.hljs-attr,.hljs-link,.hljs-literal,.hljs-number,.hljs-symbol,.hljs-variable.constant_{color:#e0bb7a}
+.hljs-class .hljs-title,.hljs-title,.hljs-title.class_{color:#e08576}
+.hljs-strong{font-weight:700;color:#e08576}
+.hljs-addition,.hljs-code,.hljs-string,.hljs-title.class_.inherited__{color:#b8df96}
+.hljs-built_in,.hljs-doctag,.hljs-keyword.hljs-atrule,.hljs-quote,.hljs-regexp{color:#a8a59f}
+.hljs-attribute,.hljs-function .hljs-title,.hljs-section,.hljs-title.function_,.ruby .hljs-property{color:#93b5e0}
+.diff .hljs-meta,.hljs-keyword,.hljs-template-tag,.hljs-type{color:#7da5d8}
+.hljs-emphasis{color:#b8df96;font-style:italic}
+.hljs-meta,.hljs-meta .hljs-keyword,.hljs-meta .hljs-string{color:#b0a0d0}
+.hljs-meta .hljs-keyword,.hljs-meta-keyword{font-weight:700}

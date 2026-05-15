@@ -13,13 +13,13 @@ font-family = Hiragino Sans W3
 font-style = Regular
 # font-size は machine-local override (config.local) で上書きされる。
 # hammerspoon/init.lua が OS appearance を watch して config.local に
-# `font-size = 12` (Light) / `font-size = 12.5` (Dark) を書き出す。
-# ここの 12.5 は config.local が無い環境 (Hammerspoon 未起動 / 別 Mac 等) の
+# `font-size = 12` (Light) / `font-size = 13` (Dark) を書き出す。
+# ここの 13 は config.local が無い環境 (Hammerspoon 未起動 / 別 Mac 等) の
 # fallback 値。Dark と同値にしておくことで「フォールバック時は大きい側」に
 # 倒れる (＝小さくなって戸惑わない) 挙動になる。
 # 注: Ghostty の theme file は font-size を silently ignore するため
 # テーマファイル側で 1pt 差を実現することはできない (検証済み)。
-font-size = 12.5
+font-size = 13
 
 # Force JP code points to Hiragino Sans (gothic) so CJK fallback is explicit
 font-codepoint-map = U+3000-U+303F=Hiragino Sans W3
@@ -140,7 +140,7 @@ keybind = ctrl+n=csi:B
 # Machine-local override (font-size の Light/Dark 追従)
 # ─────────────────────────────────────────────────────────────
 # config.local は hammerspoon/init.lua が生成・更新する動的ファイル。
-# OS appearance に応じて `font-size = 12` (Light) / `font-size = 12.5` (Dark) を
+# OS appearance に応じて `font-size = 12` (Light) / `font-size = 13` (Dark) を
 # 書き出すだけの単純な include。`?` は optional 修飾子で、ファイルが
 # 無くてもエラーにならない (Hammerspoon 未起動 / 別 Mac でも config が壊れない)。
 # 末尾に置くのは Ghostty 仕様: config-file は本体を読み終えた後に上書き適用される。

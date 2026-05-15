@@ -48,7 +48,7 @@
 	  source editor. Output text inherits the markup palette (slate / g700 /
 	  olive-d / clay-d) so prose-style logs read like the rest of the theme,
 	  not like a third-party widget. Font size は Source Editor から -1pt
-	  (Light: 11.5pt → 10.5pt / Dark: 12pt → 11pt) — コンソールは大量のログを
+	  (Light: 11.5pt → 10.5pt / Dark: 12.5pt → 11.5pt) — コンソールは大量のログを
 	  一望する surface なので、本文よりやや細かいピッチで「これはソースでは
 	  なくログ」という情報密度の違いを縮尺で示し、視点が source ↔ console を
 	  ジャンプしても階層が崩れないようにする (旧版では source と同 pt に

@@ -36,7 +36,7 @@ end)
 --   1. AppleInterfaceThemeChangedNotification を distributedNotifications
 --      で購読し、appearance 切替時に発火
 --   2. defaults read で現在の interface style を判定 (Light / Dark)
---   3. ~/.config/ghostty/config.local を `font-size = 13` or `font-size = 13.5`
+--   3. ~/.config/ghostty/config.local を `font-size = 12` or `font-size = 12.5`
 --      だけ書いた最小ファイルとして上書き
 --   4. Ghostty メニュー → Reload Configuration を hs.application 経由で
 --      自動発火 (Ghostty 起動中のみ best-effort)。Ghostty は reload で
@@ -66,8 +66,8 @@ if not hs.accessibilityState() then
     hs.alert.show("⚠️ Hammerspoon に Accessibility 権限を付与してください\n(System Settings → Privacy & Security)", 10)
 end
 
-local FONT_SIZE_LIGHT = 13
-local FONT_SIZE_DARK = 13.5
+local FONT_SIZE_LIGHT = 12
+local FONT_SIZE_DARK = 12.5
 local GHOSTTY_LOCAL_CONFIG = os.getenv("HOME") .. "/.config/ghostty/config.local"
 
 -- defaults read -g AppleInterfaceStyle は Light モードでは "key not found"

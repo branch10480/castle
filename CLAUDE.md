@@ -118,6 +118,19 @@ ln -s ../.homesick/repos/castle/home/.zshrc.d/clog.zsh ~/.zshrc.d/clog.zsh
 ## スキル管理
 
 - Claude用スキルは `claude/skills/<skill-name>/SKILL.md` で管理する
+- Codex用スキルは `codex/skills/<skill-name>/SKILL.md` で管理する
+- Codexスキルを追加・削除したら `scripts/sync-codex-skills.sh` を実行し、`home/.codex/skills/<skill-name>` の repo 相対 symlink を更新する
+- Codexのユーザースコープ指示は `home/.codex/AGENTS.md` で管理し、homeshick 経由で `~/.codex/AGENTS.md` にリンクする
+- `~/.codex/config.toml` / `~/.codex/auth.json` / `~/.codex/hooks.json` は machine-local な state を含むため、丸ごと symlink しない。共有したい設定が増えた場合は Claude hooks と同じく nix-darwin activation で局所 patch する
+
+Codex スキル追加・削除時の反映順:
+
+```bash
+scripts/sync-codex-skills.sh
+homeshick link castle
+```
+
+既存 Mac では `~/.codex/` が Codex の state directory として実体化している。`~/.codex` ディレクトリ全体を castle 側の symlink に置き換えると `auth.json` / logs / plugin cache などを巻き込むため、`AGENTS.md` と `skills/<skill-name>` だけを個別 symlink として扱う。
 
 ## Neovim設定
 

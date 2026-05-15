@@ -69,15 +69,15 @@ for skill_dir in "$codex_source_dir"/*; do
 
   if [[ ! -f "$skill_dir/SKILL.md" ]]; then
     echo "Skip $skill_name: SKILL.md not found"
-    ((skipped_count++))
+    ((skipped_count += 1))
     continue
   fi
 
   # home/.codex 側は、リポジトリ相対リンクで管理する
   if safe_link "../../../codex/skills/$skill_name" "$home_codex_dir/$skill_name"; then
-    ((updated_count++))
+    ((updated_count += 1))
   else
-    ((error_count++))
+    ((error_count += 1))
   fi
 done
 
@@ -86,7 +86,7 @@ for codex_link in "$home_codex_dir"/*; do
   skill_name="$(basename "$codex_link")"
   if is_managed_link "$codex_link" "../../../codex/skills/$skill_name" && [[ ! -d "$codex_source_dir/$skill_name" ]]; then
     rm "$codex_link"
-    ((removed_count++))
+    ((removed_count += 1))
   fi
 done
 

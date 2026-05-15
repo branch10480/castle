@@ -117,9 +117,21 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 ### Codex 設定
 
+- ユーザースコープ指示は `home/.codex/AGENTS.md` で管理し、homeshick 経由で `~/.codex/AGENTS.md` にリンクする
 - Codex 用スキル本体は `codex/skills/` で管理
 - `~/.codex/skills/` は `home/.codex/skills/` 経由で homeshick 管理
-- 同期: `scripts/sync-codex-skills.sh`（詳細手順は [CLAUDE.md の Codex セクション](CLAUDE.md)）
+- `home/.codex/skills/<skill-name>` は `codex/skills/<skill-name>` への repo 相対 symlink として管理する
+- 同期: `scripts/sync-codex-skills.sh`（新規スキル追加・削除後に実行）
+- `~/.codex/config.toml` / `~/.codex/auth.json` / `~/.codex/hooks.json` は machine-local な state を含むため、丸ごと symlink しない
+
+Codex スキルを追加・削除したときの反映順:
+
+```bash
+~/.homesick/repos/castle/scripts/sync-codex-skills.sh
+homeshick link castle
+```
+
+既存 Mac では `~/.codex/` が Codex の state directory として実体化しているため、`~/.codex` ディレクトリ全体を castle に置き換えない。`AGENTS.md` と `skills/<skill-name>` だけを個別 symlink として管理する。
 
 ## Claude Day デザイン言語
 

@@ -10,7 +10,7 @@ auto-update-channel = tip
 font-family = JetBrainsMono Nerd Font Mono
 font-family = JetBrainsMono Nerd Font
 font-family = Hiragino Sans W3
-font-style = Medium
+font-style = Regular
 # font-size は machine-local override (config.local) で上書きされる。
 # hammerspoon/init.lua が OS appearance を watch して config.local に
 # `font-size = 12` (Light) / `font-size = 12.5` (Dark) を書き出す。

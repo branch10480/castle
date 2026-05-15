@@ -21,6 +21,17 @@
   # System-level zsh. Existing ~/.zshrc (managed by homeshick) keeps working.
   programs.zsh.enable = true;
 
+  # sudo を Touch ID 化する。macOS Sonoma 14+ の /etc/pam.d/sudo_local 経路を
+  # 使うため、softwareupdate で /etc/pam.d/sudo が上書きされても消えない。
+  # `reattach = true` は tmux / screen 越しでも Touch ID プロンプトを出すため
+  # に必須 (pam_reattach.so が console session に re-attach する)。
+  # 旧 `security.pam.enableSudoTouchIdAuth` は deprecated のため使わない。
+  security.pam.services.sudo_local = {
+    enable = true;
+    touchIdAuth = true;
+    reattach = true;
+  };
+
   # Minimal system packages. Per-user CLI tools live in home.nix.
   environment.systemPackages = with pkgs; [
     coreutils

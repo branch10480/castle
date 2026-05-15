@@ -23,7 +23,7 @@ flowchart LR
 | ファイル | 役割 | 何を書く |
 | --- | --- | --- |
 | `flake.nix` | エントリポイント | inputs（nixpkgs / nix-darwin / home-manager）と `darwinConfigurations` |
-| `darwin.nix` | システム全体（root 権限） | `/etc/*`, launchd, Homebrew 宣言, `system.primaryUser` |
+| `darwin.nix` | システム全体（root 権限） | `/etc/*`, launchd, Homebrew 宣言, `system.primaryUser`, PAM（sudo Touch ID = CLAUDE.md Phase 10）|
 | `home.nix` | ユーザー領域 (`~/`) | CLI ツール（`home.packages`）, 個人 launchd agent |
 | `flake.lock` | inputs 固定 | 自動生成・コミット対象 |
 
@@ -658,6 +658,7 @@ imports = [
 | direnv ビルドが固まる | checkPhase ハング | §4.3 の `doCheck=false` で回避 |
 | `_direnv_hook:2: no such file or directory: ...` | hook が古い brew パスを参照 | §4.4: `brew uninstall <tool>` → `exec "$SHELL" -l` |
 | switch が途中で止まる | `Sorry, try again.` 後の再入力 / ネットワーク | `Ctrl+C` 後に再実行 |
+| sudo で password を聞かれる（Touch ID 期待していたのに） | Phase 10 未適用 / tmux で `reattach` 無し / SSH session | CLAUDE.md Phase 10。SSH 越しは仕様で Touch ID 化不可 |
 | 環境を壊した | activation 失敗 | `sudo darwin-rebuild rollback` |
 | 初回 activation で `Unexpected files in /etc` で停止 | nix-darwin の安全装置 | §5.8（`.before-nix-darwin` リネーム） |
 | `Installing <cask> has failed!` / `there is already a Binary at ...` | 既存 brew/npm/手動 symlink との衝突 | §5.9（cask 宣言を外す or 既存削除） |

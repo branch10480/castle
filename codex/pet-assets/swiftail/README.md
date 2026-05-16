@@ -19,7 +19,11 @@
 ### SNS用画像
 
 - `profile/swiftail_profile_square.png` - 正方形プロフィール画像
-- `profile/swiftail_profile_background.png` - 背景付き正方形プロフィール画像
+- `profile/swiftail_profile_background.png` - レトロゲーム風背景付き正方形プロフィール画像
+
+### x.com用画像
+
+- `banner/swiftail_x_header_retro.png` - レトロゲーム風ヘッダー画像
 
 ### 元画像
 

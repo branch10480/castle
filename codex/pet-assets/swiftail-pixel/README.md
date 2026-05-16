@@ -15,6 +15,7 @@
 - `spritesheet.webp` - lossless WebP 版の予備ファイル
 
 全 state で使えるフレーム枠をできるだけ埋めています。
+明るい背景でも輪郭がにじみにくいよう、元の絵柄を保ったまま半透明エッジをピクセル絵向けに整えています。
 
 ```text
 idle          6 frames

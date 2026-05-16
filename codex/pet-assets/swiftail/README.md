@@ -33,6 +33,9 @@
 - `profile/swiftail_profile_pixel.png` - ドット絵版プロフィール画像（1024px）
 - `profile/swiftail_profile_pixel_512.png` - ドット絵版プロフィール画像（512px）
 - `profile/swiftail_profile_pixel_400.png` - ドット絵版プロフィール画像（400px）
+- `profile/swiftail_profile_background_minimal_pixel.png` - minimal v2 背景のキャラクタードット絵版プロフィール画像（1024px）
+- `profile/swiftail_profile_background_minimal_pixel_512.png` - minimal v2 背景のキャラクタードット絵版プロフィール画像（512px）
+- `profile/swiftail_profile_background_minimal_pixel_400.png` - minimal v2 背景のキャラクタードット絵版プロフィール画像（400px）
 
 ### x.com用画像
 

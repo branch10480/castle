@@ -16,6 +16,14 @@
 - `pet_success.png` - 成功・完了リアクション
 - `pet_sleep.png` - 休憩・スリープポーズ
 
+### Codex Pet用パッケージ
+
+`pet-package/` 以下は Codex app の `/pet` で使うためのローカルカスタムペットパッケージです。
+
+- `pet.json` - Swiftail のカスタムペット manifest
+- `spritesheet.webp` - Codex Pet 仕様の 8x9 スプライトアトラス
+- `spritesheet.png` - WebP 生成元の確認用 PNG
+
 ### SNS用画像
 
 - `profile/swiftail_profile_square.png` - 正方形プロフィール画像

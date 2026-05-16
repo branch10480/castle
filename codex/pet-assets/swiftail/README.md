@@ -30,6 +30,9 @@
 
 - `profile/swiftail_profile_square.png` - 正方形プロフィール画像
 - `profile/swiftail_profile_background.png` - レトロゲーム風背景付き正方形プロフィール画像
+- `profile/swiftail_profile_pixel.png` - ドット絵版プロフィール画像（1024px）
+- `profile/swiftail_profile_pixel_512.png` - ドット絵版プロフィール画像（512px）
+- `profile/swiftail_profile_pixel_400.png` - ドット絵版プロフィール画像（400px）
 
 ### x.com用画像
 

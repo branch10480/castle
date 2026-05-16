@@ -106,7 +106,7 @@
   home.file."Library/Application Support/MarkdownObserver/themes/user.css".source =
     ./files/markdownobserver/user.css;
 
-  # Codex app の custom pet "Swiftail" を castle 経由で配布する。
+  # Codex app の custom pets "Swiftail" / "Swiftail Pixel" を castle 経由で配布する。
   # Codex app は ~/.codex/pets/<pet-id>/pet.json と spritesheet.png を読む。
   # ~/.codex は auth.json / logs / plugin cache などの machine-local state を
   # 含むため丸ごと symlink しない。また custom pets は symlink だと読み込みが
@@ -128,6 +128,26 @@
         "$pet_dir/spritesheet.png"
       $DRY_RUN_CMD install -m 0644 \
         ${../../codex/pet-assets/swiftail/pet-package/spritesheet.webp} \
+        "$pet_dir/spritesheet.webp"
+    '';
+
+  home.activation.installCodexPetSwiftailPixel =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      pet_dir="$HOME/.codex/pets/swiftail-pixel"
+
+      if [ -L "$pet_dir" ] || [ -f "$pet_dir" ]; then
+        $DRY_RUN_CMD rm -f "$pet_dir"
+      fi
+
+      $DRY_RUN_CMD mkdir -p "$pet_dir"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail-pixel/pet-package/pet.json} \
+        "$pet_dir/pet.json"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail-pixel/pet-package/spritesheet.png} \
+        "$pet_dir/spritesheet.png"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail-pixel/pet-package/spritesheet.webp} \
         "$pet_dir/spritesheet.webp"
     '';
 

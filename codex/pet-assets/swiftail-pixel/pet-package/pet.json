@@ -1,0 +1,6 @@
+{
+  "id": "swiftail-pixel",
+  "displayName": "Swiftail Pixel",
+  "description": "A fine pixel-art version of Swiftail, the tiny ferret iOS engineer.",
+  "spritesheetPath": "spritesheet.png"
+}

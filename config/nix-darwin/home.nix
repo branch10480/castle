@@ -107,7 +107,7 @@
     ./files/markdownobserver/user.css;
 
   # Codex app の custom pet "Swiftail" を castle 経由で配布する。
-  # Codex app は ~/.codex/pets/<pet-id>/pet.json と spritesheet.webp を読む。
+  # Codex app は ~/.codex/pets/<pet-id>/pet.json と spritesheet.png を読む。
   # ~/.codex は auth.json / logs / plugin cache などの machine-local state を
   # 含むため丸ごと symlink しない。また custom pets は symlink だと読み込みが
   # 不安定な可能性があるので、Xcode テーマ配布と同じく activation で実体コピーする。
@@ -123,6 +123,9 @@
       $DRY_RUN_CMD install -m 0644 \
         ${../../codex/pet-assets/swiftail/pet-package/pet.json} \
         "$pet_dir/pet.json"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail/pet-package/spritesheet.png} \
+        "$pet_dir/spritesheet.png"
       $DRY_RUN_CMD install -m 0644 \
         ${../../codex/pet-assets/swiftail/pet-package/spritesheet.webp} \
         "$pet_dir/spritesheet.webp"

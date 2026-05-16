@@ -21,8 +21,10 @@
 `pet-package/` 以下は Codex app の `/pet` で使うためのローカルカスタムペットパッケージです。
 
 - `pet.json` - Swiftail のカスタムペット manifest
-- `spritesheet.webp` - Codex Pet 仕様の 8x9 スプライトアトラス
-- `spritesheet.png` - WebP 生成元の確認用 PNG
+- `spritesheet.png` - Codex Pet 仕様の 8x9 スプライトアトラス（表示時の圧縮由来の揺れを避けるため manifest では PNG を使用）
+- `spritesheet.webp` - lossless WebP 版の予備ファイル
+
+各フレームは同じ基準スケール・同じ足元ラインで配置し、表示時のガタつきを抑える。全 state で使えるフレーム枠をできるだけ埋め、元のくっきりしたポーズを重ねずに並べて動きの段差を減らしている。
 
 ### SNS用画像
 

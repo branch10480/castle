@@ -19,6 +19,7 @@
 ### SNS用画像
 
 - `profile/swiftail_profile_square.png` - 正方形プロフィール画像
+- `profile/swiftail_profile_background.png` - 背景付き正方形プロフィール画像
 
 ### 元画像
 

@@ -123,6 +123,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 - `home/.codex/skills/<skill-name>` は `codex/skills/<skill-name>` への repo 相対 symlink として管理する
 - 同期: `scripts/sync-codex-skills.sh`（新規スキル追加・削除後に実行）
 - `~/.codex/config.toml` / `~/.codex/auth.json` / `~/.codex/hooks.json` は machine-local な state を含むため、丸ごと symlink しない
+- Codex custom pet は `codex/pet-assets/<pet-name>/pet-package/` で管理し、nix-darwin の `home.activation` で `~/.codex/pets/<pet-name>/` に実ファイル配置する（Codex app 側の symlink 読み込み回避）
 
 Codex スキルを追加・削除したときの反映順:
 

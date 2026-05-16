@@ -106,6 +106,28 @@
   home.file."Library/Application Support/MarkdownObserver/themes/user.css".source =
     ./files/markdownobserver/user.css;
 
+  # Codex app の custom pet "Swiftail" を castle 経由で配布する。
+  # Codex app は ~/.codex/pets/<pet-id>/pet.json と spritesheet.webp を読む。
+  # ~/.codex は auth.json / logs / plugin cache などの machine-local state を
+  # 含むため丸ごと symlink しない。また custom pets は symlink だと読み込みが
+  # 不安定な可能性があるので、Xcode テーマ配布と同じく activation で実体コピーする。
+  home.activation.installCodexPetSwiftail =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      pet_dir="$HOME/.codex/pets/swiftail"
+
+      if [ -L "$pet_dir" ] || [ -f "$pet_dir" ]; then
+        $DRY_RUN_CMD rm -f "$pet_dir"
+      fi
+
+      $DRY_RUN_CMD mkdir -p "$pet_dir"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail/pet-package/pet.json} \
+        "$pet_dir/pet.json"
+      $DRY_RUN_CMD install -m 0644 \
+        ${../../codex/pet-assets/swiftail/pet-package/spritesheet.webp} \
+        "$pet_dir/spritesheet.webp"
+    '';
+
   # Xcode カスタムテーマ "Claude Day" を castle 経由で配布する。
   # ⚠️ Xcode は ~/Library/.../FontAndColorThemes/ 配下の symlink を辿らない
   # （実ファイルとして配置されたものしか custom theme として認識しない）。

@@ -37,6 +37,75 @@
     coreutils
   ];
 
+  # ====== トラックパッド設定 ======
+  # System Settings > Trackpad の現在値を全部宣言化する。新規 Mac でも
+  # `nrs` 1 回で同じ挙動を再現できるようにするのが狙い。
+  #
+  # nix-darwin の `system.defaults.trackpad.*` module は **内蔵 trackpad**
+  # (com.apple.AppleMultitouchTrackpad) と **Magic Trackpad**
+  # (com.apple.driver.AppleBluetoothMultitouch.trackpad) の両ドメインに
+  # 同じ値を書いてくれるため、デバイス追加時の食い違いを気にしなくていい。
+  #
+  # ただし module が option 化していないキーがある
+  # (`TrackpadHandResting` / `TrackpadScroll` / `TrackpadHorizScroll` /
+  #  `TrackpadFiveFingerPinchGesture` / `USBMouseStopsTrackpad` /
+  #  `UserPreferences`) ので、漏れ分は `system.defaults.CustomUserPreferences`
+  # で両ドメインに直書きしている。
+  #
+  # 反映タイミング: defaults は cfprefsd の cache を経由するため `nrs` 直後
+  # に効かないことがある。確実に反映したければ `killall cfprefsd` か再ログイン。
+  system.defaults.trackpad = {
+    Clicking = true;                                  # tap to click
+    Dragging = false;                                 # tap to drag は OFF
+    DragLock = false;
+    TrackpadRightClick = true;                        # 二本指タップで右クリック
+    TrackpadThreeFingerDrag = true;                   # 三本指ドラッグ
+    TrackpadCornerSecondaryClick = 0;                 # 0=角クリック無し
+    TrackpadThreeFingerTapGesture = 0;                # 0=off, 2=Look up & data detectors
+    FirstClickThreshold = 2;                          # 通常クリック圧: 0=軽 / 1=中 / 2=重
+    SecondClickThreshold = 2;                         # フォースクリック圧: 同上
+    ForceSuppressed = true;                           # force click を無効化
+    ActuateDetents = false;                           # 触覚フィードバック OFF
+    TrackpadMomentumScroll = true;                    # 慣性スクロール
+    TrackpadPinch = true;                             # 二本指ピンチでズーム
+    TrackpadRotate = true;                            # 二本指回転
+    TrackpadTwoFingerDoubleTapGesture = true;         # 二本指ダブルタップ = smart zoom
+    TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;   # 右端から二本指 = 3=通知センター
+    TrackpadThreeFingerHorizSwipeGesture = 0;         # 三本指水平 = 0=無効
+    TrackpadThreeFingerVertSwipeGesture = 0;          # 三本指垂直 = 0=無効 (3本指ドラッグと両立しない)
+    TrackpadFourFingerHorizSwipeGesture = 2;          # 四本指水平 = 2=フルスクリーン app 間移動
+    TrackpadFourFingerPinchGesture = 2;               # 四本指ピンチ = Desktop / Launchpad
+    TrackpadFourFingerVertSwipeGesture = 2;           # 四本指垂直 = Mission Control / App Exposé
+  };
+
+  # NSGlobalDomain 配下の trackpad 関連キー
+  system.defaults.NSGlobalDomain = {
+    "com.apple.trackpad.scaling" = 3.0;               # トラッキング速度 (0..3)
+    "com.apple.trackpad.forceClick" = false;          # force click 無効 (ForceSuppressed と整合)
+    "com.apple.swipescrolldirection" = true;          # ナチュラルスクロール ON
+  };
+
+  # nix-darwin module が option 化していない trackpad キーを両ドメインに直書き。
+  # 内蔵 / Bluetooth で **同じ値** にしないと挙動が割れるため必ず両方書く。
+  system.defaults.CustomUserPreferences = {
+    "com.apple.AppleMultitouchTrackpad" = {
+      TrackpadFiveFingerPinchGesture = 2;             # 五本指ピンチ = Launchpad
+      TrackpadHandResting = 1;                        # 手のひら検知
+      TrackpadHorizScroll = 1;                        # 横スクロール許可
+      TrackpadScroll = 1;                             # スクロール許可
+      USBMouseStopsTrackpad = 0;                      # USB マウス接続中も trackpad 有効
+      UserPreferences = 1;                            # ユーザー設定を優先 (default の guest 設定を無視)
+    };
+    "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
+      TrackpadFiveFingerPinchGesture = 2;
+      TrackpadHandResting = 1;
+      TrackpadHorizScroll = 1;
+      TrackpadScroll = 1;
+      USBMouseStopsTrackpad = 0;
+      UserPreferences = 1;
+    };
+  };
+
   # フォントは Nix 経由で供給する。Homebrew Cask 経由だとネットワークエラー等で
   # silent に skip されることがあり、別マシンで `nrs` 後もフォントが入らず
   # CSS のフォールバック（Hiragino 等）に落ちる事故が起きるため。

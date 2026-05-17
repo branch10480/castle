@@ -76,26 +76,41 @@ oprun() {
 #
 # Idempotency: 同 boot 中の 2 回目以降は /tmp ファイルが既存 → skip。
 op-warm-mcp() {
-  local in out
+  local in out log
+  log="$HOME/.cache/op-warm-mcp.log"
+  mkdir -p "${log:h}"
   for in in ~/.config/op/*.env(N); do
     [[ -r "$in" ]] || continue
     out="/tmp/op-mcp-$(basename "$in")"
-    # Skip if already warmed this boot (file persists in /tmp until reboot)
+    # Skip if already warmed this boot (file persists in /tmp until reboot).
+    # NOTE: 1Password 側で値を rotate した場合は手動で /tmp/op-mcp-*.env を
+    # 消さない限り古い値を握り続ける。これは Touch ID 回避と引き換えの仕様。
     [[ -s "$out" ]] && continue
     # Extract env var keys from the input file (KEY=...)
     local keys=( ${(f)"$(awk -F= '!/^[[:space:]]*#/ && NF>=2 {print $1}' "$in")"} )
     (( ${#keys[@]} == 0 )) && continue
-    # Run op run once for this env-file. Inside, bash dumps KEY=value
-    # for each requested key using ${!k} (indirect expansion). The whole
-    # output is redirected to $out under umask 077 so the file is 0600.
-    if ( umask 077; op run --env-file="$in" -- bash -c '
+    # Run op run once for this env-file. Inside, bash dumps KEY=value for each
+    # requested key using ${!k} (indirect expansion). The whole output is
+    # redirected to $out under umask 077 so the file is 0600.
+    #
+    # `--no-masking` が必須 (これを外すと 401 で確実に壊れる):
+    #   op run は子プロセスの stdout に展開済み secret が出現した瞬間に
+    #   その部分を切り詰める / マスクする (公式 docs は「stderr のみ」と
+    #   書いているが実装は stdout も対象)。warm 自体が「展開した値を
+    #   stdout 経由でファイルへ書く」操作なので masking と完全に衝突し、
+    #   ファイル末尾が壊れる。`oprun` 関数 (line 50) と挙動を揃える。
+    #
+    # stderr は log に追記する。`2>/dev/null` だと op CLI の警告
+    # (rate limit / biometric auth fail / バージョン互換問題) が完全に
+    # silent になり、今回のような silent regression に気付けないため。
+    if ( umask 077; op run --env-file="$in" --no-masking -- bash -c '
       for k in "$@"; do
         printf "%s=%s\n" "$k" "${!k}"
       done
-    ' bash "${keys[@]}" > "$out" 2>/dev/null ); then
+    ' bash "${keys[@]}" > "$out" 2>>"$log" ); then
       print -r -- "op-warm-mcp: warmed $out"
     else
-      print -r -- "op-warm-mcp: failed to warm $out (input: $in)" >&2
+      print -r -- "op-warm-mcp: failed to warm $out (input: $in; see $log)" >&2
       rm -f "$out"
     fi
   done

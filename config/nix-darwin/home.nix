@@ -97,6 +97,15 @@
     # GUI 版 (codex-app cask) は Nix 配布が無いため darwin.nix の casks で継続。
     # state file (~/.codex/config.toml 等) はバイナリ更新に追従する。
     codex
+
+    # Re-managed via Nix (phase 9: statusline 高速化と version pin)
+    # ryoppippi/ccusage v19 系。Homebrew formula は v18 stable のまま追従が
+    # 遅く、castle/claude/statusline.py の cold start を直撃していた
+    # （実測 v17.2.1: 11.2s / v19.0.2: 0.39s ≒ 28x 改善）。derivation は
+    # ./files/ccusage/default.nix を参照。nixpkgs 未収載のため npm tarball を
+    # fetchurl + node ラッパー方式で配布する。更新手順は default.nix 冒頭の
+    # コメントを参照。
+    (callPackage ./files/ccusage { })
   ];
 
   # zsh-syntax-highlighting の本体スクリプトを安定パスへ露出させる。

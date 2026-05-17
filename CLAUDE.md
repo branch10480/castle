@@ -227,6 +227,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin       # 日常運用
 - 既存 dotfiles は homeshick 管理を維持し、HM の `programs.<tool>` は有効化しない
 - Homebrew は `cleanup = "none"` で安全側起動（取り込み完了後に `"zap"` 化を検討）
 - **macOS の `defaults` も `system.defaults.*` で宣言化済み**: trackpad / NSGlobalDomain（キーリピート・自動補正系）/ Dock / Finder / screencapture を `darwin.nix` で一元管理。新規 Mac でも `nrs` 1 回で挙動を再現できる。スクリーンショット保存先は `~/Pictures/Screenshots` に固定（Desktop を汚さない）。落とし穴は [`docs/nix-darwin-manual.md`](docs/nix-darwin-manual.md) §5.11
+- **`config/nix-darwin/files/` の責務**: 静的アセット（Xcode テーマ / Kaleidoscope CSS / markdownobserver `user.css` 等）に加え、**nixpkgs 未収載 CLI の自作 derivation** も `files/<pkg>/default.nix` として配置する。`home.packages` 側からは `(callPackage ./files/<pkg> { })` で呼ぶ。例: `files/ccusage/default.nix` は npm tarball を `fetchurl` で取得して node ラッパーを書き出すパターン（v17.2.1 → v19.0.2 移行で statusline 実測 11.2s → 0.39s）。更新手順は各 `default.nix` 冒頭コメントに残す
 
 ## Secrets management（Phase 一覧）
 

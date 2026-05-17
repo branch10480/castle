@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Pattern 5: Braille dots progress bar with true color gradient + ccusage cost"""
-import json, sys, time, subprocess, os
+import json, sys, time, subprocess, os, shutil
 from datetime import date
 
 data = json.load(sys.stdin)
@@ -8,7 +8,12 @@ data = json.load(sys.stdin)
 BRAILLE = ' ⣀⣄⣤⣦⣶⣷⣿'
 R = '\033[0m'
 CACHE_FILE = '/tmp/ccusage-statusline-cache.json'
-CACHE_TTL = 60  # 1 minute
+CACHE_TTL = 300  # 5 minutes (cost は分単位で大きくは動かないので長めで OK)
+
+# ccusage 絶対パスを起動時に 1 回だけ解決する。毎ターン `which` を subprocess
+# で呼ぶと数十ms のオーバーヘッドが乗るため module-level でメモ化する。
+# Nix 化後は ~/.nix-profile/bin/ccusage が PATH 上で先頭に来る前提。
+CCUSAGE_BIN = shutil.which('ccusage') or '/opt/homebrew/bin/ccusage'
 
 def is_dark_mode():
     try:
@@ -90,22 +95,26 @@ def _refresh_cache_background():
     """Spawn a detached background process to update the ccusage cache."""
     today = date.today().strftime('%Y%m%d')
     month_start = date.today().strftime('%Y%m01')
-    ccusage_path = subprocess.run(['which', 'ccusage'], capture_output=True, text=True).stdout.strip() or '/opt/homebrew/bin/ccusage'
     # One-liner Python script that fetches ccusage and writes cache
     script = (
         'import json,subprocess,sys;'
-        f'td=subprocess.run(["{ccusage_path}","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
-        f'mo=subprocess.run(["{ccusage_path}","monthly","--json","--since","{month_start}","--until","{today}"],capture_output=True,timeout=10);'
+        f'td=subprocess.run(["{CCUSAGE_BIN}","daily","--json","--since","{today}","--until","{today}"],capture_output=True,timeout=10);'
+        f'mo=subprocess.run(["{CCUSAGE_BIN}","monthly","--json","--since","{month_start}","--until","{today}"],capture_output=True,timeout=10);'
         'dd=json.loads(td.stdout);md=json.loads(mo.stdout);'
         'dc=dd.get("daily",[{}])[0].get("totalCost",0) if dd.get("daily") else 0;'
         'mc=md.get("monthly",[{}])[0].get("totalCost",0) if md.get("monthly") else 0;'
         f'open("{CACHE_FILE}","w").write(json.dumps({{"daily":dc,"monthly":mc}}))'
     )
+    # ccusage v19 は PATH 上に `bun` を見つけると自動で bun に re-exec するが、
+    # statusline は cold spawn が支配的なので Bun の 2 段プロセス起動を避けて
+    # Node 直経路に固定する（castle 実測で 0.39s vs 0.47s）。
+    env = os.environ.copy()
+    env['CCUSAGE_BUN_AUTO_RUN'] = '0'
     try:
         subprocess.Popen(
             [sys.executable, '-c', script],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            env=os.environ.copy(),
+            env=env,
             start_new_session=True)
     except OSError:
         pass

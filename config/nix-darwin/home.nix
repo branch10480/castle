@@ -10,6 +10,23 @@
 
   programs.home-manager.enable = true;
 
+  # ─────────────────────────────────────────────────────────────
+  # Session env vars (declarative, machine-global)
+  # ─────────────────────────────────────────────────────────────
+  # Home Manager がこれを ~/.zshenv 相当のシェル起動最上流に export する。
+  # ~/.zshrc.d/*.zsh と違って rc ではなく env レイヤなので、GUI 経由の
+  # アプリも (シェル経由で起動される限り) この値を継承する。
+  home.sessionVariables = {
+    # Claude Code auto-compaction の発火しきい値 override (非公式 env var)。
+    # デフォルトは約 83.5% で context が満杯近くなるまで圧縮されないが、
+    # 大 context での品質低下 (lost-in-the-middle / generation latency 上昇)
+    # を避けるため 25% で早めに圧縮を発火させ、常に十分な作業余地を残す運用
+    # にする。Anthropic 公式設定として固まったら settings.json のキーに移行
+    # する (関連: anthropics/claude-code #25679 / #34925 / #46695 で feature
+    # request 受付中)。CLI バージョンアップで env var 名が変わる可能性あり。
+    CLAUDE_AUTOCOMPACT_PCT_OVERRIDE = "25";
+  };
+
   # CLI tools delivered by Nix. Configuration files keep living in
   # castle/config/* via homeshick — we only ship the binaries here, so do NOT
   # enable `programs.<tool>` modules that would write configs into ~/.config

@@ -163,6 +163,12 @@
       # 1Password GUI: Touch ID 解錠 / SSH agent / op-ssh-sign を提供。
       # CLI 本体 (`op`) は home.nix の _1password-cli (Nix) で供給する。
       "1password"
+      # cmux: Ghostty ベースの AI コーディングエージェント向けターミナル。
+      # 旧 NIGHTLY ビルド (`/Applications/cmux NIGHTLY.app`, bundle id
+      # `com.cmuxterm.app.nightly`) は brew 管理外で zap の対象外なので、
+      # stable 移行後は手動削除が必要。設定 (`~/.config/cmux/settings.json`)
+      # は homeshick 管理で stable/nightly どちらも同じファイルを読む。
+      "cmux"
       # codex (CLI) は home.nix の home.packages で Nix 管理（phase 8）。
       # Caskroom の codex-app (GUI) は Nix 配布が無いため brew cask で継続。
       "codex-app"

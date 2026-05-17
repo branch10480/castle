@@ -22,6 +22,7 @@ castle/
 ├── config/         # ~/.config にリンクされる設定
 │   ├── nvim/       # Neovim設定（lazy.nvim使用）
 │   ├── ghostty/    # Ghostty ターミナル設定（Claude Day light/dark テーマ含む）
+│   ├── cmux/       # cmux アプリ動作設定（cmux.json）。ターミナル描画は libghostty 経由で ghostty/config を共有
 │   ├── karabiner/  # Karabiner-Elements設定
 │   ├── git/        # Git 関連設定（global ignore, allowed_signers (machine-local) ）
 │   ├── nix-darwin/ # nix-darwin + Home Manager 構成

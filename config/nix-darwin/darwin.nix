@@ -166,8 +166,10 @@
       # cmux: Ghostty ベースの AI コーディングエージェント向けターミナル。
       # 旧 NIGHTLY ビルド (`/Applications/cmux NIGHTLY.app`, bundle id
       # `com.cmuxterm.app.nightly`) は brew 管理外で zap の対象外なので、
-      # stable 移行後は手動削除が必要。設定 (`~/.config/cmux/settings.json`)
-      # は homeshick 管理で stable/nightly どちらも同じファイルを読む。
+      # stable 移行後は手動削除が必要。設定 (`~/.config/cmux/cmux.json`、
+      # 旧 `settings.json` は cmux v0.64.6 で deprecated) は homeshick 管理。
+      # ターミナル描画 (font / theme / keybind) は libghostty 経由で
+      # `~/.config/ghostty/config` を共有する (詳細: docs/theme-appearance-switching.md)。
       "cmux"
       # codex (CLI) は home.nix の home.packages で Nix 管理（phase 8）。
       # Caskroom の codex-app (GUI) は Nix 配布が無いため brew cask で継続。

@@ -51,8 +51,17 @@ unfocused-split-opacity = 1
 # material を覆い隠してしまうため、Ghostty 仕様で blur は opacity<1 が条件)。
 # 旧キー `background-blur-radius` は古い alias で、macos-glass-* 値は受け付け
 # ないので `background-blur` に更新済み (cmux 公式ドキュメントもこちらの表記)。
+#
+# background-opacity は machine 固定 (Ghostty 仕様で値変更が完全再起動を要求
+# するため hook で動的切替できない)。
+# background-blur は Hammerspoon が config.local で OS appearance に応じて
+# 上書きする (Light=macos-glass-regular / Dark=macos-glass-clear)。ここの値は
+# config.local が無い環境 (Hammerspoon 未起動 / 別 Mac) 用の fallback で、
+# Light 値 (regular = やや不透明) を採用し「フォールバック時は安全側 (文字が
+# 読みやすい) に倒す」設計 (詳細は CLAUDE.md「macOS 26 Tahoe: Liquid Glass
+# material」セクション)。
 background-opacity = 0.9
-background-blur = macos-glass-clear
+background-blur = macos-glass-regular
 macos-titlebar-style = tabs
 split-divider-color = #54546d
 

@@ -68,7 +68,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 - commit signing は **1Password SSH agent + `op-ssh-sign`** 経由（GPG 不要、Touch ID で都度承認）
 - `tig` — `K` で未ステージ差分を Kaleidoscope で表示
-- identity（`user.email` / `user.signingkey`）は **machine-local** な `~/.gitconfig.local` に分離（個人 Mac / 仕事 Mac で同一 castle のまま identity を切替可能）
+- identity（`user.email` / `user.signingkey`）と credential helper は **machine-local** な `~/.gitconfig.local` に分離（個人 Mac / 仕事 Mac で同一 castle のまま切替可能）。テンプレは `home/.gitconfig.local.example`
 
 ### SSH
 

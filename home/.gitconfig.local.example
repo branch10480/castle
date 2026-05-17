@@ -1,0 +1,30 @@
+# Machine-local Git settings. Copy this to ~/.gitconfig.local on each Mac.
+# Do not symlink this file: it is intentionally host/account specific.
+#
+# Personal Mac example:
+#
+# [user]
+# 	email = toshiharu.imaeda@gmail.com
+# 	signingkey = key::<personal ssh public key>
+#
+# Work Mac example:
+#
+# [user]
+# 	email = <work email>
+# 	signingkey = key::<work ssh public key>
+#
+# If a machine handles both personal and work repositories, keep the default
+# identity above and add directory-based overrides. The trailing slash matters.
+#
+# [includeIf "gitdir:~/ghq/github.com/<work-org>/"]
+# 	path = ~/.gitconfig.work
+#
+# ~/.gitconfig.work:
+#
+# [user]
+# 	email = <work email>
+# 	signingkey = key::<work ssh public key>
+#
+# `gh auth setup-git` may add credential helpers. Because the helper path can
+# point into a machine-specific Nix store, keep those entries in
+# ~/.gitconfig.local instead of the castle-managed ~/.gitconfig.

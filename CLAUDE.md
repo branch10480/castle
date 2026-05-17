@@ -167,6 +167,33 @@ Light/Dark の 1pt 差ルールと独立して、**Dark テーマ側は背景を
 - 旧 Dark (`#131312` 単色) は暗順応下で tier 0 / tier 1 の差 (+0.04) が潰れ、layer 構造が **存在するのに視認できない** 状態だった。tier 0 を +0.03 lift するだけで上層 token (`#1d1c1a` → `#26241f` 等)を比例 lift する必要があり、結果として全 tier を連動 lift した
 - Anthropic 自身の最新 claude.ai は純黒方向に倒している (コミュニティから regression 扱い) が、castle は意図的に「以前の claude.ai の layered dark gray」方向を採用
 
+### macOS 26 Tahoe: Liquid Glass material（cmux / Ghostty 透過＋blur）
+
+warm-lifted layered gray の最上層として、**cmux / Ghostty の窓背景は macOS 26 Tahoe の Liquid Glass native material (`NSVisualEffectView`) を採用**する。Light/Dark の見た目切替は OS native vibrancy に任せ、castle 側では値を分けない契約。
+
+#### 設定 (`config/ghostty/config`)
+
+| キー | 値 | 役割 |
+|---|---|---|
+| `background-opacity` | `0.9` | glass 発火の前提 (Ghostty 仕様: blur は opacity < 1 のときのみ有効) |
+| `background-blur` | `macos-glass-clear` | macOS 26 Liquid Glass material (高透過版)。`macos-glass-regular` はやや不透明な代替値 |
+
+cmux は libghostty 内蔵で `~/.config/ghostty/config` をそのまま読むため、上記 2 行で cmux と Ghostty の両方に同時反映される。
+
+#### ルール
+
+- **Light/Dark で値を分けない**: `NSVisualEffectView` material が OS appearance を自前 watch して明るさ/色温度を自動調整する。Hammerspoon hook で動的切替は **行わない** (font-size と同じ手法は下記 why の通り使えない)
+- **opacity / blur は Ghostty config に集約**: cmux 自身の `cmux.json` には terminal 透過キーが存在しない (sidebar tint のみ)。terminal surface の透過は常に Ghostty config 側で一元管理する
+- **旧キー `background-blur-radius` は使わない**: 数値 blur 半径指定の旧 alias で、`macos-glass-*` 値を受け付けない。新キー `background-blur` に統一
+- **fullscreen 運用しない**: Ghostty 仕様で native fullscreen に入ると `background-opacity` が自動無効化されるため glass が消える (背景がグレーになりウィジェットが透けてしまうため OS 側で OFF)
+
+#### 根拠（Why）
+
+- **`background-opacity` の動的切替は不可**: Ghostty man page で「On macOS, changing this configuration requires restarting Ghostty completely」と明記。AppKit の `NSWindow.isOpaque` プロパティが window 初期化時にしか確定できないため。font-size の Hammerspoon reload 駆動方式が opacity には適用できない
+- **しかし NSVisualEffectView material は OS appearance を直接 watch している**: `AppleInterfaceThemeChangedNotification` を material 側が自前で受け、再描画する。Hammerspoon が OS appearance を切り替えれば glass の色温度は何もしなくても追従する
+- 結果として **「opacity は static、blur は OS 任せ」が UX 最善**: 切替のたびに cmux/Ghostty 再起動する違和感ゼロ、かつ Light/Dark で glass の素材感が自動で変わる
+- 関連 issue: 古い cmux ビルドでは macOS 26 Tahoe 上で `macos-glass-*` が反映されない期間があった ([cmux #2459](https://github.com/manaflow-ai/cmux/issues/2459))。glass が乗らない時は `brew upgrade cmux` で確認
+
 ## homeshick操作
 
 ```bash

@@ -45,8 +45,14 @@ theme = light:Claude Day,dark:Claude Day Dark
 
 # Window appearance
 unfocused-split-opacity = 1
-background-opacity = 1
-#background-blur-radius = 5
+# macOS 26 (Tahoe) Liquid Glass: background-blur に macos-glass-* を渡すと
+# native NSVisualEffectView material が背景に敷かれる。前提として
+# background-opacity < 1 にしておく必要がある (opacity=1 だと前景 surface が
+# material を覆い隠してしまうため、Ghostty 仕様で blur は opacity<1 が条件)。
+# 旧キー `background-blur-radius` は古い alias で、macos-glass-* 値は受け付け
+# ないので `background-blur` に更新済み (cmux 公式ドキュメントもこちらの表記)。
+background-opacity = 0.9
+background-blur = macos-glass-clear
 macos-titlebar-style = tabs
 split-divider-color = #54546d
 

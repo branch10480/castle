@@ -78,12 +78,94 @@
     TrackpadFourFingerVertSwipeGesture = 2;           # 四本指垂直 = Mission Control / App Exposé
   };
 
-  # NSGlobalDomain 配下の trackpad 関連キー
+  # NSGlobalDomain 配下のキー（trackpad / キーボード / テキスト入力補正）。
+  # 同じ NSGlobalDomain なので 1 ブロックに集約し、サブコメントで区切る。
   system.defaults.NSGlobalDomain = {
+    # ---- trackpad ----
     "com.apple.trackpad.scaling" = 3.0;               # トラッキング速度 (0..3)
     "com.apple.trackpad.forceClick" = false;          # force click 無効 (ForceSuppressed と整合)
     "com.apple.swipescrolldirection" = true;          # ナチュラルスクロール ON
+
+    # ---- キーボード（キーリピート系）----
+    # GUI 最速の値 (Initial=15 / KeyRepeat=2) を宣言化。CLI からはさらに小さい値も
+    # 入れられるが、KeyRepeat=1 は操作不能になりうるため castle では 2 を下限とする。
+    InitialKeyRepeat = 15;                            # キーリピート開始までの遅延 (内部 tick)
+    KeyRepeat = 2;                                    # リピート間隔 (GUI 最速 = 2)
+    ApplePressAndHoldEnabled = false;                 # 長押し accent ポップアップを無効化（Vim hjkl 等の連打を活かす）
+    AppleKeyboardUIMode = 3;                          # ダイアログで Tab が全コントロールを巡回 (0=textのみ, 3=全要素)
+
+    # ---- 自動補正・テキスト置換（全 OFF）----
+    # コード / Markdown を主に書く環境では誤検知のほうが大きいので OS レベルで止める。
+    # アプリ独自ドメイン（Notes 等）が上書きする場合は別途その domain で対処。
+    NSAutomaticCapitalizationEnabled = false;         # 文頭自動大文字化
+    NSAutomaticDashSubstitutionEnabled = false;       # -- → em dash
+    NSAutomaticPeriodSubstitutionEnabled = false;     # ダブルスペース → ピリオド
+    NSAutomaticQuoteSubstitutionEnabled = false;      # "..." → smart quotes
+    NSAutomaticSpellingCorrectionEnabled = false;     # スペル自動修正
+    NSAutomaticInlinePredictionEnabled = false;       # macOS 15+ のインライン予測入力
   };
+
+  # ====== Dock 設定 ======
+  # Dock サイズ・hide 挙動・hot corner を宣言化。
+  # tile 配列 (persistent-apps / persistent-others) は手動操作の頻度が高いため
+  # 宣言化しない（nix で固定すると並び替えが毎 nrs で巻き戻る）。
+  system.defaults.dock = {
+    autohide = true;                                  # マウス out で Dock を隠す
+    tilesize = 51;                                    # 通常時のアイコンサイズ (px)
+    largesize = 113;                                  # zoom 時の最大サイズ (px)
+    magnification = true;                             # カーソルホバーで拡大
+    minimize-to-application = true;                   # ウィンドウ最小化先をアプリアイコンに統合
+    mru-spaces = false;                               # Space を使用順で並べ替えない（位置記憶を保つ）
+    show-recents = false;                             # Dock 右側「最近使ったアプリ」セクションを非表示
+    wvous-br-corner = 14;                             # 右下 hot corner = Quick Note (14)
+                                                      # modifier 系 (wvous-*-modifier) は unset のまま：触れただけで発火
+  };
+
+  # ====== Finder 設定 ======
+  # 表示 / 検索範囲 / デスクトップアイコンの可視性を宣言化。
+  # サイドバー項目 (FK_DefaultTags / ShowSidebar 個別アイテム) は手動カスタム余地が
+  # 大きいため宣言化しない。
+  system.defaults.finder = {
+    AppleShowAllExtensions = true;                    # ファイル拡張子を常に表示
+    ShowPathbar = true;                               # 下部パスバー表示
+    ShowStatusBar = true;                             # 下部ステータスバー表示
+    FXPreferredViewStyle = "clmv";                    # 既定表示形式 = カラムビュー
+                                                      # (icnv=icon / Nlsv=list / glyv=gallery / clmv=column)
+    FXDefaultSearchScope = "SCcf";                    # 検索範囲 = 現在のフォルダ (SCev=Mac全体)
+    _FXSortFoldersFirst = true;                       # フォルダを先に並べる
+    NewWindowTarget = "Home";                         # ⌘N の新規ウィンドウ起点 = Home
+                                                      # （nix-darwin が friendly enum 化しているため
+                                                      #  raw "PfHm" ではなく "Home" を渡す。
+                                                      #  選択肢: Computer/OS volume/Home/Desktop/
+                                                      #  Documents/Recents/iCloud Drive/Other）
+    FXEnableExtensionChangeWarning = false;           # 拡張子変更時の確認ダイアログを抑止
+    # デスクトップ表示するボリュームの種類（現状値の宣言化）
+    ShowExternalHardDrivesOnDesktop = true;
+    ShowHardDrivesOnDesktop = false;
+    ShowMountedServersOnDesktop = false;
+    ShowRemovableMediaOnDesktop = true;
+  };
+
+  # ====== スクリーンショット設定 ======
+  # 保存先を Desktop から専用フォルダへ逃がし、Desktop を汚さない。
+  # location 先のディレクトリは activationScripts で事前作成する（存在しないと
+  # macOS が silent に Desktop へフォールバックするため）。
+  system.defaults.screencapture = {
+    location = "~/Pictures/Screenshots";
+    type = "png";
+    disable-shadow = true;                            # ウィンドウキャプチャ時の影を消す
+    show-thumbnail = true;                            # 撮影直後の右下サムネイル
+  };
+
+  # screencapture.location 指定先を pre-create。存在しないと macOS は silent に
+  # Desktop へフォールバックする。
+  # nix-darwin は activation を root 一本に統一済み（postUserActivation は削除済）。
+  # `postActivation` は root で走るため、ユーザー所有 dir を掘るには sudo -u が必要。
+  # ※ カスタム attribute 名 (例: screenshotDir) は activate に source されず
+  #    silent ignore されるため、必ず既定キー (preActivation/postActivation) を使う。
+  system.activationScripts.postActivation.text = ''
+    sudo -u ${username} mkdir -p /Users/${username}/Pictures/Screenshots
+  '';
 
   # nix-darwin module が option 化していない trackpad キーを両ドメインに直書き。
   # 内蔵 / Bluetooth で **同じ値** にしないと挙動が割れるため必ず両方書く。

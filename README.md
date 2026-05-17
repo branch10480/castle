@@ -101,6 +101,8 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
   - ⚠️ **新 Mac セットアップ時は Accessibility 権限の付与が必要** (System Settings → Privacy & Security → Accessibility)。権限が無いと Hammerspoon 起動時に通知 + 画面中央アラートで自己申告するため、通知が出たら付与する
 - **BetterTouchTool** — カスタムジェスチャー
 - **Raycast** — ランチャー設定 (`config/raycast/`)
+- **macOS system defaults を nix-darwin で宣言管理** — `system.defaults.*` で trackpad / キーリピート (`InitialKeyRepeat=15` / `KeyRepeat=2`) / 自動補正 OFF / Dock (`autohide` / `show-recents=false` / `mru-spaces=false` / 右下 hot corner = Quick Note) / Finder (column view / pathbar / 拡張子常時表示 / 現在フォルダ検索) / screencapture を一括宣言。実体は `config/nix-darwin/darwin.nix` のコメント付き定義を参照
+- **スクリーンショット保存先** — `~/Pictures/Screenshots/` に集約（Desktop を汚さない）。`screencapture.location` 宣言と `system.activationScripts.postActivation` でディレクトリ pre-create も nix-darwin 配下で完結
 
 ### Claude Code 設定
 

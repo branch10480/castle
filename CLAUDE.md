@@ -226,6 +226,7 @@ darwin-rebuild switch --flake ~/.config/nix-darwin       # 日常運用
 - CLI = Nix (`home.nix` の `home.packages`) / GUI = Homebrew (`darwin.nix` の `homebrew.casks`)
 - 既存 dotfiles は homeshick 管理を維持し、HM の `programs.<tool>` は有効化しない
 - Homebrew は `cleanup = "none"` で安全側起動（取り込み完了後に `"zap"` 化を検討）
+- **macOS の `defaults` も `system.defaults.*` で宣言化済み**: trackpad / NSGlobalDomain（キーリピート・自動補正系）/ Dock / Finder / screencapture を `darwin.nix` で一元管理。新規 Mac でも `nrs` 1 回で挙動を再現できる。スクリーンショット保存先は `~/Pictures/Screenshots` に固定（Desktop を汚さない）。落とし穴は [`docs/nix-darwin-manual.md`](docs/nix-darwin-manual.md) §5.11
 
 ## Secrets management（Phase 一覧）
 

@@ -434,6 +434,72 @@ cp -L "$TARGET" "${TARGET%.${TARGET##*.}}.real.${TARGET##*.}"
 
 `config/nix-darwin/home.nix` の `home.activation.installXcodeThemeClaudeDay` を参照。同じ Xcode テーマでも MarkdownObserver の `user.css` は `home.file` のままで動いている対比も含めて読むと意図が掴める。
 
+### 5.11 `system.activationScripts` の落とし穴
+
+`system.defaults.screencapture.location` のように **保存先ディレクトリ自体が無いと macOS が silent に Desktop へフォールバックする**設定では、activation 時に `mkdir -p` する必要がある。ここで `system.activationScripts` の名前選択を 3 段階で間違えやすい。
+
+#### 罠 1: 任意名の attribute は silent に無視される
+
+```nix
+# ❌ これは eval も build も通るが、実行されない
+system.activationScripts.screenshotDir.text = ''
+  mkdir -p "$HOME/Pictures/Screenshots"
+'';
+```
+
+`activationScripts` の attribute 集合に `screenshotDir` ノードは作られるが、メインの `activate` script から source されないため**何も起きない**。fail-loud にならない点が厄介。
+
+検証手段: `darwin-rebuild build --flake .` → `result/activate` を grep して、書いたシェル行が含まれているか確認する。含まれていなければ silent ignore されている。
+
+#### 罠 2: `extraUserPostActivation` は renamed
+
+```nix
+# ❌ assertion で蹴られる
+system.activationScripts.extraUserPostActivation.text = ''...'';
+# → Failed assertions:
+#   - system.activationScripts.extraUserPostActivation was renamed to system.activationScripts.postUserActivation
+```
+
+attribute 一覧 (`nix eval ... --apply 'builtins.attrNames'`) には旧名が**見える**まま rename mapping として残っているが、書き込むと `assertions` で迎撃される。eval 一覧だけ見て安全判定するとここで踏む。
+
+#### 罠 3: `postUserActivation` も削除済み
+
+```nix
+# ❌ さらに進化して assertion
+system.activationScripts.postUserActivation.text = ''...'';
+# → The `system.activationScripts.postUserActivation` option has been removed,
+#   as all activation now takes place as `root`. Please restructure your custom
+#   activation scripts appropriately, potentially using `sudo` if you need to
+#   run commands as a user.
+```
+
+nix-darwin の per-user activation phase 自体が廃止され、現在は **全 activation が root で走る**。ユーザー所有ディレクトリを掘りたいなら `sudo -u <user>` で明示的に降格する。
+
+#### ✅ 正解パターン
+
+```nix
+system.activationScripts.postActivation.text = ''
+  sudo -u ${username} mkdir -p /Users/${username}/Pictures/Screenshots
+'';
+```
+
+- `postActivation` は現存する規定キー（他に `preActivation` も使える）
+- root で走るので、ユーザー dir は `sudo -u ${username}` で所有権を保つ
+- `${username}` は flake から渡された Nix interpolation（`darwin.nix` の関数引数 `{ pkgs, username, ... }:`）
+
+#### `nrs` 前のスモークテスト習慣
+
+option 名 / friendly enum / activation hook 名のミスは `darwin-rebuild build --flake .` でも eval は走るので、sudo / Touch ID を浪費せず先回り検証できる。失敗パターン:
+
+```bash
+darwin-rebuild build --flake .   # eval + build (sudo 不要)
+# 成功したら ./result/activate を grep
+grep -c "意図したシェル行" result/activate   # 0 なら silent ignore
+rm result                                       # GC ルートを残さない
+```
+
+通った後で `nrs` (= `sudo darwin-rebuild switch ...`) を 1 回だけ叩く。
+
 ---
 
 ## 6. ファイル別の編集の流れ

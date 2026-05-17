@@ -236,6 +236,14 @@ unset _SHELL_INIT_PWD
 # - 既に tmux 内 / 非 interactive / NO_AUTO_TMUX が設定されている場合はスキップ
 # - tmux 未インストール時はスキップ（シェルがロックされないように防御）
 # - 一時的に無効化したいときは `NO_AUTO_TMUX=1 exec zsh -l`
+# - cmux 内ではスキップ: cmux も libghostty 内蔵で GHOSTTY_RESOURCES_DIR を継承
+#   するため上記条件に合致するが、cmux の per-pane 通知 (OSC 9/99/777 →
+#   ring / paneFlash / unreadPaneRing) は cmux pane 単位で発火する設計。tmux
+#   を中で動かすと cmux からは「tab 全体が 1 pty」にしか見えず、内部 pane の
+#   通知識別ができない。cmux native split (Cmd+D / Cmd+Shift+D) を使う運用に
+#   倒すため auto-attach を skip。識別は macOS Launch Services が設定する
+#   `__CFBundleIdentifier=com.cmuxterm.app` を使用 (OS 保証の確実な識別子、
+#   2026-05-17 に env probe で検証)。
 # - has-session の `-t =main` は前方一致ではなく完全一致 (先頭の `=` が必要)
 # - `=main` はシングルクォート必須: zsh の EQUALS オプション (デフォルト ON) が
 #   `=word` を「word コマンドの絶対パス展開」と解釈し、`main` が見つからず
@@ -243,7 +251,10 @@ unset _SHELL_INIT_PWD
 # - 区切り文字は `|`: tmux の format `-F` は `\t` を literal として解釈
 #   する仕様で TAB にならず awk が分割できない。session 名に `|` を使う
 #   人は稀で、誤分割リスクが極めて低いため採用。
-if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" && -n "${GHOSTTY_RESOURCES_DIR:-}" && $- == *i* ]] \
+if [[ -z "$TMUX" && -z "$NO_AUTO_TMUX" \
+      && -n "${GHOSTTY_RESOURCES_DIR:-}" \
+      && "${__CFBundleIdentifier:-}" != "com.cmuxterm.app" \
+      && $- == *i* ]] \
   && (( $+commands[tmux] )); then
   # Pre-resolve op:// MCP env-files so claude-in-tmux-pane can read
   # secrets without per-pane Touch ID (1Password 8 issues per-pty

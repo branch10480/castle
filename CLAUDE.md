@@ -58,7 +58,7 @@ castle/
 - `nru` (zsh 関数) - `nix flake update` を 1Password 経由の GitHub PAT 付きで実行。詳細: [`docs/phase9-nix-github-pat.md`](docs/phase9-nix-github-pat.md)
 - `scripts/scan-secrets.sh` - 既知パターンの API キー / 秘密鍵を grep する軽量スキャナ。`--staged` で git index のみスキャン可
 - `scripts/setup-claude-mcp-perplexity.sh` - `~/.claude.json` の `mcpServers.perplexity.--env-file` を `/tmp/op-mcp-perplexity.env` に向け直す jq 書換え（Phase 4 + `op-warm-mcp` と組）
-- `scripts/serena-onboarding-check.sh` - Claude Code SessionStart hook（nix-darwin の `patchClaudeHooks` 経由で `~/.claude/settings.json` に配布）。Serena MCP が登録された git repo でセッション開始時に nudge を注入: (a) `.serena/project.yml` があれば「onboarding 済」として Serena tool 優先を促す / (b) 未 onboarding なら `mcp__serena__onboarding` を促す / (c) **git worktree 内で `.serena/` がなければ main の `.serena/` を cp で複製**して onboarding 済状態にする (LSP cache を main と独立させ、大規模リファクタで stale 参照を防ぐ。`.gitignore:17` の `**/.serena` 前提)。`cc -w` で新しい worktree を切ってもすぐ symbol 探索ツールが使える。opt-out: `.serena/.no-onboarding` を touch
+- `scripts/serena-onboarding-check.sh` - Claude Code SessionStart hook（nix-darwin の `patchClaudeHooks` 経由で `~/.claude/settings.json` に配布）。Serena MCP が登録された git repo でセッション開始時に nudge を注入: (a) `.serena/project.yml` があれば「onboarding 済」として Serena tool 優先を促す / (b) 未 onboarding なら `mcp__serena__onboarding` を促す / (c) **git worktree 内で `.serena/` がなければ main の `.serena/` を cp で複製**して onboarding 済状態にする (LSP cache を main と独立させ、大規模リファクタで stale 参照を防ぐ。`.gitignore:17` の `**/.serena` 前提)。`cc -w`（または短縮形 `ccw`）で新しい worktree を切ってもすぐ symbol 探索ツールが使える。opt-out: `.serena/.no-onboarding` を touch
 
 ## スキル管理
 

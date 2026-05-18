@@ -116,7 +116,7 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
   - **`clog-resume <session-id>`** — `clog` の出力に出る session id を渡すと jsonl から cwd を自動解決して `cd <cwd> && claude --resume <id>` を 1 ステップ実行。`--fork-session` 等の追加引数は claude に pass-through、`CLOG_RESUME_CMD=echo` でドライラン
   - 詳細は [CLAUDE.md の「Claude Code セッション横断検索 (`clog`)」](CLAUDE.md) / `clog -h` / `clog-resume -h`
 - ステータスライン: `scripts/setup-claude-statusline.sh` で `~/.claude/settings.json` に適用
-- SessionStart hook: `scripts/serena-onboarding-check.sh`（nix-darwin の `patchClaudeHooks` で配布）— Serena MCP が登録された git repo でセッション開始時に nudge を注入し、git worktree 内では main の `.serena/` を cp で複製して即 onboarding 済状態にする。`cc -w` で新しい worktree を切っても `mcp__serena__*` 系の symbol 探索ツールが追加 onboarding なしで使える
+- SessionStart hook: `scripts/serena-onboarding-check.sh`（nix-darwin の `patchClaudeHooks` で配布）— Serena MCP が登録された git repo でセッション開始時に nudge を注入し、git worktree 内では main の `.serena/` を cp で複製して即 onboarding 済状態にする。`cc -w`（または短縮形 `ccw`）で新しい worktree を切っても `mcp__serena__*` 系の symbol 探索ツールが追加 onboarding なしで使える
 
 ### Codex 設定
 

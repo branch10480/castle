@@ -33,3 +33,12 @@
 - **簡単な検索（カレンダーの予定確認、軽い事実確認、定型的な情報取得など）は WebSearch で十分**
 - 迷ったら Perplexity MCP を優先（引用が付くため検証しやすい）
 - **Perplexity MCP が利用できない環境では、標準の WebSearch / WebFetch にフォールバックして問題なし**（無理に Perplexity を呼ばない）
+
+## シンボル調査ツール
+
+- **Serena MCP が有効なプロジェクトでは、シンボル単位の調査は grep より Serena MCP を優先する**
+  - 定義位置 / 参照箇所 / 実装一覧 / ファイル俯瞰 → `mcp__serena__find_symbol` / `find_referencing_symbols` / `find_implementations` / `get_symbols_overview`
+  - rename / 本体書き換え → `mcp__serena__rename_symbol` / `replace_symbol_body`
+  - `find_referencing_symbols` / `find_implementations` は `relative_path`（ファイル）が必須。未知なら先に `find_symbol`（`name_path_pattern`）で定義位置を特定する 2 段手順
+- **grep が向く場面**: 文字列リテラル / コメント / 設定ファイル / 曖昧な部分一致検索
+- 大規模 codebase では同名シンボルが grep で数千ヒットして使えなくなる。LSP ベースの Serena MCP が精度面で有利（Anthropic 2026-05-14 ブログ "How Claude Code works in large codebases"）

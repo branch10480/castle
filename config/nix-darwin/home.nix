@@ -345,6 +345,10 @@
   # 同じ hooks が反映される。手動同期スクリプトは不要。
   #
   # 現状の hooks:
+  #   - SessionStart で Serena MCP の onboarding 状態を判定し、未 onboarding
+  #     のプロジェクトでは additionalContext で Claude に
+  #     mcp__serena__onboarding 実行を促す
+  #     (scripts/serena-onboarding-check.sh)
   #   - Stop / SubagentStop で tmux pane-border override を unset
   #     (scripts/tmux-clear-pane-border-overrides.sh)
   #
@@ -356,13 +360,18 @@
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       settings_json="$HOME/.claude/settings.json"
       cleanup_script="$HOME/.homesick/repos/castle/scripts/tmux-clear-pane-border-overrides.sh"
+      serena_onboarding_script="$HOME/.homesick/repos/castle/scripts/serena-onboarding-check.sh"
 
       # castle 起源の hooks JSON。これを編集して darwin-rebuild switch すれば
       # 全 Mac に同期される。
-      desired=$(${pkgs.jq}/bin/jq -n --arg cmd "$cleanup_script" '{
-        Stop:         [{ hooks: [{ type: "command", command: $cmd }] }],
-        SubagentStop: [{ hooks: [{ type: "command", command: $cmd }] }]
-      }')
+      desired=$(${pkgs.jq}/bin/jq -n \
+        --arg cleanup "$cleanup_script" \
+        --arg onboarding "$serena_onboarding_script" \
+        '{
+          SessionStart: [{ hooks: [{ type: "command", command: $onboarding }] }],
+          Stop:         [{ hooks: [{ type: "command", command: $cleanup }] }],
+          SubagentStop: [{ hooks: [{ type: "command", command: $cleanup }] }]
+        }')
 
       # 0) 前提チェック
       if [ ! -f "$settings_json" ]; then

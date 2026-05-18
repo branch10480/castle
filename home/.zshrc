@@ -151,6 +151,7 @@ _cc()  { claude --dangerously-skip-permissions "$@"; }
 _ccp() { claude --print "$@"; }
 
 cc()   { claude "$@"; }
+ccw()  { claude -w "$@"; }
 ca()   { claude agents "$@"; }
 ccc()  { claude --continue "$@"; }
 cch()  { _cc --model "$CLAUDE_MODEL_HAIKU" "$@"; }

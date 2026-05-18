@@ -40,5 +40,6 @@
   - 定義位置 / 参照箇所 / 実装一覧 / ファイル俯瞰 → `mcp__serena__find_symbol` / `find_referencing_symbols` / `find_implementations` / `get_symbols_overview`
   - rename / 本体書き換え → `mcp__serena__rename_symbol` / `replace_symbol_body`
   - `find_referencing_symbols` / `find_implementations` は `relative_path`（ファイル）が必須。未知なら先に `find_symbol`（`name_path_pattern`）で定義位置を特定する 2 段手順
+- **`mcp__serena__*` が利用可能ツール一覧に出ていない / エラーを返す場合は迷わず grep に fallback**（Serena 非対応言語、language server 起動失敗、onboarding 未完了で `onboarding` を踏んでも復旧しない場合など）
 - **grep が向く場面**: 文字列リテラル / コメント / 設定ファイル / 曖昧な部分一致検索
 - 大規模 codebase では同名シンボルが grep で数千ヒットして使えなくなる。LSP ベースの Serena MCP が精度面で有利（Anthropic 2026-05-14 ブログ "How Claude Code works in large codebases"）

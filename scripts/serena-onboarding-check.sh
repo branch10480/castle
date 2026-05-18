@@ -15,13 +15,23 @@ main() {
   # 2. Only act if Serena MCP is registered in user-scope mcpServers
   grep -q '"serena"' "$HOME/.claude.json" 2>/dev/null || return 0
 
-  # 3. Already onboarded - nothing to do
-  [[ -f "$cwd/.serena/project.yml" ]] && return 0
-
-  # 4. Explicit opt-out for this project
+  # 3. Explicit opt-out for this project
   [[ -f "$cwd/.serena/.no-onboarding" ]] && return 0
 
-  # 5. Emit additionalContext via SessionStart JSON schema
+  # 4. Already onboarded - still nudge to prefer Serena tools
+  if [[ -f "$cwd/.serena/project.yml" ]]; then
+    cat <<'EOF'
+{
+  "hookSpecificOutput": {
+    "hookEventName": "SessionStart",
+    "additionalContext": "Serena MCP がこのプロジェクトで利用可能です (onboarding 済)。コード調査・編集は以下を優先してください: シンボル定義/参照/実装の探索は mcp__serena__find_symbol / find_referencing_symbols / find_implementations、ファイル俯瞰は mcp__serena__get_symbols_overview、rename/本体書き換えは mcp__serena__rename_symbol / replace_symbol_body。grep/Read への fallback は Serena が非対応・エラー時のみ。最初の symbol 操作の前に mcp__serena__initial_instructions を 1 回読んでください。通知停止はプロジェクト直下に空ファイル .serena/.no-onboarding を作成。"
+  }
+}
+EOF
+    return 0
+  fi
+
+  # 5. Not yet onboarded - prompt onboarding flow
   cat <<'EOF'
 {
   "hookSpecificOutput": {
